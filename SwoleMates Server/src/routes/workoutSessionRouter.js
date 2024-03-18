@@ -4,13 +4,17 @@ const workoutSessionController = require('../controllers/workoutSessionControlle
 
 //POST method to create 1 new workout session
 router.post("/create",workoutSessionController.createWorkoutSession);
+
 //GET method to get all workout sessions
+router.get("/",workoutSessionController.getAllWorkoutSessions);
 
 //GET method to get one workout sessions
+router.get("/:id",workoutSessionController.getWorkoutSession);
 
-//PATCH method to update one workout session
+//Put method to update one workout session
+router.put("/:id",workoutSessionController.updateWorkoutSession);
 
 //DELETE method to delete one workout session
-
+router.delete("/:id",workoutSessionController.deleteWorkoutSession);
 
 module.exports = router;

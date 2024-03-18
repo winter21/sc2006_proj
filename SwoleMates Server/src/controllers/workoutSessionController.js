@@ -17,3 +17,47 @@ exports.createWorkoutSession = async (req,res) => {
     }
 }
 
+exports.getAllWorkoutSessions = async (req, res) => {
+    try {
+        const workoutSessions = await WorkoutSession.find();
+        res.status(200).json(workoutSessions);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+exports.getWorkoutSession = async (req, res) => {
+    try {
+        const workoutSession = await WorkoutSession.findById(req.params.id);
+        if (!workoutSession) {
+            return res.status(404).send("Workout session not found");
+        }
+        res.status(200).json(workoutSession);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+exports.updateWorkoutSession = async (req, res) => {
+    try {
+        const updatedWorkoutSession = await WorkoutSession.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedWorkoutSession) {
+            return res.status(404).send("Workout session not found");
+        }
+        res.status(200).json(updatedWorkoutSession);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
+
+exports.deleteWorkoutSession = async (req, res) => {
+    try {
+        const workoutSession = await WorkoutSession.findByIdAndDelete(req.params.id);
+        if (!workoutSession) {
+            return res.status(404).send("Workout session not found");
+        }
+        res.status(200).send("Workout session deleted successfully");
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+};
