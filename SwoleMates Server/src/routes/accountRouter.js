@@ -8,4 +8,7 @@ const accountController = require('../controllers/accountController');
 //POST method to create 1 new account
 router.post("/register",accountController.createAccount);
 
+//POST method to log into account
+router.post("/login",accountController.login);
+
 module.exports = router;

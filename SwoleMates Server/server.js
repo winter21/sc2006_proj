@@ -15,10 +15,12 @@ connectDB();
 
 //Import routes
 const accountRouter = require('./src/routes/accountRouter');
+const userRouter = require('./src/routes/userRouter');
 const workoutSessionRouter = require('./src/routes/workoutSessionRouter');
 
 //Define API Routes
 app.use("/account",accountRouter);
+app.use("/user",userRouter);
 app.use("/workoutSession",workoutSessionRouter);
 
 

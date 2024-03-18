@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
+const bcrypt = require("bcrypt")
 
 const Schema = mongoose.Schema;
 
@@ -13,31 +14,18 @@ const AccountSchema = new Schema ({
         required: [true, "Password cannot be empty"]
     },
     user: {
-        email: {
-            type: String,
-            unique: true,
-            required: [true, "Email cannot be empty"]
-        },
-        name: {
-            type: String,
-            require: [true, "Name cannot be empty"]
-        },
-        gender: {
-            type: String,
-            enum: ["MALE", "FEMALE", "PREFER NOT TO SAY"]
-        },
-        aboutMe: {
-            type: String
-        },
-        profilePicture: {
-            type: String
-        },
-        interest: {
-            type: String,
-            enum: ["POWERLIFTING", "CARDIO TRAINING", "YOGA", "HITT", "LINE DANCING", "RUNNING"]
-        }
+        type: Schema.Types.ObjectId,
+        ref: "User"
     }
 
+})
+
+AccountSchema.pre('save', async function(next) {
+    const account = this
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(account.password,salt)
+    account.password = hash
+    return next()
 })
 
 module.exports = mongoose.model("Account", AccountSchema);
