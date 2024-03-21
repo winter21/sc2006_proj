@@ -17,11 +17,16 @@ connectDB();
 const accountRouter = require('./src/routes/accountRouter');
 const userRouter = require('./src/routes/userRouter');
 const workoutSessionRouter = require('./src/routes/workoutSessionRouter');
+const gymRouter = require('./src/routes/gymRouter');
+const gymReviewRouter = require('./src/routes/gymReviewRouter');
+
 
 //Define API Routes
 app.use("/account",accountRouter);
 app.use("/user",userRouter);
 app.use("/workoutSession",workoutSessionRouter);
+app.use("/gym",gymRouter);
+app.use("/gymReview",gymReviewRouter);
 
 
 app.listen(port, () => {
