@@ -6,7 +6,7 @@ exports.createGymReview = async (req,res) => {
     var description = req.body.description;
     var rating = req.body.rating;
     var gym = req.body.gym;
-    var pictures = req.body.gymReviewPictures;
+    var gymReviewPictures = req.body.gymReviewPictures;
     try{
         const newGymReview = new GymReview({author, date, description, rating, gym, gymReviewPictures});
         await newGymReview.save();
