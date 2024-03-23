@@ -1,4 +1,4 @@
-/* Home.js */
+
 .mainContainer {
   flex-direction: column;
   display: flex;
@@ -7,7 +7,6 @@
   height: 100vh;
 }
 
-/* Welcome msg */
 .titleContainer {
   display: flex;
   flex-direction: column;
@@ -66,6 +65,7 @@
   padding-left: 8px;
 }
 
+/*Started editing from here*/
 .redUnderlineButton {
   color: red;
   border: none;
@@ -76,4 +76,61 @@
 
 .redUnderlineButton:hover {
   text-decoration: none;
+}
+
+/* Styles for the horizontal line in createUserInfo */
+hr {
+  border-top: 2px solid red;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* createUserInfo Workout Eg */
+.interestsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  grid-gap: 10px; /* Adjust the gap between items */
+}
+
+.interestItem {
+  color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the text horizontally */
+  cursor: pointer;
+  background-color:lightcoral;
+  padding: 12px 24px;
+  border-radius: 30px;
+  border: none 
+}
+
+.selectedWorkout {
+  background-color: forestgreen; /* Change this to your desired highlight color */
+}
+
+#Gender {
+    /* Styles for the dropdown menu */
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    background-color: #f9f9f9;
+    width: 200px; /* Adjust width as needed */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.passwordLI{
+  position: relative; /* Set position to relative */
+  right: -360px; /* Shift 10 pixels to the right */
+  top: -37px; /* Shift 5 pixels up */
+  width: 30px;
+  height:auto
+}
+
+.passwordSU{
+  position: relative; /* Set position to relative */
+  right: -360px; /* Shift 10 pixels to the right */
+  top: -37px; /* Shift 5 pixels up */
+  width: 30px;
+  height:auto
 }
