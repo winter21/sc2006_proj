@@ -1,3 +1,140 @@
+
+.mainContainer {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.titleContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultContainer,
+.historyItem {
+  flex-direction: row;
+  display: flex;
+  width: 400px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.historyContainer {
+  flex-direction: column;
+  display: flex;
+  height: 200px;
+  align-items: center;
+  flex-grow: 5;
+  justify-content: flex-start;
+}
+
+/* Home.js */
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 260px;
+}
+
+/* Email and Password Fields */
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.inputContainer > .errorLabel {
+  color: red;
+  font-size: 12px;
+}
+
+.inputBox {
+  height: 48px;
+  width: 400px;
+  font-size: large;
+  border-radius: 8px;
+  border: 1px solid grey;
+  padding-left: 8px;
+}
+
+/*Started editing from here*/
+.redUnderlineButton {
+  color: red;
+  border: none;
+  text-decoration: underline;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.redUnderlineButton:hover {
+  text-decoration: none;
+}
+
+/* Styles for the horizontal line in createUserInfo */
+hr {
+  border-top: 2px solid red;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* createUserInfo Workout Eg */
+.interestsContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 columns */
+  grid-gap: 10px; /* Adjust the gap between items */
+}
+
+.interestItem {
+  color: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the text horizontally */
+  cursor: pointer;
+  background-color:lightcoral;
+  padding: 12px 24px;
+  border-radius: 30px;
+  border: none 
+}
+
+.selectedWorkout {
+  background-color: forestgreen; /* Change this to your desired highlight color */
+}
+
+#Gender {
+    /* Styles for the dropdown menu */
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 30px;
+    background-color: #f9f9f9;
+    width: 200px; /* Adjust width as needed */
+    cursor: pointer; /* Show pointer cursor on hover */
+}
+
+.passwordLI{
+  position: relative; /* Set position to relative */
+  right: -360px; /* Shift 10 pixels to the right */
+  top: -37px; /* Shift 5 pixels up */
+  width: 30px;
+  height:auto
+}
+
+.passwordSU{
+  position: relative; /* Set position to relative */
+  right: -360px; /* Shift 10 pixels to the right */
+  top: -37px; /* Shift 5 pixels up */
+  width: 30px;
+  height:auto
+}
+/*
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -40,3 +177,4 @@
 .read-the-docs {
   color: #888;
 }
+*/

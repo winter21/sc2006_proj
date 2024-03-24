@@ -4,7 +4,7 @@ import SwoleMates from "../assets/SwoleMates.png";
 import ShowPW from "../assets/ShowPW.png";
 import HidePW from "../assets/HidePW.png";
 
-const Login = (props) => {
+const Signup = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -12,10 +12,6 @@ const Login = (props) => {
   const [showPassword, setShowPassword] = useState(false); // State to track password visibility
 
   const navigate = useNavigate();
-
-  const navigateToSignUp = () => {
-    navigate("/signup");
-  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); // Toggle the state for password visibility
@@ -26,6 +22,7 @@ const Login = (props) => {
     // Set initial error values to empty
     setEmailError("");
     setPasswordError("");
+    navigate("/createUserInfo");
 
     // Check if the user has entered both fields correctly
     if ("" === email) {
@@ -60,9 +57,10 @@ const Login = (props) => {
           alt="SwoleMates Logo"
           style={{ width: "400px", height: "auto" }}
         />
-        <div>Log In</div>
+        <div>Create Account</div>
       </div>
       <br />
+      {/* Email Input */}
       <div className={"inputContainer"}>
         <input
           value={email}
@@ -73,6 +71,7 @@ const Login = (props) => {
         <label className="errorLabel">{emailError}</label>
       </div>
       <br />
+      {/* Password */}
       <div className={"inputContainer"}>
         <input
           value={password}
@@ -84,8 +83,8 @@ const Login = (props) => {
         <img
           src={showPassword ? HidePW : ShowPW} // Show or hide password icon based on showPassword state
           alt={showPassword ? "Hide Password" : "Show Password"}
-          onClick={togglePasswordVisibility} // Toggle password visibility when clicked
-          className="passwordLI"
+          onClick={togglePasswordVisibility}
+          className={"passwordSU"}
           style={{ cursor: "pointer" }}
         />
         <label className="errorLabel">{passwordError}</label>
@@ -96,18 +95,11 @@ const Login = (props) => {
           className={"inputButton"}
           type="button"
           onClick={onButtonClick}
-          value={"Log In"}
+          value={"Sign Up"}
         />
-      </div>
-      {/* Additional button to navigate to signup page */}
-      <div>
-        Don't have an account?
-        <button className="redUnderlineButton" onClick={navigateToSignUp}>
-          Sign Up
-        </button>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Signup;
