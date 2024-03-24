@@ -15,6 +15,12 @@ const Login = (props) => {
   }
 
   const onButtonClick = () => {
+    //    /*    enabled for testing purposes only
+    props.setLoggedIn(true)
+    props.setEmail(email)
+    navigate("/")
+    //    */
+
     // You'll update this function later...
     // Set initial error values to empty
     setEmailError('')
