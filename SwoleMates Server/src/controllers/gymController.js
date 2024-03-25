@@ -1,3 +1,7 @@
+const axios = require('axios'); //lester testing
+
+const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; //testing
+
 const Gym = require("../models/gym");
 
 exports.getAllGyms = async (req, res) => {
@@ -21,6 +25,60 @@ exports.getGym = async (req, res) => {
     }
 };
 
+
+
+async function findNearbyGyms(latitude, longitude) { //lester testing
+    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
+    const params = {
+        location: `${latitude},${longitude}`,
+        radius: 2000, // Search within 2km radius
+        type: 'gym',
+        key: GOOGLE_API_KEY
+    };
+
+    try {
+        const response = await axios.get(url, { params });
+        return response.data.results; // Returns array of gym locations
+    } catch (error) {
+        console.error("Error fetching nearby gyms: ", error);
+        throw error;
+    }
+};
+
+async function findAllGyms() { //lester testing
+    const locations = [{ latitude: SINGAPORE_LATITUDE, longitude: SINGAPORE_LONGTITUDE }];
+    const radius = 40000; 
+    const type = 'gym';
+
+    let allGyms = [];
+
+    for (let location of locations) {
+        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
+        const params = {
+            location: `${location.latitude},${location.longitude}`,
+            radius,
+            type,
+            key: GOOGLE_API_KEY
+        };
+
+        try {
+            const response = await axios.get(url, { params });
+            allGyms.push(...response.data.results);
+        } catch (error) {
+            console.error("Error fetching gyms: ", error);
+            throw error;
+        }
+    }
+
+    return allGyms;
+};
+
+
+
+module.exports={
+    findNearbyGyms,
+    findAllGyms
+}; //lester testing
 
 
 

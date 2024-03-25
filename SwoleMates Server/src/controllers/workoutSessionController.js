@@ -1,21 +1,50 @@
 const WorkoutSession = require("../models/workoutSession");
+const { findNearbyGyms } = require("../utils/googleMaps");
+const { findAllGyms } = require("../utils/googleMaps");
 
-exports.createWorkoutSession = async (req,res) => {
-    var name = req.body.name;
-    var date = req.body.date;
-    var startTime = req.body.startTime;
-    var coordinates = req.body.coordinates;
-    var duration = req.body.duration;
-    var slots = req.body.slots;
-    var host = req.body.host;
-    try{
-        const newWorkoutSession = new WorkoutSession({name, date, startTime, coordinates, duration, slots, host});
+// exports.createWorkoutSession = async (req,res) => {
+//     var name = req.body.name;
+//     var date = req.body.date;
+//     var startTime = req.body.startTime;
+//     var coordinates = req.body.coordinates;
+//     var duration = req.body.duration;
+//     var slots = req.body.slots;
+//     var host = req.body.host;
+//     try{
+//         const newWorkoutSession = new WorkoutSession({name, date, startTime, coordinates, duration, slots, host});
+//         await newWorkoutSession.save();
+//         res.status(201).send("Workout Session created successfully");
+//     }catch(error){
+//         res.status(500).send("Failed to create Workout Session: " + error.message);
+//     }
+// }
+
+//testing google maps api
+exports.createWorkoutSession = async (req, res) => {
+    const { name, date, startTime, coordinates, duration, slots, host } = req.body;
+
+    try {
+        if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
+            return res.status(400).send("Invalid or missing coordinates");
+        }
+
+        const newWorkoutSession = new WorkoutSession({
+            name, 
+            date, 
+            startTime, 
+            coordinates,
+            duration, 
+            slots, 
+            host
+        });
+
         await newWorkoutSession.save();
         res.status(201).send("Workout Session created successfully");
-    }catch(error){
+    } catch (error) {
         res.status(500).send("Failed to create Workout Session: " + error.message);
     }
-}
+};
+
 
 exports.getAllWorkoutSessions = async (req, res) => {
     try {
