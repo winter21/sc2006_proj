@@ -4,13 +4,20 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 
-const Home = (props) => {
+const Start = (props) => {
   const { loggedIn, email } = props;
   const navigate = useNavigate();
 
   const onButtonClick = () => {
     // You'll update this function later Done :)
-    navigate("/login");
+    //navigate("/login");
+    if (loggedIn) {
+      localStorage.removeItem("user")
+      props.setLoggedIn(false)
+      
+    } else {
+      navigate("/login")
+    }
   };
 
   return (
@@ -38,4 +45,4 @@ const Home = (props) => {
   );
 };
 
-export default Home;
+export default Start;
