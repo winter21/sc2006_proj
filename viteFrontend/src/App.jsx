@@ -1,10 +1,11 @@
 import { BrowserRouter, Route, Routes} from "react-router-dom";
-import Home from "./pages/home";
+import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import CreateUserInfo from "./pages/createUserInfo";
 import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
+import Home from "./pages/home";
 import "./App.css";
 import { useEffect, useState } from "react";
 
@@ -19,7 +20,7 @@ function App() {
           <Route
             path="/"
             element={
-              <Home
+              <Start
                 email={email}
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
@@ -43,6 +44,7 @@ function App() {
               </RequireAuth>
             }
           />
+          <Route path="/home" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>

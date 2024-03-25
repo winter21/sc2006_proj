@@ -33,6 +33,8 @@ const CreateUserInfo = (props) => {
     event.preventDefault();
     // Handle form submission here
     // Navigate page here too
+    // Navigate to the "home" page
+    navigate("/home");
   };
 
   const workoutInterestExamples = [
@@ -121,8 +123,7 @@ const CreateUserInfo = (props) => {
         <div className={"inputContainer"}>
           <input
             className={"inputButton"}
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
             value={"Next"}
           />
         </div>
