@@ -13,7 +13,7 @@ exports.createWorkoutSession = async (req,res) => {
         await newWorkoutSession.save();
         res.status(201).send("Workout Session created successfully");
     }catch(error){
-        res.status(500).send(error.message);
+        res.status(500).send("Failed to create Workout Session: " + error.message);
     }
 }
 
@@ -22,7 +22,7 @@ exports.getAllWorkoutSessions = async (req, res) => {
         const workoutSessions = await WorkoutSession.find();
         res.status(200).json(workoutSessions);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send("Failed to retrieve Workout Sessions: " + error.message);
     }
 };
 
@@ -34,7 +34,7 @@ exports.getWorkoutSession = async (req, res) => {
         }
         res.status(200).json(workoutSession);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send("Error retrieving Workout Session: " + error.message);
     }
 };
 
@@ -46,7 +46,7 @@ exports.updateWorkoutSession = async (req, res) => {
         }
         res.status(200).json(updatedWorkoutSession);
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send("Failed to update Workout Session: " + error.message);
     }
 };
 
@@ -58,6 +58,6 @@ exports.deleteWorkoutSession = async (req, res) => {
         }
         res.status(200).send("Workout session deleted successfully");
     } catch (error) {
-        res.status(500).send(error.message);
+        res.status(500).send("Failed to delete Workout Session: " + error.message);
     }
 };
