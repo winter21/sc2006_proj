@@ -1,5 +1,9 @@
 const Account = require("../models/account");
+const User = require("../models/user")
 const bcrypt = require("bcrypt")
+const jwt = require('jsonwebtoken')
+const nodemailer = require('nodemailer')
+const secret = "CooCooPioPio"
 
 //Create account with POST request
 exports.createAccount = async (req,res) => {
@@ -43,7 +47,7 @@ exports.login = async (req,res) => {
                 throw new Error("Wrong Login details")
             }
         }else{
-            throw new Error("Account Not Found")
+            throw new Error("Wrong Login details")
         }
     }catch(err){
         if(err.message == "Wrong Login details"){
@@ -51,13 +55,6 @@ exports.login = async (req,res) => {
                 type:"WrongLoginDetails",
                 status: 401,
                 message: "You have entered the wrong username/password"
-            })
-        }else if(err.message == "Account Not Found"){
-            console.log(err.message)
-            res.status(401).send({
-                type:"NoAccountFound",
-                status: 401,
-                message: "Account not found"
             })
         }else{
             res.status(500).send({
@@ -68,9 +65,90 @@ exports.login = async (req,res) => {
             })
         }
     }
-
 }
 
+
+exports.forgetPassword = async (req, res) => {
+    const email = req.body.email
+
+    try{
+        const user = await User.findOne({email: email})
+        if(!user){
+            throw new Error("Invalid Email")
+        }
+        const token  = await jwt.sign({_id: user._id}, secret, {
+            expiresIn:'10m'
+        })
+        
+        let url = "http://localhost:3000/change-password?token="+token
+        console.log(token)
+        
+        var mailOptions = {
+            from: "swolemates.auth.service@gmail.com",
+            to: user.email,
+            subject: 'Reset Password',
+            html: 'Hi, '+ user.name +
+            '<br>We got a request for reset password. Click on the link '+
+            '<a href=\''+ url+ '\'>here</a>'+
+            ' to reset your password<br><br>'+
+            '<br><br>If you did not send a request, ignore this email'
+        }
+
+
+        var transporter = await nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'swolemates.auth.service@gmail.com',
+                pass: 'fiim locs fwjz zmtq'
+            },
+        })
+
+        var result = await transporter.sendMail(mailOptions)
+        res.status(200).send(result)
+    }catch(err){
+        if(err.message == "Invalid Email"){
+            res.status(401).send({
+                type:"WrongEmail",
+                status: 401,
+                message: "You have entered the wrong email"
+            })
+        }else{
+            res.status(500).send({
+                type:"SendEmailError",
+                status: 500,
+                message: "Error Sending Email",
+                err: err.stack
+            })
+        }
+    }
+}
+
+exports.updatePassword = async (req, res) => {
+    const token = req.body.token;
+    try{
+        const authorised  = await jwt.verify(token, secret);
+        const account = await Account.findOne({user:authorised._id})
+        account.password = req.body.password
+        await account.save()
+        res.status(201).send(account)
+    }catch(err) {
+        if(err.message == "invalid signature" || err.message == "jwt expired"){
+            res.status(401).send({
+                type: "InvalidToken",
+                status: 401,
+                message: 'Authentication token invalid or expired.'
+            });
+        }else{
+            res.status(500).send({
+                type:"UpdatePasswordError",
+                status: 500,
+                message: "Error updating password",
+                err: err.stack
+            })
+
+        }
+    }
+}
 
 //Helper methods
 const checkPassword = (account, password) => {
