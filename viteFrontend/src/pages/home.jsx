@@ -6,7 +6,7 @@ const Home = (props) => {
     const navigate = useNavigate();
     
     return (
-    <p>Test</p>
+    <p>HOME</p>
     )
 }
 

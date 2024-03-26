@@ -6,6 +6,9 @@ import CreateUserInfo from "./pages/createUserInfo";
 import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
+import Onboarding1 from "./pages/onboardingPg1";
+import Onboarding2 from "./pages/onboardingPg2";
+import Onboarding3 from "./pages/onboardingPg3";
 import "./App.css";
 import { useEffect, useState } from "react";
 
@@ -45,6 +48,9 @@ function App() {
             }
           />
           <Route path="/home" element={<Home />} />
+          <Route path="/onboardingPg1" element={<Onboarding1 />} />
+          <Route path="/onboardingPg2" element={<Onboarding2 />} />
+          <Route path="/onboardingPg3" element={<Onboarding3 />} />
         </Routes>
       </BrowserRouter>
     </div>
