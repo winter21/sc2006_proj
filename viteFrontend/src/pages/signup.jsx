@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import ShowPW from "../assets/ShowPW.png";
 import HidePW from "../assets/HidePW.png";
+import axios from "axios";
 
 const Signup = (props) => {
   const [email, setEmail] = useState("");
@@ -46,6 +47,65 @@ const Signup = (props) => {
     }
 
     // Authentication calls will be made here...
+    handleSignup();
+  };
+  const handleSignup = async () => {
+    try {
+      // If user not logged in, make login request
+      //if (!authController.isAuthenticated()) {
+      // Check if email or password is null
+      //if (email === "" || password === "") {throw new Error("User not logged in")}
+
+      // Make login request to server
+      const res = await axios.post("http://localhost:3000/account/register", {
+        username: "test",
+        password: "pass",
+      });
+      /*fetch("http://localhost:3000/account/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: "test", password: "pass" }),
+      })
+        .then((r) => r.json())
+        .then((r) => {
+          if ("success" === r.message) {
+            localStorage.setItem(
+              "user",
+              JSON.stringify({ email, token: r.token })
+            );
+            props.setLoggedIn(true);
+            props.setEmail(email);
+            navigate("/");
+          } else {
+            window.alert("Wrong email or password");
+          }
+        });*/
+      console.log(res);
+      // Get JWT from backend
+      //const userJwt = JSON.parse(JSON.stringify(response.data.token));
+
+      // Store User JWT into local storage
+      //localStorage.setItem('token', JSON.stringify(userJwt));
+
+      //}
+
+      //setIsValidUser(true);
+      /*if (children) {
+        return (
+          <>
+            {children}
+            {reloadPage()}
+          </>
+        );
+      }
+      navigate("/dashboard");*/
+    } catch (error) {
+      if (error.res ? error.res.status : null === 401) {
+        console.log(error);
+      }
+    }
   };
 
   return (
