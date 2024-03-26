@@ -1,18 +1,25 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
+import DefaultAvatar from "../assets/Zenitsu.png"; 
 
 const CreateUserInfo = (props) => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
+  const [aboutme, setAboutMe] = useState("");
   const [interests, setInterests] = useState([]);
+  const [profilePicture, setProfilePicture] = useState(null);
+
+  const handleProfilePictureChange = (file) => {
+    setProfilePicture(file); // Update the profile picture state
+  };
 
   const handleNameChange = (event) => {
     setName(event.target.value);
   };
-
+  /*const [email, setEmail] = useState("");*/
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -20,6 +27,10 @@ const CreateUserInfo = (props) => {
   const handleGenderChange = (event) => {
     setGender(event.target.value);
   };
+
+  const handleAboutMe = (event) => {
+    setAboutMe(event.target.value);
+  }
 
   const handleInterestChange = (interest) => {
     if (!interests.includes(interest)) {
@@ -61,19 +72,69 @@ const CreateUserInfo = (props) => {
           alt="SwoleMates Logo"
           style={{ width: "400px", height: "auto" }}
         />
-        <div>Tell us about yourself!</div>
+        <div>Your Profile</div>
       </div>
       <br />
 
-      {/* Input for Name */}
+      {/*Input for Profile Picture*/}
+      <div>Profile Picture</div>
+      <br />
       <div className={"inputContainer"}>
+        {profilePicture ? (
+          <img
+            src={URL.createObjectURL(profilePicture)}
+            alt="Profile"
+            style={{ margin: "auto", width: "150px", height: "150px", borderRadius: "50%", border: "8px solid #ccc"}}
+          />
+        ) : (
+          <img
+            src={DefaultAvatar}
+            alt="Default Avatar"
+            style={{ margin: "auto", width: "150px", height: "150px", borderRadius: "50%", border: "8px solid #ccc" }}
+
+          />
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(event) =>
+            handleProfilePictureChange(event.target.files[0])
+          }
+          className={"inputBox"}
+        />
+      </div>
+      <br />
+      {/* Input for Name */}
+      <div>Name</div>
+      <div className={"inputContainer"}>
+        <input
+          value={name}
+          placeholder="Zenitsu"
+          onChange={handleNameChange}
+          className={"inputBox"}
+        />
+      </div>
+      <br />
+
+      {/*<div className={"inputContainer"}>
         <label htmlFor="name">Name:</label>
         <input type="text" id="name" value={name} onChange={handleNameChange} />
       </div>
-      <br />
+  <br />*/}
 
       {/* Input for Email */}
+      <div>Email</div>
       <div className={"inputContainer"}>
+        <input
+          value={email}
+          placeholder="Enter your email here"
+          onChange={handleEmailChange}
+          className={"inputBox"}
+        />
+      </div>
+      <br />
+
+      {/*<div className={"inputContainer"}>
         <label htmlFor="email">Email:</label>
         <input
           type="email"
@@ -82,17 +143,24 @@ const CreateUserInfo = (props) => {
           onChange={handleEmailChange}
         />
       </div>
+      <br />*/}
+
+      <div>About Me!</div>
+      <div className={"inputContainer"}>
+      <textarea
+        value={aboutme}
+        placeholder="Tell us about yourself..."
+        onChange={handleAboutMe}
+        className={"inputBox"}
+        style={{fontFamily: "sans-serif", height: "120px"}}
+        />
+      </div>
       <br />
-
-      {/* Horizontal Line */}
-      <hr />
-
-      <p>About Me!</p>
 
       {/*Dropdown for Gender*/}
       <form onSubmit={handleSubmit}>
+      <div style={{textAlign: "center"}}>Gender:</div>
         <div className={"inputContainer"}>
-          <label htmlFor="Gender">Gender:</label>
           <select id="Gender" value={gender} onChange={handleGenderChange}>
             <option value="">Select Gender</option>
             <option value="Male">Male</option>
@@ -102,7 +170,7 @@ const CreateUserInfo = (props) => {
         </div>
         <br />
 
-        <div>Workout Interests:</div>
+        <div style={{textAlign: "center"}}>Workout Interests:</div>
         <br />
         <div className={"interestsContainer"}>
           {workoutInterestExamples.map((interest, index) => (

@@ -1,6 +1,6 @@
 const WorkoutSession = require("../models/workoutSession");
-const { findNearbyGyms } = require("../utils/googleMaps");
-const { findAllGyms } = require("../utils/googleMaps");
+const { findNearbyGyms } = require("../controllers/gymController");
+const { findAllGyms } = require("../controllers/gymController");
 
 // exports.createWorkoutSession = async (req,res) => {
 //     var name = req.body.name;

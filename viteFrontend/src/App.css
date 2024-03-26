@@ -4,7 +4,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .titleContainer {
@@ -78,13 +78,6 @@
   text-decoration: none;
 }
 
-/* Styles for the horizontal line in createUserInfo */
-hr {
-  border-top: 2px solid red;
-  width: 100%;
-  margin: 0 auto;
-}
-
 /* createUserInfo Workout Eg */
 .interestsContainer {
   display: grid;
@@ -117,7 +110,8 @@ hr {
     background-color: #f9f9f9;
     width: 200px; /* Adjust width as needed */
     cursor: pointer; /* Show pointer cursor on hover */
-}
+    margin: 0 auto; /* Center horizontally */
+  }
 
 .passwordLI{
   position: relative; /* Set position to relative */

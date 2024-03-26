@@ -27,7 +27,7 @@ exports.getGym = async (req, res) => {
 
 
 
-async function findNearbyGyms(latitude, longitude) { //lester testing
+exports.findNearbyGyms = async function (latitude, longitude) { //lester testing
     const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
     const params = {
         location: `${latitude},${longitude}`,
@@ -45,7 +45,7 @@ async function findNearbyGyms(latitude, longitude) { //lester testing
     }
 };
 
-async function findAllGyms() { //lester testing
+exports.findAllGyms = async function () { //lester testing
     const locations = [{ latitude: SINGAPORE_LATITUDE, longitude: SINGAPORE_LONGTITUDE }];
     const radius = 40000; 
     const type = 'gym';
@@ -74,11 +74,6 @@ async function findAllGyms() { //lester testing
 };
 
 
-
-module.exports={
-    findNearbyGyms,
-    findAllGyms
-}; //lester testing
 
 
 
