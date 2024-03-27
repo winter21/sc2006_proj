@@ -5,18 +5,17 @@ import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 
 const Start = (props) => {
-  const { loggedIn, email } = props;
+  const { loggedIn, username } = props;
   const navigate = useNavigate();
 
   const onButtonClick = () => {
     // You'll update this function later Done :)
     //navigate("/login");
     if (loggedIn) {
-      localStorage.removeItem("user")
-      props.setLoggedIn(false)
-      
+      localStorage.removeItem("user");
+      props.setLoggedIn(false);
     } else {
-      navigate("/login")
+      navigate("/login");
     }
   };
 
@@ -39,7 +38,7 @@ const Start = (props) => {
           onClick={onButtonClick}
           value={loggedIn ? "Log Out" : "Log In"}
         />
-        {loggedIn ? <div>Your email address is {email}</div> : <div />}
+        {loggedIn ? <div>Your username is {username}</div> : <div />}
       </div>
     </div>
   );

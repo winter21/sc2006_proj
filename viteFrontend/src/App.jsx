@@ -43,7 +43,10 @@ function App() {
               <Signup setLoggedIn={setLoggedIn} setUsername={setUsername} />
             }
           />
-          <Route path="/createUserInfo" element={<CreateUserInfo />} />
+          <Route
+            path="/createUserInfo"
+            element={<CreateUserInfo username={username} />}
+          />
           <Route
             path="/protected"
             element={

@@ -62,6 +62,7 @@ const Signup = (props) => {
       });
       try {
         //function to initialise empty user template
+        props.setUsername(username);
         navigate("/createUserInfo");
       } catch (err) {}
 
