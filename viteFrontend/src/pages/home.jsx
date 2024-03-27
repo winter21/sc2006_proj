@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
+import Navbar from "../components/Navbar";
 
 const Home = (props) => {
     const navigate = useNavigate();
     
     return (
-    <p>HOME</p>
+        <div>
+            <Navbar />
+            <p>HOME</p>
+        </div>
     )
 }
 
