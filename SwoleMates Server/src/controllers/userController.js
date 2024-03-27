@@ -34,6 +34,8 @@ exports.createUser = async (req, res) => {
     const email = req.body.email;
     const name = req.body.name;
     const aboutMe = req.body.aboutMe;
+    const gender = req.body.gender;
+    const interest = req.body.interest;
     const accountID = req.body.accountID;
 
     try{
@@ -45,7 +47,7 @@ exports.createUser = async (req, res) => {
         if(oneUser){
             throw new Error("Duplicate email")
         }
-        const newUser = new User({email, name, aboutMe})
+        const newUser = new User({email, name, gender, aboutMe, interest})
         await newUser.save()
         console.log(newUser._id)
         currentAccount.user = newUser._id

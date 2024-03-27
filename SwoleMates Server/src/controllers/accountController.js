@@ -16,7 +16,7 @@ exports.createAccount = async (req,res) => {
         }
         const newAccount = new Account({username, password})
         await newAccount.save()
-        res.status(201).send("User registered successfully")
+        res.status(201).send(newAccount)
     }catch(err){
         if(err.message == "Duplicate username"){
             res.status(409).send({
