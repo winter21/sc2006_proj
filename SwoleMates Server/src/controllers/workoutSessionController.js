@@ -21,7 +21,7 @@ const { findAllGyms } = require("../controllers/gymController");
 
 //testing google maps api
 exports.createWorkoutSession = async (req, res) => {
-    const { name, date, startTime, coordinates, duration, slots, host } = req.body;
+    const { name, date, coordinates, duration, slots, host } = req.body;
 
     try {
         if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
@@ -31,7 +31,6 @@ exports.createWorkoutSession = async (req, res) => {
         const newWorkoutSession = new WorkoutSession({
             name, 
             date, 
-            startTime, 
             coordinates,
             duration, 
             slots, 

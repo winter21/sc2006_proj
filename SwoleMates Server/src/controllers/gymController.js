@@ -1,6 +1,6 @@
 const axios = require('axios'); //lester testing
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; //testing
+const GOOGLEMAP_API_KEY = process.env.GOOGLE_API_KEY; //testing
 
 const Gym = require("../models/gym");
 
@@ -33,13 +33,16 @@ exports.findNearbyGyms = async function (latitude, longitude) { //lester testing
         location: `${latitude},${longitude}`,
         radius: 2000, // Search within 2km radius
         type: 'gym',
-        key: GOOGLE_API_KEY
+        key: GOOGLEMAP_API_KEY
     };
+
+    console.log(params);
 
     try {
         const response = await axios.get(url, { params });
         return response.data.results; // Returns array of gym locations
     } catch (error) {
+        console.log(error.stack);
         console.error("Error fetching nearby gyms: ", error);
         throw error;
     }
@@ -58,7 +61,7 @@ exports.findAllGyms = async function () { //lester testing
             location: `${location.latitude},${location.longitude}`,
             radius,
             type,
-            key: GOOGLE_API_KEY
+            key: GOOGLEMAP_API_KEY
         };
 
         try {
