@@ -7,7 +7,7 @@ const multer = require('../middlewares/multer');
 router.get("/:userId", userController.getOneUser)
 
 //POST method to create 1 new user
-router.post("/", userController.createUser)
+router.post("/", multer.single('photo'), userController.createUser)
 
 //PUT method to update 1 user details
 router.put("/:userId", userController.updateUser)

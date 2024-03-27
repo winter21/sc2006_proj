@@ -35,9 +35,12 @@ exports.createUser = async (req, res) => {
     const name = req.body.name;
     const aboutMe = req.body.aboutMe;
     const gender = req.body.gender;
-    const interest = req.body.interest;
+    const tempInterest = req.body.interest;
     const accountID = req.body.accountID;
-
+    const tempPath = req.file.path
+    const folderName = req.body.type + '/'
+    const fileName = req.file.filename
+    const interest = tempInterest[0].split(',')
     try{
         const oneUser = await User.findOne({email: email})
         const currentAccount = await Account.findOne({_id: accountID})
@@ -48,12 +51,15 @@ exports.createUser = async (req, res) => {
             throw new Error("Duplicate email")
         }
         const newUser = new User({email, name, gender, aboutMe, interest})
+        const picturePath = await moveImageFromTemp(tempPath, folderName, fileName)
+        newUser.profilePicture = picturePath
         await newUser.save()
         console.log(newUser._id)
         currentAccount.user = newUser._id
         await currentAccount.save()
         res.status(201).send(newUser)
     }catch(err){
+        await deleteImage(tempPath)
         if(err.message == "Duplicate email"){
             res.status(409).send({
                 type:"UserExist",
@@ -112,25 +118,20 @@ exports.updateProfilePicture = async (req, res) => {
         if (!req.file) {
             throw new Error("No Image File")
         }
-
-        const tempUrl = req.file.path
         const id = req.params.userId
-        const folderName = req.body.type + '/'
-      
         const user = await User.findById(id)
         if(!user){
             throw new Error("No such User")
         }
-        if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName);
-        }
-        const pictureUrl = folderName + req.file.filename
-        await fs.move(tempUrl,pictureUrl)
-        user.profilePicture = pictureUrl;
+        const tempPath = req.file.path
+        const folderName = req.body.type + '/'
+        const picturePath = await moveImageFromTemp(tempPath, folderName, fileName)
+
+
+        user.profilePicture = picturePath;
         await user.save();
         res.status(200).send(user);
     } catch (err) {
-        console.log(err.message + "testtest")
         if(err.message == "No Image File"){
             res.status(400).send({
                 type:"NoImageFile",
@@ -152,4 +153,17 @@ exports.updateProfilePicture = async (req, res) => {
             })
         }
     }
+}
+
+const moveImageFromTemp = async (tempPath, folderName, fileName) => { 
+    if (!fs.existsSync(folderName)) {
+        fs.mkdirSync(folderName);
+    }
+    const picturePath = folderName + fileName
+    await fs.move(tempPath,picturePath)
+    return picturePath;
+}
+
+const deleteImage = async (path) => {
+    fs.unlink(path)
 }
