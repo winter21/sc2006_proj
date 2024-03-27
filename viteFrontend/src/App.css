@@ -144,7 +144,7 @@
   display: flex;
   align-items: center;
   width: 100%;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); /* Add drop shadow */
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); /* Add drop shadow */
   padding: 5px;
 }
 
@@ -166,6 +166,7 @@
   text-decoration: none;
   color: black; /* Change the color as needed */
   margin: 0 10px; /* Adjust the spacing between navigation items */
+  align-items: center; /* Align the content vertically */
 }
 
 .links a:hover {
@@ -179,10 +180,10 @@
 }
 
 .links img.create-session-img {
-  width: 40px; /* Adjust the width as needed */
+  width: 41px; /* Adjust the width as needed */
   height: auto; /* Allow the height to adjust proportionally */
+  margin-top: 2px;
 }
-
 
 /*
 #root {
