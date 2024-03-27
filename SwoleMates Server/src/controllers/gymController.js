@@ -1,17 +1,33 @@
-const axios = require('axios'); //lester testing
-
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY; //testing
-
 const Gym = require("../models/gym");
+
+// exports.getAllGyms = async (req, res) => {
+//     try {
+//         const gyms = await Gym.find();
+//         res.status(200).json(gyms);
+//     } catch (error) {
+//         res.status(500).send(error.message);
+//     }
+// };
+
+const axios = require('axios');
 
 exports.getAllGyms = async (req, res) => {
     try {
-        const gyms = await Gym.find();
+        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=1.3521%2C103.8198&radius=35000&type=gym&key=AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY`);
+
+        const gyms = response.data.results.map(gym => ({
+            name: gym.name,
+            location: gym.geometry.location,
+            // Add other details if you need
+        }));
+
         res.status(200).json(gyms);
     } catch (error) {
+        console.error('Error fetching gym locations:', error);
         res.status(500).send(error.message);
     }
 };
+
 
 exports.getGym = async (req, res) => {
     try {
@@ -25,53 +41,6 @@ exports.getGym = async (req, res) => {
     }
 };
 
-
-
-exports.findNearbyGyms = async function (latitude, longitude) { //lester testing
-    const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
-    const params = {
-        location: `${latitude},${longitude}`,
-        radius: 2000, // Search within 2km radius
-        type: 'gym',
-        key: GOOGLE_API_KEY
-    };
-
-    try {
-        const response = await axios.get(url, { params });
-        return response.data.results; // Returns array of gym locations
-    } catch (error) {
-        console.error("Error fetching nearby gyms: ", error);
-        throw error;
-    }
-};
-
-exports.findAllGyms = async function () { //lester testing
-    const locations = [{ latitude: SINGAPORE_LATITUDE, longitude: SINGAPORE_LONGTITUDE }];
-    const radius = 40000; 
-    const type = 'gym';
-
-    let allGyms = [];
-
-    for (let location of locations) {
-        const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json`;
-        const params = {
-            location: `${location.latitude},${location.longitude}`,
-            radius,
-            type,
-            key: GOOGLE_API_KEY
-        };
-
-        try {
-            const response = await axios.get(url, { params });
-            allGyms.push(...response.data.results);
-        } catch (error) {
-            console.error("Error fetching gyms: ", error);
-            throw error;
-        }
-    }
-
-    return allGyms;
-};
 
 
 

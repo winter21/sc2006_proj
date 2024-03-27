@@ -16,6 +16,15 @@
   justify-content: center;
 }
 
+.onboardingContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
 .resultContainer,
 .historyItem {
   flex-direction: row;
@@ -128,6 +137,54 @@
   width: 30px;
   height:auto
 }
+
+/*For Nav Bar*/
+
+.navbar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.3); /* Add drop shadow */
+  padding: 5px;
+}
+
+.logo {
+  margin-right: 20px; /* Adjust the spacing between the logo and the links */
+}
+
+.links {
+  display: flex;
+  flex-grow: 1; /* Allow the links to grow and take up remaining space */
+  justify-content: space-evenly; /* Align the links to the right */
+}
+
+.links a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: black; /* Change the color as needed */
+  margin: 0 10px; /* Adjust the spacing between navigation items */
+  align-items: center; /* Align the content vertically */
+}
+
+.links a:hover {
+  text-decoration: underline;
+  transform: scale(1.1); /* Increase the size by 10% */
+}
+
+.links img {
+  width: 50px; /* Adjust the image size as needed */
+  height: auto;
+}
+
+.links img.create-session-img {
+  width: 41px; /* Adjust the width as needed */
+  height: auto; /* Allow the height to adjust proportionally */
+  margin-top: 2px;
+}
+
 /*
 #root {
   max-width: 1280px;

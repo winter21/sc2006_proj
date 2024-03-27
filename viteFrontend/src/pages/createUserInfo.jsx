@@ -45,7 +45,7 @@ const CreateUserInfo = (props) => {
     // Handle form submission here
     // Navigate page here too
     // Navigate to the "home" page
-    navigate("/home");
+    navigate("/onboardingPg1");
   };
 
   const workoutInterestExamples = [
