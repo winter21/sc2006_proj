@@ -8,8 +8,5 @@ router.get("/",gymController.getAllGyms);
 //GET method to get one gym
 router.get("/:id",gymController.getGym);
 
-//lester testing
-router.get("/nearbyGyms",gymController.findNearbyGyms);
-router.get("/allGyms",gymController.findAllGyms);
 
 module.exports = router;

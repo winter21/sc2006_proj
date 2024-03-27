@@ -1,6 +1,4 @@
 const WorkoutSession = require("../models/workoutSession");
-const { findNearbyGyms } = require("../controllers/gymController");
-const { findAllGyms } = require("../controllers/gymController");
 
 // exports.createWorkoutSession = async (req,res) => {
 //     var name = req.body.name;
@@ -19,19 +17,28 @@ const { findAllGyms } = require("../controllers/gymController");
 //     }
 // }
 
-//testing google maps api
+//testing google geocoding api
 exports.createWorkoutSession = async (req, res) => {
-    const { name, date, coordinates, duration, slots, host } = req.body;
+    const { name, date, coordinates, address, duration, slots, host } = req.body;
 
     try {
         if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
             return res.status(400).send("Invalid or missing coordinates");
         }
 
+        // Call Google Geocoding API to convert coordinates to an address
+        const googleMapsApiKey = 'AIzaSyCkP7kR9t6Lz89JdBUQcrCIZ3gXDatrbZ0'; // Replace with your API Key
+        const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=${'AIzaSyCkP7kR9t6Lz89JdBUQcrCIZ3gXDatrbZ0'}`;
+        
+        const geocodeResponse = await axios.get(googleGeocodeUrl);
+        const address = geocodeResponse.data.results[0]?.formatted_address;
+
+        // Include address in your workout session, if needed
         const newWorkoutSession = new WorkoutSession({
             name, 
-            date, 
+            date,
             coordinates,
+            address: address, 
             duration, 
             slots, 
             host
