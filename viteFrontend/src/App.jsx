@@ -9,6 +9,7 @@ import Home from "./pages/home";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
+import Navbar from "./components/navBar";
 import "./App.css";
 import { useEffect, useState } from "react";
 
@@ -47,8 +48,15 @@ function App() {
               </RequireAuth>
             }
           />
-          <Route path="/home" element={<Home />} />
-          <Route path="/onboardingPg1" element={<Onboarding1 />} />
+          <Route
+            path="/home"
+            element={
+              <>
+                <Navbar />
+                <Home />
+              </>
+            }
+          />          <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
         </Routes>
