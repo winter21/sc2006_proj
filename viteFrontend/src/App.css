@@ -16,6 +16,15 @@
   justify-content: center;
 }
 
+.onboardingContainer {
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
 .resultContainer,
 .historyItem {
   flex-direction: row;

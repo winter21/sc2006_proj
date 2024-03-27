@@ -12,7 +12,9 @@ const Onboarding3 = (props) => {
 
     return (
         <div>
-            <p>test3</p>
+            <div className={"onboardingContainer"}>
+                <div>Connect with like-minded individuals</div>
+            </div>
             <div className={"inputContainer"}>
             <input
             className={"inputButton"}
