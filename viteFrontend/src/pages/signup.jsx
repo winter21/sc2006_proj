@@ -6,9 +6,9 @@ import HidePW from "../assets/HidePW.png";
 import axios from "axios";
 
 const Signup = (props) => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to track password visibility
 
@@ -21,18 +21,22 @@ const Signup = (props) => {
   const onButtonClick = () => {
     // You'll update this function later...
     // Set initial error values to empty
-    setEmailError("");
+    setUsernameError("");
     setPasswordError("");
-    navigate("/createUserInfo");
 
     // Check if the user has entered both fields correctly
-    if ("" === email) {
-      setEmailError("Please enter your email");
+    if ("" === username) {
+      setUsernameError("Please enter your username");
       return;
     }
-
+    /*
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailError("Please enter a valid email");
+      return;
+    }
+*/
+    if (username.length > 50) {
+      setUsernameError("Username must be less than 50 characters");
       return;
     }
 
@@ -47,27 +51,25 @@ const Signup = (props) => {
     }
 
     // Authentication calls will be made here...
+    if (!usernameError === "" && !passwordError === "") return;
     handleSignup();
   };
   const handleSignup = async () => {
     try {
+      const res = await axios.post("http://localhost:3000/account/register", {
+        username: username,
+        password: password,
+      });
+      try {
+        //function to initialise empty user template
+        navigate("/createUserInfo");
+      } catch (err) {}
+
       // If user not logged in, make login request
       //if (!authController.isAuthenticated()) {
       // Check if email or password is null
       //if (email === "" || password === "") {throw new Error("User not logged in")}
-
-      // Make login request to server
-      const res = await axios.post("http://localhost:3000/account/register", {
-        username: "test",
-        password: "pass",
-      });
-      /*fetch("http://localhost:3000/account/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email: "test", password: "pass" }),
-      })
+      /*
         .then((r) => r.json())
         .then((r) => {
           if ("success" === r.message) {
@@ -82,29 +84,29 @@ const Signup = (props) => {
             window.alert("Wrong email or password");
           }
         });*/
+      console.log("account created");
       console.log(res);
-      // Get JWT from backend
-      //const userJwt = JSON.parse(JSON.stringify(response.data.token));
-
-      // Store User JWT into local storage
-      //localStorage.setItem('token', JSON.stringify(userJwt));
-
-      //}
-
-      //setIsValidUser(true);
-      /*if (children) {
-        return (
-          <>
-            {children}
-            {reloadPage()}
-          </>
-        );
-      }
-      navigate("/dashboard");*/
     } catch (error) {
-      if (error.res ? error.res.status : null === 401) {
-        console.log(error);
+      if (error.response && error.response.status === 409) {
+        // Handle 409 Conflict error
+        console.error("409 Conflict:", error.response.data);
+        setUsernameError(
+          "Account with same username already exists! Try another username"
+        );
+      } else if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Server responded with status:", error.response.status);
+        console.error("Response data:", error.response.data);
+        console.error("Response headers:", error.response.headers);
+        window.alert(error.response.data.message);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error.request);
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.error("Error setting up the request:", error.message);
       }
+      // Handle error
     }
   };
 
@@ -120,15 +122,15 @@ const Signup = (props) => {
         <div>Create Account</div>
       </div>
       <br />
-      {/* Email Input */}
+      {/* Username Input */}
       <div className={"inputContainer"}>
         <input
-          value={email}
-          placeholder="Enter your email here"
-          onChange={(ev) => setEmail(ev.target.value)}
+          value={username}
+          placeholder="Enter your username here"
+          onChange={(ev) => setUsername(ev.target.value)}
           className={"inputBox"}
         />
-        <label className="errorLabel">{emailError}</label>
+        <label className="errorLabel">{usernameError}</label>
       </div>
       <br />
       {/* Password */}

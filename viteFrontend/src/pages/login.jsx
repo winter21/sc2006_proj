@@ -22,13 +22,13 @@ const Login = (props) => {
   };
 
   const onButtonClick = () => {
-    /*    disable for testing purposes --- added by KX
-    props.setLoggedIn(true)
-    props.setEmail(email)
-    localStorage.setItem("user", JSON.stringify({email}))//, token: r.token}))
-    navigate("/protected")
+    ///*    disable for testing purposes --- added by KX
+    props.setLoggedIn(true);
+    props.setEmail(email);
+    localStorage.setItem("user", JSON.stringify({ email })); //, token: r.token}))
+    navigate("/protected");
     //navigate("/")
-    */
+    //*/
     // You'll update this function later...
     // Set initial error values to empty
     setEmailError("");

@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes} from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -11,11 +11,11 @@ import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
 
   return (
     <div className="App">
@@ -25,7 +25,7 @@ function App() {
             path="/"
             element={
               <Start
-                email={email}
+                username={username}
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
               />
@@ -33,17 +33,21 @@ function App() {
           />
           <Route
             path="/login"
-            element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />}
+            element={
+              <Login setLoggedIn={setLoggedIn} setUsername={setUsername} />
+            }
           />
           <Route
             path="/signup"
-            element={<Signup setLoggedIn={setLoggedIn} setEmail={setEmail} />}
+            element={
+              <Signup setLoggedIn={setLoggedIn} setUsername={setUsername} />
+            }
           />
           <Route path="/createUserInfo" element={<CreateUserInfo />} />
           <Route
             path="/protected"
             element={
-              <RequireAuth loggedIn={loggedIn} email={email}>
+              <RequireAuth loggedIn={loggedIn} username={username}>
                 <ProtectedPage />
               </RequireAuth>
             }
