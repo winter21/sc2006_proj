@@ -6,6 +6,7 @@ import CreateUserInfo from "./pages/createUserInfo";
 import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
+import CreateSession from "./pages/CreateSession";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
@@ -48,6 +49,7 @@ function App() {
             }
           />
           <Route path="/home" element={<Home />} />
+          <Route path="/CreateSession" element={<CreateSession />} />
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
