@@ -73,9 +73,9 @@ const CreateUserInfo = (props) => {
           alt="SwoleMates Logo"
           style={{ width: "400px", height: "auto" }}
         />
-        <div style={{ color: "red" }}>
+        <p style={{ color: "red", textAlign: "center" }}>
           Account with username "{username}" successfully created
-        </div>
+        </p>
         <div>Your Profile</div>
       </div>
       <br />
