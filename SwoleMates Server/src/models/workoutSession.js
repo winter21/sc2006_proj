@@ -37,6 +37,23 @@ const workoutSessionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Host cannot be empty"]
+    },
+    interest:{
+        type: [String],
+        enum: [
+            "Weightlifting",
+            "Running",
+            "Yoga",
+            "Cycling",
+            "Swimming",
+            "HIIT",
+            "Pilates",
+            "Boxing",
+            "CrossFit",
+            "Dance",
+            "Hiking",
+            "Rowing",
+          ]
     }
 
 })

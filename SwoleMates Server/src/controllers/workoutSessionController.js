@@ -19,7 +19,7 @@ const WorkoutSession = require("../models/workoutSession");
 
 //testing google geocoding api
 exports.createWorkoutSession = async (req, res) => {
-    const { name, date, coordinates, address, duration, slots, host } = req.body;
+    const { name, date, coordinates, address, duration, slots, host, interest } = req.body;
 
     try {
         if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
@@ -41,7 +41,8 @@ exports.createWorkoutSession = async (req, res) => {
             address: address, 
             duration, 
             slots, 
-            host
+            host,
+            interest
         });
 
         await newWorkoutSession.save();

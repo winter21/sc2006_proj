@@ -61,7 +61,7 @@ const Navbar = () => {
             <img src={Explore} alt="Explore" />
             Explore
           </Link>
-          <Link to="/createUserSession">
+          <Link to="/createSession">
             <img src={CreateSession} alt="Create Session" className="create-session-img" />
             Create Session
           </Link>
