@@ -24,7 +24,20 @@ const UserSchema = new Schema ({
     },
     interest: {
         type: [String],
-        enum: ["POWERLIFTING", "CARDIO TRAINING", "YOGA", "HITT", "LINE DANCING", "RUNNING"]
+        enum: [
+            "Weightlifting",
+            "Running",
+            "Yoga",
+            "Cycling",
+            "Swimming",
+            "HIIT",
+            "Pilates",
+            "Boxing",
+            "CrossFit",
+            "Dance",
+            "Hiking",
+            "Rowing",
+          ]
     }
 })
 

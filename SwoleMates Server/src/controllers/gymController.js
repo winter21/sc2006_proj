@@ -12,21 +12,47 @@ const Gym = require("../models/gym");
 const axios = require('axios');
 
 exports.getAllGyms = async (req, res) => {
+    const fetchGyms = async (token = '', allGyms = []) => {
+        try {
+            const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json`, {
+                params: {
+                    location: '1.3521,103.8198',
+                    radius: 50000,
+                    type: 'gym',
+                    key: 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY', 
+                    pagetoken: token
+                }
+            });
+
+            const gyms = response.data.results.map(gym => ({
+                name: gym.name,
+                location: gym.geometry.location,
+            }));
+
+            allGyms.push(...gyms);
+
+            
+            if (response.data.next_page_token && allGyms.length < 500) {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                return fetchGyms(response.data.next_page_token, allGyms);
+            }
+
+            return allGyms;
+        } catch (error) {
+            throw error;
+        }
+    };
+
     try {
-        const response = await axios.get(`https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=1.3521%2C103.8198&radius=35000&type=gym&key=AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY`);
-
-        const gyms = response.data.results.map(gym => ({
-            name: gym.name,
-            location: gym.geometry.location,
-            // Add other details if you need
-        }));
-
+        const gyms = await fetchGyms();
         res.status(200).json(gyms);
     } catch (error) {
         console.error('Error fetching gym locations:', error);
         res.status(500).send(error.message);
     }
 };
+
+
 
 
 exports.getGym = async (req, res) => {

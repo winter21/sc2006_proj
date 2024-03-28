@@ -11,19 +11,24 @@ const Onboarding3 = (props) => {
     };
 
     return (
+<div>          
+    <div className={"onboardingContainer"}>
         <div>
-            <div className={"onboardingContainer"}>
-                <div>Connect with like-minded individuals</div>
-            </div>
-            <div className={"inputContainer"}>
-            <input
+            <span style={{ color: "red", display: "contents" }}>Connect</span> with like-minded individuals
+        </div>
+    </div>
+    <br />
+    
+    <div className={"inputContainer"}>
+        <input
             className={"inputButton"}
             type="button"
             onClick={onButtonClick}
             value={"Next"}
-            />
-            </div>
-        </div>
+        />
+    </div>
+</div>
+
     );
 
 }

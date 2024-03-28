@@ -1,4 +1,5 @@
 const WorkoutSession = require("../models/workoutSession");
+const axios = require('axios');
 
 // exports.createWorkoutSession = async (req,res) => {
 //     var name = req.body.name;
@@ -17,40 +18,46 @@ const WorkoutSession = require("../models/workoutSession");
 //     }
 // }
 
-//testing google geocoding api
 exports.createWorkoutSession = async (req, res) => {
-    const { name, date, coordinates, address, duration, slots, host } = req.body;
+    const { name, date, address, duration, slots, host, interest } = req.body;
 
     try {
-        if (!coordinates || !coordinates.latitude || !coordinates.longitude) {
-            return res.status(400).send("Invalid or missing coordinates");
+        if (!address) {
+            return res.status(400).send("Address is required");
         }
 
-        // Call Google Geocoding API to convert coordinates to an address
-        const googleMapsApiKey = 'AIzaSyCkP7kR9t6Lz89JdBUQcrCIZ3gXDatrbZ0'; // Replace with your API Key
-        const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coordinates.latitude},${coordinates.longitude}&key=${'AIzaSyCkP7kR9t6Lz89JdBUQcrCIZ3gXDatrbZ0'}`;
+        // Call Google Geocoding API to convert address to coordinates
+        const googleMapsApiKey = 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY'; 
+        const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${googleMapsApiKey}`;
         
         const geocodeResponse = await axios.get(googleGeocodeUrl);
-        const address = geocodeResponse.data.results[0]?.formatted_address;
+        if (geocodeResponse.data.status !== 'OK' || !geocodeResponse.data.results[0]) {
+            return res.status(404).send("Address not found");
+        }
 
-        // Include address in your workout session, if needed
+        const coordinates = geocodeResponse.data.results[0].geometry.location;
+
+        // Create a new WorkoutSession with the obtained coordinates
         const newWorkoutSession = new WorkoutSession({
             name, 
             date,
-            coordinates,
-            address: address, 
+            coordinates: { 
+                latitude: coordinates.lat,
+                longitude: coordinates.lng
+            },
             duration, 
             slots, 
-            host
+            host,
+            interest
         });
 
         await newWorkoutSession.save();
         res.status(201).send("Workout Session created successfully");
     } catch (error) {
+        console.error('Failed to create Workout Session:', error);
         res.status(500).send("Failed to create Workout Session: " + error.message);
     }
 };
-
 
 exports.getAllWorkoutSessions = async (req, res) => {
     try {

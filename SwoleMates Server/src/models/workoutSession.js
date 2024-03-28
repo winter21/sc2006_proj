@@ -12,13 +12,13 @@ const workoutSessionSchema = new Schema({
         required: [true, "Date cannot be empty"]
     },
     coordinates: {
-        longitude:{
-            type: Number,
-            required: [true, "Longtitude cannot be empty"]
-        },
         latitude:{
             type: Number,
             required: [true, "Latitude cannot be empty"]
+        },
+        longitude:{
+            type: Number,
+            required: [true, "Longtitude cannot be empty"]
         }
     },
     duration: {
@@ -37,6 +37,23 @@ const workoutSessionSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Host cannot be empty"]
+    },
+    interest:{
+        type: [String],
+        enum: [
+            "Weightlifting",
+            "Running",
+            "Yoga",
+            "Cycling",
+            "Swimming",
+            "HIIT",
+            "Pilates",
+            "Boxing",
+            "CrossFit",
+            "Dance",
+            "Hiking",
+            "Rowing",
+          ]
     }
 
 })

@@ -6,11 +6,15 @@ import CreateUserInfo from "./pages/createUserInfo";
 import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
+import Explore from "./pages/explore";
 import CreateSession from "./pages/CreateSession";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
 import RequestPasswordReset from "./pages/RequestPasswordReset";
+import Profile from "./pages/Profile";
+import MySessions from "./pages/mySessions";
+
 import "./App.css";
 import { useEffect, useReducer, useState } from "react";
 import ResetPassword from "./pages/ResetPassword";
@@ -58,12 +62,15 @@ function App() {
             }
           />
           <Route path="/home" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/CreateSession" element={<CreateSession />} />
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
           <Route path="/request-reset-password" element={<RequestPasswordReset/>} />
           <Route path="/reset-password" element={<ResetPassword/>} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/mySessions" element={<MySessions />} />
         </Routes>
       </BrowserRouter>
     </div>
