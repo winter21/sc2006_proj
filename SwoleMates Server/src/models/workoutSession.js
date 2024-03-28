@@ -12,13 +12,13 @@ const workoutSessionSchema = new Schema({
         required: [true, "Date cannot be empty"]
     },
     coordinates: {
-        longitude:{
-            type: Number,
-            required: [true, "Longtitude cannot be empty"]
-        },
         latitude:{
             type: Number,
             required: [true, "Latitude cannot be empty"]
+        },
+        longitude:{
+            type: Number,
+            required: [true, "Longtitude cannot be empty"]
         }
     },
     duration: {
