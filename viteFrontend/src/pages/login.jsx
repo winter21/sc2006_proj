@@ -16,6 +16,9 @@ const Login = (props) => {
   const navigateToSignUp = () => {
     navigate("/signup");
   };
+  const navigateToRequestPasswordReset = () => {
+    navigate("/request-reset-password");
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); // Toggle the state for password visibility
@@ -113,8 +116,12 @@ const Login = (props) => {
           Sign Up
         </button>
       </div>
+      <div>
+        <button className="redUnderlineButton" onClick={navigateToRequestPasswordReset}>
+          Forgotten Password
+        </button>
+      </div>
     </div>
   );
 };
-
 export default Login;

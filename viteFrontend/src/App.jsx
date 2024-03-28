@@ -10,8 +10,10 @@ import CreateSession from "./pages/CreateSession";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
+import RequestPasswordReset from "./pages/RequestPasswordReset";
 import "./App.css";
 import { useEffect, useReducer, useState } from "react";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -60,6 +62,8 @@ function App() {
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
+          <Route path="/request-reset-password" element={<RequestPasswordReset/>} />
+          <Route path="/reset-password" element={<ResetPassword/>} />
         </Routes>
       </BrowserRouter>
     </div>

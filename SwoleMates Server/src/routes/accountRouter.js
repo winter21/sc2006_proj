@@ -17,4 +17,6 @@ router.post("/request-password-reset", accountController.forgetPassword)
 //PUT method to update the password
 router.put("/password-reset", accountController.updatePassword)
 
+router.post("/check-jwt", accountController.checkJwtToken)
+
 module.exports = router;

@@ -2,7 +2,8 @@ const Account = require("../models/account");
 const User = require("../models/user")
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
-const nodemailer = require('nodemailer')
+const nodemailer = require('nodemailer');
+const account = require("../models/account");
 const secret = "CooCooPioPio"
 
 //Create account with POST request
@@ -42,7 +43,10 @@ exports.login = async (req,res) => {
         const oneAccount = await Account.findOne({username: username})
         if(oneAccount){
             if(checkPassword(oneAccount,password)){
-                res.status(201).send("Login Successful")
+                const token  = await jwt.sign({username: account.username}, secret, {
+                    expiresIn:'24h'
+                })
+                res.status(201).send(token)
             }else{
                 throw new Error("Wrong Login details")
             }
@@ -80,7 +84,7 @@ exports.forgetPassword = async (req, res) => {
             expiresIn:'10m'
         })
         
-        let url = "http://localhost:3000/change-password?token="+token
+        let url = "http://localhost:5173/reset-password?token="+token
         console.log(token)
         
         var mailOptions = {
@@ -128,6 +132,7 @@ exports.updatePassword = async (req, res) => {
     try{
         const authorised  = await jwt.verify(token, secret);
         const account = await Account.findOne({user:authorised._id})
+        console.log(authorised._id)
         account.password = req.body.password
         await account.save()
         res.status(201).send(account)
@@ -139,6 +144,7 @@ exports.updatePassword = async (req, res) => {
                 message: 'Authentication token invalid or expired.'
             });
         }else{
+            console.log(err.stack)
             res.status(500).send({
                 type:"UpdatePasswordError",
                 status: 500,
@@ -147,6 +153,20 @@ exports.updatePassword = async (req, res) => {
             })
 
         }
+    }
+}
+
+exports.checkJwtToken = async (req, res) => {
+    const token  = req.body.token
+    try{
+        result = jwt.verify(token,secret)
+        if(result){
+            res.status(200).send(result)
+        }else{
+            throw new Error("invalid token")
+        }
+    }catch(err){
+        res.status(500).send(err.message)
     }
 }
 
