@@ -27,7 +27,7 @@ exports.createWorkoutSession = async (req, res) => {
         }
 
         // Call Google Geocoding API to convert address to coordinates
-        const googleMapsApiKey = 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY'; // Replace with your actual API key
+        const googleMapsApiKey = 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY'; 
         const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${googleMapsApiKey}`;
         
         const geocodeResponse = await axios.get(googleGeocodeUrl);
@@ -41,9 +41,9 @@ exports.createWorkoutSession = async (req, res) => {
         const newWorkoutSession = new WorkoutSession({
             name, 
             date,
-            coordinates: {
-                longitude: coordinates.lng, // Ensure your schema matches the API's response structure
-                latitude: coordinates.lat
+            coordinates: { 
+                latitude: coordinates.lat,
+                longitude: coordinates.lng
             },
             duration, 
             slots, 

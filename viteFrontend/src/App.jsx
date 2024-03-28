@@ -12,6 +12,7 @@ import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
 import Profile from "./pages/Profile";
+import MySessions from "./pages/mySessions";
 
 import "./App.css";
 import { useEffect, useReducer, useState } from "react";
@@ -65,6 +66,7 @@ function App() {
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/mySessions" element={<MySessions />} />
         </Routes>
       </BrowserRouter>
     </div>
