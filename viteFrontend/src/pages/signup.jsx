@@ -14,6 +14,10 @@ const Signup = (props) => {
 
   const navigate = useNavigate();
 
+  const navigateToLogIn = () => {
+    navigate("/login");
+  };
+
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword); // Toggle the state for password visibility
   };
@@ -162,6 +166,12 @@ const Signup = (props) => {
           onClick={onButtonClick}
           value={"Sign Up"}
         />
+      </div>
+      <div>
+        Already have an account?
+        <button className="redUnderlineButton" onClick={navigateToLogIn}>
+          Log in
+        </button>
       </div>
     </div>
   );
