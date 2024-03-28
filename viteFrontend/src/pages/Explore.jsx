@@ -81,18 +81,46 @@
 // export default Explore;
 
 
+
+
 import React from 'react';
 import Navbar from '../components/Navbar';
+import { GoogleMap, useLoadScript } from '@react-google-maps/api'; 
+
+// this is a private repo, right? so I guess it's fine to put it here?
+const googleMapsApiKey = "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY"; 
+
+const mapContainerStyle = {
+  width: '100vw',
+  height: '100vh', 
+};
+
+const center = {
+  lat: 1.3521, // Singapore's latitude
+  lng: 103.8198, // Singapore's longitude
+};
 
 const Explore = () => {
+  const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: googleMapsApiKey,
+  });
+
+  if (loadError) return <div>Error loading maps</div>;
+  if (!isLoaded) return <div>Loading Maps...</div>;
+
   return (
     <div>
       <Navbar />
-      <div className="explore-content">
-        <h1>Explore</h1>
-      </div>
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={12}
+      >
+        {/* Markers or other map components go here */}
+      </GoogleMap>
     </div>
   );
 };
 
 export default Explore;
+
