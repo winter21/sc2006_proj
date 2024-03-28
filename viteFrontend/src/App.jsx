@@ -7,7 +7,7 @@ import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
-import CreateSession from "./pages/CreateSession";
+import CreateSession from "./pages/createSession";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
