@@ -9,9 +9,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+<<<<<<< HEAD
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.15.14",
+=======
+>>>>>>> 11e62bada823776abe53f542d30502503ac4fb10
     "@react-google-maps/api": "^2.19.3",
     "axios": "^1.6.8",
     "react": "^18.2.0",

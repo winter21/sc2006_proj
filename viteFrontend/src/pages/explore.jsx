@@ -204,16 +204,12 @@ function Explore() {
                   type="text"
                   id="searchBox"
                   placeholder="Search"
-                  size="30"
+                  size="auto"
                   ref={searchInput}
                 />
               </Autocomplete>
 
-              <button
-                className="locationInput"
-                type="submit"
-                onClick={handleLocationSearch}
-              >
+              <button type="submit" onClick={handleLocationSearch}>
                 Enter
               </button>
             </div>
