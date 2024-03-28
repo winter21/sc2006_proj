@@ -2,8 +2,10 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
+  LoadScript,
   useJsApiLoader,
   Autocomplete,
+  GoogleMap,
 } from "@react-google-maps/api";
 import Navbar from "../components/Navbar";
 
@@ -19,15 +21,33 @@ const CreateSession = () => {
   const [duration, setDuration] = useState('');
   const [slots, setSlots] = useState('');
   const [interests, setInterests] = useState([]);
-  
+
+
   const libraries = ["places"];
-    const { isLoaded } = useJsApiLoader({
-      //idk why i use REACT_APP never work
-      googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
-      libraries: libraries,
-    });
-    //const [map, setMap] = useState(/** @type google.maps.Map */(null))
-    const searchInput = useRef();
+  const { isLoaded } = useJsApiLoader({
+		googleMapsApiKey:"AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
+		libraries: libraries
+	})
+
+  const [searchResult, setSearchResult] = useState('')
+
+  const searchInput = useRef();
+
+
+  function onLoad(autocomplete) {
+    setSearchResult(autocomplete);
+  }
+
+  const onPlaceChanged = (place) => {
+    setSearchResult(place)
+    console.log(searchResult)
+  }
+
+  if(!isLoaded) {
+    return <div>Loading...</div>
+  };
+
+  //const [map, setMap] = useState(/** @type google.maps.Map */(null))
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -116,16 +136,21 @@ const CreateSession = () => {
       /></div><br/>
         <div className={"titleContainer"}>
         <label htmlFor="location-input">Session Location:</label>
-      </div><div className="inputContainer" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-        <Autocomplete>
-          <input
-            type="text"
-            placeholder="eg: North Hill Gym"
-            size="auto"
-            ref={searchInput}
-            className={"inputBox"}
-          />
-        </Autocomplete></div>
+      </div>
+      <div className="inputContainer" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+      <Autocomplete
+            onPlaceChanged={(place) => onPlaceChanged(place)}
+            onLoad = {onLoad}>
+
+            <input
+              type="text"
+              placeholder="eg: North Hill Gym"
+              size="auto"
+              ref={searchInput}
+              className={"inputBox"}
+            />
+          </Autocomplete>
+        </div>
         {/* <label>Session coordinates:</label>
         <input
           value={coordinates.longitude} 
