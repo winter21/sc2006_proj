@@ -18,6 +18,7 @@
 
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import DefaultAvatar from "../assets/Zenitsu.png";
 
@@ -31,6 +32,12 @@ const userData = {
 };
 
 const Profile = () => {
+  const navigate = useNavigate(); 
+  const handleSignOut = () => {
+    //  the sign-out logic (like clearing tokens)
+    navigate('/login');
+
+  };
   return (
     <div>
       <Navbar />
@@ -43,7 +50,7 @@ const Profile = () => {
           <p>About Me:</p>
           <p>{userData.aboutMe}</p>
         </div>
-        <button>Sign Out</button>
+        <button onClick={handleSignOut}>Sign Out</button>
       </div>
 
       <style jsx>{`
