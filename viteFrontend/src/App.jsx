@@ -63,7 +63,6 @@ function App() {
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
-          <Route path="/explore" element={<Explore />} />
         </Routes>
       </BrowserRouter>
     </div>
