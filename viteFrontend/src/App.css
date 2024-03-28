@@ -68,6 +68,7 @@
 .inputBox {
   height: 48px;
   width: 400px;
+  align-self: center;
   font-size: large;
   border-radius: 8px;
   border: 1px solid grey;
