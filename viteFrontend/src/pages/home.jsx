@@ -4,14 +4,14 @@ import SwoleMates from "../assets/SwoleMates.png";
 import Navbar from "../components/Navbar";
 
 const Home = (props) => {
-    const navigate = useNavigate();
-    
-    return (
-        <div>
-            <Navbar />
-            <p>HOME</p>
-        </div>
-    )
-}
+  const navigate = useNavigate();
+
+  return (
+    <div>
+      <Navbar />
+      <p>HOME</p>
+    </div>
+  );
+};
 
 export default Home;
