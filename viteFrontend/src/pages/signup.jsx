@@ -102,10 +102,12 @@ const Signup = (props) => {
         window.alert(error.response.data.message);
       } else if (error.request) {
         // The request was made but no response was received
-        console.error("No response received:", error.request);
+        console.error("No response received:", error);
+        window.alert("No response received from server: " + error.message);
       } else {
         // Something happened in setting up the request that triggered an error
         console.error("Error setting up the request:", error.message);
+        window.alert("Error setting up the request: " + error.message);
       }
       // Handle error
     }
