@@ -11,19 +11,25 @@ const Onboarding2 = (props) => {
     };
 
     return (
+<div>          
+    <div className={"onboardingContainer"}>
         <div>
-            <div className={"onboardingContainer"}>
-                <div>Host or Join workout sessions in your area</div>
-            </div>
-            <div className={"inputContainer"}>
-            <input
+            <span style={{ color: "red", display: "contents" }}>Host</span> or 
+            <span style={{ color: "red", display: "contents" }}> join</span> workout sessions in your area
+        </div>
+    </div>
+    <br />
+    
+    <div className={"inputContainer"}>
+        <input
             className={"inputButton"}
             type="button"
             onClick={onButtonClick}
             value={"Next"}
-            />
-            </div>
-        </div>
+        />
+    </div>
+</div>
+
     );
 
 }

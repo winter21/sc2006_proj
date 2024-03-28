@@ -76,7 +76,7 @@ const CreateUserInfo = (props) => {
         <p style={{ color: "red", textAlign: "center" }}>
           Account with username "{username}" successfully created
         </p>
-        <div>Your Profile</div>
+        <div style={{textDecoration: "underline"}}>Your Profile</div>
       </div>
       <br />
 
@@ -124,7 +124,7 @@ const CreateUserInfo = (props) => {
       <div className={"inputContainer"}>
         <input
           value={name}
-          placeholder="Zenitsu"
+          placeholder="Enter your name here"
           onChange={handleNameChange}
           className={"inputBox"}
         />
