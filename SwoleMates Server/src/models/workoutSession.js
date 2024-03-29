@@ -54,6 +54,10 @@ const workoutSessionSchema = new Schema({
             "Hiking",
             "Rowing",
           ]
+    },
+    on:{
+        type: Boolean,
+        default: false
     }
 
 })

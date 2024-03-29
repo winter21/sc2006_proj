@@ -32,7 +32,8 @@ exports.createWorkoutSession = async (req, res) => {
             duration, 
             slots, 
             host,
-            interest
+            interest,
+            on: true
         });
 
         await newWorkoutSession.save();
