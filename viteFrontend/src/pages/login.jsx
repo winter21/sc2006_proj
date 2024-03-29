@@ -65,10 +65,21 @@ const Login = (props) => {
 
   const login = async () => {
     try {
-      const res = await axios.post("http://localhost:3000/account/login", {
-        username: username,
-        password: password,
-      });
+      const res = await axios
+        .post("http://localhost:3000/account/login", {
+          username: username,
+          password: password,
+        })
+        .then((result) => {
+          console.log("test worked");
+          window.alert("test worked");
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+            window.alert("test error");
+          }
+        });
       console.log(res);
       props.setUsername(username);
       window.alert("success");
