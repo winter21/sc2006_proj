@@ -43,7 +43,7 @@ exports.login = async (req,res) => {
         const oneAccount = await Account.findOne({username: username})
         if(oneAccount){
             if(checkPassword(oneAccount,password)){
-                const token  = await jwt.sign({username: account.username}, secret, {
+                const token  = await jwt.sign({userId: account.user}, secret, {
                     expiresIn:'24h'
                 })
                 res.status(201).send(token)

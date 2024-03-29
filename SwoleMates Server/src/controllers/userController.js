@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const Account = require("../models/account");
 const fs = require('fs-extra')
+const jwt = require('jsonwebtoken')
+const secret = "CooCooPioPio"
 
 exports.getOneUser = async (req, res) => {
     const userID = req.params.userId
@@ -57,7 +59,10 @@ exports.createUser = async (req, res) => {
         console.log(newUser._id)
         currentAccount.user = newUser._id
         await currentAccount.save()
-        res.status(201).send(newUser)
+        const token  = await jwt.sign({userId: newUser._id}, secret, {
+            expiresIn:'24h'
+        })
+        res.status(201).send(token)
     }catch(err){
         await deleteImage(tempPath)
         if(err.message == "Duplicate email"){
