@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import ShowPW from "../assets/ShowPW.png";
 import HidePW from "../assets/HidePW.png";
@@ -12,7 +12,9 @@ const Login = (props) => {
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to track password visibility
 
-  const navigate = useNavigate();
+  let navigate = useNavigate();
+  let location = useLocation();
+  let from = location.state?.from?.pathname || "/home";
 
   const navigateToSignUp = () => {
     navigate("/signup");
@@ -27,11 +29,8 @@ const Login = (props) => {
 
   const onButtonClick = () => {
     /*    disable for testing purposes --- added by KX
-    props.setLoggedIn(true);
     props.setEmail(email);
     localStorage.setItem("user", JSON.stringify({ email })); //, token: r.token}))
-    navigate("/protected");
-    //navigate("/")
     */
     // You'll update this function later...
     // Set initial error values to empty
@@ -60,16 +59,16 @@ const Login = (props) => {
     }
 
     // Authentication calls will be made here...
+    if (!usernameError === "" && !passwordError === "") return;
     login();
   };
 
   const login = async () => {
     try {
-      const res = await axios
-        .post("http://localhost:3000/account/login", {
-          username: username,
-          password: password,
-        })
+      const res = await axios.post("http://localhost:3000/account/login", {
+        username: username,
+        password: password,
+      }); /*
         .then((result) => {
           console.log("test worked");
           window.alert("test worked");
@@ -80,37 +79,24 @@ const Login = (props) => {
             window.alert("test error");
           }
         });
+      */
+      //console.log(JSON.stringify({ username, token: res.data }));
       console.log(res);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ username, token: res.data })
+      );
+      props.setLoggedIn(true);
       props.setUsername(username);
-      window.alert("success");
-      //navigate("/createUserInfo");
-
-      // If user not logged in, make login request
+      navigate(from, { replace: true });
       //if (!authController.isAuthenticated()) {
-      // Check if email or password is null
-      //if (email === "" || password === "") {throw new Error("User not logged in")}
       /*
-        .then((r) => r.json())
-        .then((r) => {
-          if ("success" === r.message) {
-            localStorage.setItem(
-              "user",
-              JSON.stringify({ email, token: r.token })
-            );
-            props.setLoggedIn(true);
-            props.setEmail(email);
-            navigate("/");
-          } else {
-            window.alert("Wrong email or password");
-          }
-        });*/
+      hen((r) => {
+                  });*/
     } catch (error) {
-      if (error.response && error.response.status === 409) {
-        // Handle 409 Conflict error
-        console.error("409 Conflict:", error.response.data);
-        setUsernameError(
-          "Account with same username already exists! Try another username"
-        );
+      if (error.response && error.response.status === 401) {
+        console.error("Error 401:", error.response.data);
+        setPasswordError(error.response.data.message);
       } else if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Server responded with status:", error.response.status);
@@ -123,10 +109,11 @@ const Login = (props) => {
         window.alert("No response received from server: " + error.message);
       } else {
         // Something happened in setting up the request that triggered an error
+        console.log(error);
+        //window.alert(error.response.data.message);
         console.error("Error setting up the request:", error.message);
         window.alert("Error setting up the request: " + error.message);
       }
-      // Handle error
     }
   };
 
