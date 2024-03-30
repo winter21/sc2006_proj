@@ -42,7 +42,8 @@ exports.login = async (req,res) => {
     try{
         const oneAccount = await Account.findOne({username: username})
         if(oneAccount){
-            if(checkPassword(oneAccount,password)){
+            const validAccount = await checkPassword(oneAccount,password)
+            if(validAccount){
                 const token  = await jwt.sign({userId: account.user}, secret, {
                     expiresIn:'24h'
                 })
@@ -172,5 +173,5 @@ exports.checkJwtToken = async (req, res) => {
 
 //Helper methods
 const checkPassword = (account, password) => {
-    return bcrypt.compare(account.password, password);
+    return bcrypt.compare(password,account.password);
 }
