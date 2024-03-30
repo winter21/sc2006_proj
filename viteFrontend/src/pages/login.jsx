@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
+import BackgroundImage from "../assets/RedBg.jpg";
 import ShowPW from "../assets/ShowPW.png";
 import HidePW from "../assets/HidePW.png";
 import axios from "axios";
@@ -117,68 +118,99 @@ const Login = (props) => {
     }
   };
 
+  const containerStyle = {
+    borderRadius: "20px",
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.5)",
+    padding: "20px",
+    textAlign: "center",
+    margin: "20px",
+    marginTop: "15vh",
+    maxWidth: "600px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "white",
+  };
+
+  const fullScreenBackgroundStyle = {
+    width: "100vw",
+    height: "100vh",
+    backgroundImage: `url(${BackgroundImage})`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: -1
+  };
+
   return (
-    <div className={"mainContainer"}>
-      <div className={"titleContainer"}>
-        {/* Insert the <img> element here */}
-        <img
-          src={SwoleMates}
-          alt="SwoleMates Logo"
-          style={{ width: "400px", height: "auto" }}
-        />
-        <div>Log In</div>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          value={username}
-          placeholder="Enter your Username here"
-          onChange={(ev) => setUsername(ev.target.value)}
-          className={"inputBox"}
-        />
-        <label className="errorLabel">{usernameError}</label>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          value={password}
-          placeholder="Enter your password here"
-          onChange={(ev) => setPassword(ev.target.value)}
-          type={showPassword ? "text" : "password"} // Toggle input type based on showPassword state
-          className={"inputBox"}
-        />
-        <img
-          src={showPassword ? HidePW : ShowPW} // Show or hide password icon based on showPassword state
-          alt={showPassword ? "Hide Password" : "Show Password"}
-          onClick={togglePasswordVisibility} // Toggle password visibility when clicked
-          className="passwordLI"
-          style={{ cursor: "pointer" }}
-        />
-        <label className="errorLabel">{passwordError}</label>
-      </div>
-      <br />
-      <div className={"inputContainer"}>
-        <input
-          className={"inputButton"}
-          type="button"
-          onClick={onButtonClick}
-          value={"Log In"}
-        />
-      </div>
-      {/* Additional button to navigate to signup page */}
-      <div>
-        Don't have an account?
-        <button className="redUnderlineButton" onClick={navigateToSignUp}>
-          Sign Up
-        </button>
-      </div>
-      <div>
-        <button
-          className="redUnderlineButton"
-          onClick={navigateToRequestPasswordReset}
-        >
-          Forgotten Password
-        </button>
+    <div> {/* Wrap everything in a single parent div */}
+      <div style={fullScreenBackgroundStyle} /> {/* Background image */}
+      <div style={containerStyle}> {/* Container */}
+        <div className={"loginContainer"}>
+          <div className={"titleContainer"}>
+            {/* Insert the <img> element here */}
+            <img
+              src={SwoleMates}
+              alt="SwoleMates Logo"
+              style={{ width: "400px", height: "auto" }}
+            />
+            <div>Log In</div>
+          </div>
+          <br />
+          <div className={"inputContainer"}>
+            <input
+              value={username}
+              placeholder="Enter your Username here"
+              onChange={(ev) => setUsername(ev.target.value)}
+              className={"inputBox"}
+            />
+            <label className="errorLabel">{usernameError}</label>
+          </div>
+          <br />
+          <div className={"inputContainer"}>
+            <input
+              value={password}
+              placeholder="Enter your password here"
+              onChange={(ev) => setPassword(ev.target.value)}
+              type={showPassword ? "text" : "password"} // Toggle input type based on showPassword state
+              className={"inputBox"}
+            />
+            <img
+              src={showPassword ? HidePW : ShowPW} // Show or hide password icon based on showPassword state
+              alt={showPassword ? "Hide Password" : "Show Password"}
+              onClick={togglePasswordVisibility} // Toggle password visibility when clicked
+              className="passwordLI"
+              style={{ cursor: "pointer" }}
+            />
+            <label className="errorLabel">{passwordError}</label>
+          </div>
+          <br />
+          <div className={"inputContainer"}>
+            <input
+              className={"inputButton"}
+              type="button"
+              onClick={onButtonClick}
+              value={"Log In"}
+            />
+          </div>
+          {/* Additional button to navigate to signup page */}
+          <div>
+            Don't have an account?
+            <button className="redUnderlineButton" onClick={navigateToSignUp}>
+              Sign Up
+            </button>
+          </div>
+          <div>
+            <button
+              className="redUnderlineButton"
+              onClick={navigateToRequestPasswordReset}
+            >
+              Forgotten Password
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

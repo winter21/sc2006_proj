@@ -7,6 +7,14 @@
   min-height: 100vh;
 }
 
+.loginContainer, 
+.signupContainer {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .titleContainer {
   display: flex;
   flex-direction: column;
