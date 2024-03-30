@@ -12,8 +12,9 @@ const Start = (props) => {
     // You'll update this function later Done :)
     //navigate("/login");
     if (loggedIn) {
-      localStorage.removeItem("user");
+      localStorage.removeItem("suser");
       props.setLoggedIn(false);
+      props.setUsername("");
     } else {
       navigate("/login");
     }
@@ -45,7 +46,6 @@ const Start = (props) => {
 };
 
 export default Start;
-
 
 // import React from "react";
 // import { useNavigate } from "react-router-dom";

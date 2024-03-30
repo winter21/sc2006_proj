@@ -3,7 +3,6 @@ import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
 import CreateUserInfo from "./pages/createUserInfo";
-import ProtectedPage from "./pages/ProtectedPage";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
@@ -14,6 +13,7 @@ import Onboarding3 from "./pages/onboardingPg3";
 import RequestPasswordReset from "./pages/RequestPasswordReset";
 import Profile from "./pages/Profile";
 import MySessions from "./pages/mySessions";
+import Spinner from "./components/Spinner";
 
 import "./App.css";
 import { useEffect, useReducer, useState } from "react";
@@ -23,6 +23,7 @@ import axios from "axios";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Fetch the user email and token from local storage
@@ -32,9 +33,10 @@ function App() {
     if (!user || !user.token) {
       setLoggedIn(false);
       setUsername("");
+      setLoading(false);
       return;
     }
-
+    /*
     fetch("http://localhost:3000/account/check-jwt", {
       method: "POST",
       headers: {
@@ -53,9 +55,9 @@ function App() {
         setUsername(user.username || "");
         console.log("aft:" + loggedIn);
         //setEmail(user.email || "");
-      });
+      });*/
     // If the token exists, verify it with the auth server to see if it is valid
-    /*const verify = async (user) => {
+    const verify = async (user) => {
       try {
         const res = await axios.post(
           "http://localhost:3000/account/check-jwt",
@@ -64,11 +66,9 @@ function App() {
           }
         );
         console.log(res);
-        console.log("bef:" + loggedIn);
         setLoggedIn(true); //"success" === r.message);
         setUsername(user.username || "");
-        console.log(username);
-        console.log("aft:" + loggedIn);
+        setLoading(false);
       } catch (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
@@ -76,20 +76,26 @@ function App() {
           console.error("Response data:", error.response.data);
           console.error("Response headers:", error.response.headers);
           window.alert(error.response.data.message);
+          setLoading(false);
         } else if (error.request) {
           // The request was made but no response was received
           console.error("No response received:", error);
           window.alert("No response received from server: " + error.message);
+          setLoading(false);
         } else {
           // Something happened in setting up the request that triggered an error
           console.error("Error setting up the request:", error.message);
           window.alert("Error setting up the request: " + error.message);
+          setLoading(false);
         }
       }
-    //};
-    verify(user);*/
+    };
+    verify(user);
   }, []);
 
+  if (loading) {
+    return <Spinner />;
+  }
   return (
     <div className="App">
       <BrowserRouter>
@@ -121,14 +127,6 @@ function App() {
             element={<CreateUserInfo username={username} />}
           />
           <Route
-            path="/protected"
-            element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
-                <ProtectedPage />
-              </RequireAuth>
-            }
-          />
-          <Route
             path="/home"
             element={
               <RequireAuth loggedIn={loggedIn} username={username}>
@@ -153,7 +151,14 @@ function App() {
             element={<RequestPasswordReset />}
           />
           <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route
+            path="/profile"
+            element={
+              <RequireAuth loggedIn={loggedIn} username={username}>
+                <Profile setLoggedIn={setLoggedIn} setUsername={setUsername} />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/mySessions"
             element={

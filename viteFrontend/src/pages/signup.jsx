@@ -66,6 +66,11 @@ const Signup = (props) => {
       });
       try {
         //TODO: function to initialise empty user template
+        localStorage.setItem(
+          "user",
+          JSON.stringify({ username, token: res.data })
+        );
+        props.setLoggedIn(true);
         props.setUsername(username);
         navigate("/createUserInfo");
       } catch (err) {}
