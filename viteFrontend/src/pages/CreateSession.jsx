@@ -8,6 +8,7 @@ import {
   GoogleMap,
 } from "@react-google-maps/api";
 import Navbar from "../components/Navbar";
+import { colors } from "@mui/material";
 
 const CreateSession = () => {
   const navigate = useNavigate();
@@ -96,10 +97,12 @@ const CreateSession = () => {
     <div>
       <Navbar />
       <div className={"mainContainer"}>
+      <div className={"headerContainer"}>
         <h2>Create a New Workout Session</h2>
+          </div>
         <form onSubmit={handleSubmit}>
           <div className={"titleContainer"}>
-            <label>Session name:</label>
+            <label>Session Name:</label>
           </div>
           <div className={"inputContainer"}>
             <input
@@ -111,7 +114,7 @@ const CreateSession = () => {
           </div>
           <br />
           <div className={"titleContainer"}>
-            <label>Session date:</label>
+            <label>Session Date:</label>
           </div>
           <div className={"inputContainer"}>
             <input
@@ -123,7 +126,7 @@ const CreateSession = () => {
           </div>
           <br />
           <div className={"titleContainer"}>
-            <label>Session start time:</label>
+            <label>Session Start Time:</label>
           </div>
           <div className={"inputContainer"}>
             <input
@@ -135,7 +138,7 @@ const CreateSession = () => {
           </div>
           <br />
           <div className={"titleContainer"}>
-            <label>Session duration:</label>
+            <label>Session Duration:</label>
           </div>
           <div className={"inputContainer"}>
             <input
@@ -190,7 +193,7 @@ const CreateSession = () => {
           /></div><br/> */}
           <br />
           <div className={"titleContainer"}>
-            <label>Session slots:</label>
+            <label>Session Slots:</label>
           </div>
           <div className={"inputContainer"}>
             <input
@@ -201,6 +204,9 @@ const CreateSession = () => {
             />
           </div>
           <br />
+          <div className={"titleContainer"}>
+            <label>Type of Session:</label>
+          </div>
           <div className={"interestsContainer"}>
             {workoutInterestExamples.map((interest, index) => (
               <div
