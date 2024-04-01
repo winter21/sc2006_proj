@@ -12,7 +12,7 @@ import {
 //import { useRef, useState} from 'react'
 import { Box, Typography, CardContent, Card } from "@mui/material";
 import Spinner from "../components/Spinner";
-import GymIcon from '../assets/gym-icon.png';
+import GymIcon from "../assets/gym-icon.png";
 
 const libraries = ["places"];
 function Explore() {
@@ -178,7 +178,9 @@ function Explore() {
               console.log(openingHours);
 
               // Process photos
-              const photos = place.photos ? place.photos.map(photo => photo.getUrl()) : [];
+              const photos = place.photos
+                ? place.photos.map((photo) => photo.getUrl())
+                : [];
 
               // Process reviews
               const reviews = place.reviews ? place.reviews : [];
@@ -245,53 +247,64 @@ function Explore() {
           {/* <div id = 'details-panel'></div> */}
           <Box sx={{ minWidth: 100 }}>
             <Card variant="outlined">
-            <CardContent sx={{ maxHeight: 300, overflowY: 'auto' }}>
-              <div>
-                {places.photos.map((photoUrl, index) => (
-                  <img key={index} src={photoUrl} alt="Place" style={{ width: "100px", height: "100px", marginRight: "5px" }} />
-                ))}
-              </div>
-              <Typography variant="h5" gutterBottom>
-                Name of Gym: {places.name}
-              </Typography>
-              <Typography sx={{ fontSize: 14 }} component="div">
-                Opening Status: {places.business_status}
-              </Typography>
-              <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                Opening Hours: {places.opening_hours}
-              </Typography>
-              <Typography variant="body1">
-                Distance: {places.distance}
-                <br />
-                Vicinity: {places.vicinity}
-                <br />
-                Contact: {places.contact}
-              </Typography>
-              <div>
-                <h5 className="customer-reviews-heading">Some Customer Reviews: </h5>
-                {places.reviews.map((review, index) => (
-                  <div key={index} className="review-card">
-                    <div className="profile-section">
-                      {review.profile_photo_url && (
-                        <img
-                          src={review.profile_photo_url}
-                          alt={review.author_name}
-                          className="profile-picture"
-                        />
-                      )}
-                      <p className="reviewer-name">{review.author_name}</p>
+              <CardContent sx={{ maxHeight: 300, overflowY: "auto" }}>
+                <div>
+                  {places.photos.map((photoUrl, index) => (
+                    <img
+                      key={index}
+                      src={photoUrl}
+                      alt="Place"
+                      style={{
+                        width: "100px",
+                        height: "100px",
+                        marginRight: "5px",
+                      }}
+                    />
+                  ))}
+                </div>
+                <Typography variant="h5" gutterBottom>
+                  Name of Gym: {places.name}
+                </Typography>
+                <Typography sx={{ fontSize: 14 }} component="div">
+                  Opening Status: {places.business_status}
+                </Typography>
+                <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                  Opening Hours: {places.opening_hours}
+                </Typography>
+                <Typography variant="body1">
+                  Distance: {places.distance}
+                  <br />
+                  Vicinity: {places.vicinity}
+                  <br />
+                  Contact: {places.contact}
+                </Typography>
+                <div>
+                  <h5 className="customer-reviews-heading">
+                    Some Customer Reviews:{" "}
+                  </h5>
+                  {places.reviews.map((review, index) => (
+                    <div key={index} className="review-card">
+                      <div className="profile-section">
+                        {review.profile_photo_url && (
+                          <img
+                            src={review.profile_photo_url}
+                            alt={review.author_name}
+                            className="profile-picture"
+                          />
+                        )}
+                        <p className="reviewer-name">{review.author_name}</p>
+                      </div>
+                      <div className="star-rating">
+                        {/* Generate stars based on the review rating */}
+                        {Array.from({ length: review.rating }, (_, i) => (
+                          <span key={i}>⭐</span> // No need for 'gray-star' class as we're not displaying empty stars
+                        ))}
+                      </div>
+                      <p className="review-text">{review.text}</p>
                     </div>
-                    <div className="star-rating">
-                      {/* Generate stars based on the review rating */}
-                      {Array.from({ length: review.rating }, (_, i) => (
-                        <span key={i}>⭐</span> // No need for 'gray-star' class as we're not displaying empty stars
-                      ))}
-                    </div>
-                    <p className="review-text">{review.text}</p>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
+                  ))}
+                </div>
+              </CardContent>
             </Card>
           </Box>
         </div>

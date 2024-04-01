@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import DefaultAvatar from "../assets/Zenitsu.png";
 //email and name required

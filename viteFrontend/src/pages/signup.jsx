@@ -104,7 +104,6 @@ const Signup = (props) => {
           }
         });*/
       console.log("account created");
-      console.log(res);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         // Handle 409 Conflict error
