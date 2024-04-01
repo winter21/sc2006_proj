@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import DefaultAvatar from "../assets/Zenitsu.png";
+import { Avatar, IconButton } from "@mui/material";
+//import IconButton from '@material-ui/core/IconButton';
 //email and name required
 //email must be unique
 const CreateUserInfo = (props) => {
-  const { username } = props;
+  //const { username } = props;
+  let location = useLocation();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -13,7 +16,8 @@ const CreateUserInfo = (props) => {
   const [aboutme, setAboutMe] = useState("");
   const [interests, setInterests] = useState([]);
   const [profilePicture, setProfilePicture] = useState(null);
-
+  let id = location.state?.id;
+  let username = location.state?.username || "";
   const handleProfilePictureChange = (file) => {
     setProfilePicture(file); // Update the profile picture state
   };
@@ -82,9 +86,41 @@ const CreateUserInfo = (props) => {
       <br />
 
       {/*Input for Profile Picture*/}
-      <div>Profile Picture</div>
+      <div>Click on the Profile Picture to upload an image</div>
       <br />
       <div className={"inputContainer"}>
+        <input
+          accept="image/*"
+          //className={classes.input}
+          id="contained-button-file"
+          multiple
+          type="file"
+          onChange={(event) =>
+            handleProfilePictureChange(event.target.files[0])
+          }
+          style={{
+            display: "none",
+          }}
+        />
+        <label htmlFor="contained-button-file">
+          <IconButton component="span">
+            <Avatar
+              src={
+                profilePicture
+                  ? URL.createObjectURL(profilePicture)
+                  : DefaultAvatar
+              }
+              style={{
+                margin: "10px",
+                width: "150px",
+                height: "150px",
+                borderRadius: "50%",
+                border: "8px solid #ccc",
+              }}
+            />
+          </IconButton>
+        </label>
+        {/*
         {profilePicture ? (
           <img
             src={URL.createObjectURL(profilePicture)}
@@ -111,13 +147,14 @@ const CreateUserInfo = (props) => {
           />
         )}
         <input
+          id="profile-picture-input"
           type="file"
           accept="image/*"
           onChange={(event) =>
             handleProfilePictureChange(event.target.files[0])
           }
-          className={"inputBox"}
-        />
+          style={{ display: "auto" }}
+        />*/}
       </div>
       <br />
       {/* Input for Name */}

@@ -82,7 +82,9 @@ const Signup = (props) => {
       console.log(res.data._id);
       //props.setLoggedIn(true);
       //props.setUsername(username);
-      navigate("/createUserInfo", { state: { id: res.data._id } });
+      navigate("/createUserInfo", {
+        state: { id: res.data._id, username: username },
+      });
 
       // If user not logged in, make login request
       //if (!authController.isAuthenticated()) {
