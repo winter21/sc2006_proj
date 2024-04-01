@@ -37,6 +37,8 @@ function Explore() {
     vicinity: "",
     distance: "",
     contact: "",
+    photos: [], // Array to store photo URLs
+    reviews: [], // Array to store reviews
   });
 
   //access current location
@@ -174,6 +176,13 @@ function Explore() {
                 ? place.current_opening_hours.weekday_text.join("\n")
                 : "Not Available";
               console.log(openingHours);
+
+              // Process photos
+              const photos = place.photos ? place.photos.map(photo => photo.getUrl()) : [];
+
+              // Process reviews
+              const reviews = place.reviews ? place.reviews : [];
+
               setPlaces({
                 name: place.name,
                 business_status: place.business_status,
@@ -181,6 +190,8 @@ function Explore() {
                 vicinity: place.formatted_address,
                 distance: distance,
                 contact: place.formatted_phone_number,
+                photos,
+                reviews,
               });
             }
           });
@@ -234,24 +245,53 @@ function Explore() {
           {/* <div id = 'details-panel'></div> */}
           <Box sx={{ minWidth: 100 }}>
             <Card variant="outlined">
-              <CardContent>
-                <Typography variant="h5" gutterBottom>
-                  Name of location: {places.name}
-                </Typography>
-                <Typography sx={{ fontSize: 14 }} component="div">
-                  Opening Status: {places.business_status}
-                </Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                  Opening Hours: {places.opening_hours}
-                </Typography>
-                <Typography variant="body1">
-                  Distance: {places.distance}
-                  <br />
-                  Vicinity: {places.vicinity}
-                  <br />
-                  Contact: {places.contact}
-                </Typography>
-              </CardContent>
+            <CardContent sx={{ maxHeight: 300, overflowY: 'auto' }}>
+              <div>
+                {places.photos.map((photoUrl, index) => (
+                  <img key={index} src={photoUrl} alt="Place" style={{ width: "100px", height: "100px", marginRight: "5px" }} />
+                ))}
+              </div>
+              <Typography variant="h5" gutterBottom>
+                Name of Gym: {places.name}
+              </Typography>
+              <Typography sx={{ fontSize: 14 }} component="div">
+                Opening Status: {places.business_status}
+              </Typography>
+              <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                Opening Hours: {places.opening_hours}
+              </Typography>
+              <Typography variant="body1">
+                Distance: {places.distance}
+                <br />
+                Vicinity: {places.vicinity}
+                <br />
+                Contact: {places.contact}
+              </Typography>
+              <div>
+                {places.reviews.map((review, index) => (
+                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                    {/* Profile Picture */}
+                    {review.profile_photo_url && (
+                      <img
+                        src={review.profile_photo_url}
+                        alt={review.author_name}
+                        style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
+                      />
+                    )}
+                    <div>
+                      <p style={{ margin: 0 }}>
+                        {review.author_name}: 
+                        {/* Star Rating */}
+                        {Array.from({ length: review.rating }, (_, i) => (
+                          <span key={i}>⭐</span>
+                        ))}
+                      </p>
+                      <p>{review.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
             </Card>
           </Box>
         </div>
