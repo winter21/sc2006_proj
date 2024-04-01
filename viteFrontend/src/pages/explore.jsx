@@ -12,6 +12,7 @@ import {
 //import { useRef, useState} from 'react'
 import { Box, Typography, CardContent, Card } from "@mui/material";
 import Spinner from "../components/Spinner";
+import GymIcon from '../assets/gym-icon.png';
 
 const libraries = ["places"];
 function Explore() {
@@ -272,7 +273,9 @@ function Explore() {
               key={place.place_id}
               position={place.geometry.location}
               icon={{
-                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                url: GymIcon,
+                size: new window.google.maps.Size(32, 32),
+                scaledSize: new window.google.maps.Size(32, 32),
               }}
               onClick={() => {
                 DisplayMarker(place);
