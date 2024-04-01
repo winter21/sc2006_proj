@@ -13,7 +13,7 @@ const workoutSessionSchema = new Schema({
     },
     address: {
         type: String,
-        required: [true, "Address cannot be empty"]
+        required: [false]
     },
     coordinates: {
         latitude:{

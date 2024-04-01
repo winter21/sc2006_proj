@@ -18,15 +18,15 @@ router.put("/:id",workoutSessionController.updateWorkoutSession);
 router.delete("/:id",workoutSessionController.deleteWorkoutSession);
 
 //joinWorkout session
-router.post("/join/:id", workoutSessionController.joinWorkoutSession);
+router.put("/join/:id", workoutSessionController.joinWorkoutSession);
 
 //leaveWorkout session
-router.post("/leave/:id", workoutSessionController.leaveWorkoutSession);
+router.put("/leave/:id", workoutSessionController.leaveWorkoutSession);
 
 //getUserWorkoutSessions
-router.get("/user/:id", workoutSessionController.getUserWorkoutSessions);
+router.get("/user/:userId", workoutSessionController.getUserWorkoutSessions);
 
 //getHostWorkoutSessions
-router.get("/host/:userId", workoutSessionController.getHostWorkoutSessions);
+router.get("/host/:hostId", workoutSessionController.getHostWorkoutSessions);
 
 module.exports = router;

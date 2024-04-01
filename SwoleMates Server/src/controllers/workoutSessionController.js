@@ -3,8 +3,8 @@ const axios = require('axios');
 
 
 exports.createWorkoutSession = async (req, res) => {
-    const { name, date, address, duration, slots, host, interest } = req.body;
-
+    const { name, date, address, duration, slots, host, interest} = req.body;
+    
     try {
         if (!address) {
             return res.status(400).send("Address is required");
@@ -78,17 +78,6 @@ exports.updateWorkoutSession = async (req, res) => {
     }
 };
 
-// exports.deleteWorkoutSession = async (req, res) => {
-//     try {
-//         const workoutSession = await WorkoutSession.findByIdAndDelete(req.params.id);
-//         if (!workoutSession) {
-//             return res.status(404).send("Workout session not found");
-//         }
-//         res.status(200).send("Workout session deleted successfully");
-//     } catch (error) {
-//         res.status(500).send("Failed to delete Workout Session: " + error.message);
-//     }
-// };
 
 exports.deleteWorkoutSession = async (req, res) => {
     try {
@@ -167,18 +156,13 @@ exports.getUserWorkoutSessions = async (req, res) => {
     try {
         // Assuming userId is passed as a query parameter
         // i.e., /workoutsessions?userId=xxx
-        const userId = req.query.userId;
+        const userId = req.body.userId;
 
         if (!userId) {
             return res.status(400).send("UserId is required");
         }
 
-        const workoutSessions = await WorkoutSession.find({
-            $or: [
-                { host: userId },
-                { participants: userId }
-            ]
-        });
+        const workoutSessions = await WorkoutSession.find({participants: userId });
 
         res.status(200).json(workoutSessions);
     } catch (error) {
@@ -203,6 +187,6 @@ exports.getHostWorkoutSessions = async (req, res) => {
     }
 };
 
-//geolocate coordincates to address
+// to add retrievation of workouut session image
 
 
