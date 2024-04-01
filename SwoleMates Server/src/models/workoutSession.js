@@ -11,6 +11,10 @@ const workoutSessionSchema = new Schema({
         type: Date,
         required: [true, "Date cannot be empty"]
     },
+    address: {
+        type: String,
+        required: [true, "Address cannot be empty"]
+    },
     coordinates: {
         latitude:{
             type: Number,
@@ -29,8 +33,8 @@ const workoutSessionSchema = new Schema({
         type: Number,
         required: [true, "Slots cannot be empty"]
     },
-    participants_id:{
-        type: Schema.Types.ObjectId,
+    participants:{
+        type: [Schema.Types.ObjectId],
         ref: "User"
     },
     host:{

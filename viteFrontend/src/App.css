@@ -7,7 +7,26 @@
   min-height: 100vh;
 }
 
+.loginContainer, 
+.signupContainer {
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerContainer {
+  color: red;
+  display: flex;
+  flex-direction: column;
+  font-size: 20px;
+  font-weight: bolder;
+  align-items: center;
+  justify-content: center;
+}
+
 .titleContainer {
+  font-family: 'monaco', monospace;
   display: flex;
   flex-direction: column;
   font-size: 20px;
@@ -49,7 +68,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 260px;
+  height: 100px;
 }
 
 /* Email and Password Fields */
@@ -186,6 +205,68 @@
   margin-top: 2px;
 }
 
+/* for reviews */
+
+/* Review card styling */
+.review-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Profile section */
+.profile-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.profile-picture {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 12px;
+  object-fit: cover;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+/* Star rating */
+.star-rating {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+}
+
+.gray-star {
+  color: #dcdcdc;
+}
+
+/* Review text */
+.review-text {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Helper class for flex items */
+.flex-item {
+  display: flex;
+  align-items: center;
+}
+
+/* Customer Reviews heading */
+.customer-reviews-heading {
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-bottom: 2px; 
+}
 
 /*
 #root {
