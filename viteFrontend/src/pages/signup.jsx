@@ -15,7 +15,7 @@ const Signup = (props) => {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false); // State to track password visibility
   const [showConfirmPassword, setShowConfirmPassword] = useState(false); // State to track confirm password visibility
-  
+
   const navigate = useNavigate();
 
   const navigateToLogIn = () => {
@@ -63,7 +63,12 @@ const Signup = (props) => {
     }
 
     // Authentication calls will be made here...
-    if (!usernameError === "" && !passwordError === "" && !confirmPasswordError === "") return;
+    if (
+      !usernameError === "" &&
+      !passwordError === "" &&
+      !confirmPasswordError === ""
+    )
+      return;
     handleSignup();
   };
 
@@ -73,16 +78,11 @@ const Signup = (props) => {
         username: username,
         password: password,
       });
-      try {
-        //TODO: function to initialise empty user template
-        localStorage.setItem(
-          "user",
-          JSON.stringify({ username, token: res.data })
-        );
-        props.setLoggedIn(true);
-        props.setUsername(username);
-        navigate("/createUserInfo");
-      } catch (err) {}
+      console.log(res);
+      console.log(res.data._id);
+      //props.setLoggedIn(true);
+      //props.setUsername(username);
+      navigate("/createUserInfo", { state: { id: res.data._id } });
 
       // If user not logged in, make login request
       //if (!authController.isAuthenticated()) {
@@ -188,7 +188,7 @@ const Signup = (props) => {
           </div>
           <br />
           {/* Password */}
-          <div className={"inputContainer"}style={{ marginTop: "9px" }}>
+          <div className={"inputContainer"} style={{ marginTop: "9px" }}>
             <input
               value={password}
               placeholder="Enter your password here"

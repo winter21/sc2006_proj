@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import DefaultAvatar from "../assets/Zenitsu.png";
-
+//email and name required
+//email must be unique
 const CreateUserInfo = (props) => {
   const { username } = props;
   const navigate = useNavigate();
@@ -76,7 +77,7 @@ const CreateUserInfo = (props) => {
         <p style={{ color: "red", textAlign: "center" }}>
           Account with username "{username}" successfully created
         </p>
-        <div style={{textDecoration: "underline"}}>Your Profile</div>
+        <div style={{ textDecoration: "underline" }}>Your Profile</div>
       </div>
       <br />
 
