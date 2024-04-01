@@ -268,26 +268,26 @@ function Explore() {
                 Contact: {places.contact}
               </Typography>
               <div>
+                <h5 className="customer-reviews-heading">Some Customer Reviews: </h5>
                 {places.reviews.map((review, index) => (
-                  <div key={index} style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                    {/* Profile Picture */}
-                    {review.profile_photo_url && (
-                      <img
-                        src={review.profile_photo_url}
-                        alt={review.author_name}
-                        style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
-                      />
-                    )}
-                    <div>
-                      <p style={{ margin: 0 }}>
-                        {review.author_name}: 
-                        {/* Star Rating */}
-                        {Array.from({ length: review.rating }, (_, i) => (
-                          <span key={i}>⭐</span>
-                        ))}
-                      </p>
-                      <p>{review.text}</p>
+                  <div key={index} className="review-card">
+                    <div className="profile-section">
+                      {review.profile_photo_url && (
+                        <img
+                          src={review.profile_photo_url}
+                          alt={review.author_name}
+                          className="profile-picture"
+                        />
+                      )}
+                      <p className="reviewer-name">{review.author_name}</p>
                     </div>
+                    <div className="star-rating">
+                      {/* Generate stars based on the review rating */}
+                      {Array.from({ length: review.rating }, (_, i) => (
+                        <span key={i}>⭐</span> // No need for 'gray-star' class as we're not displaying empty stars
+                      ))}
+                    </div>
+                    <p className="review-text">{review.text}</p>
                   </div>
                 ))}
               </div>
