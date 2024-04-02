@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import Navbar from "../components/Navbar";
 import axios from "axios";
+import { Box, Typography, CardContent, Card, Grid } from "@mui/material"; // Import MUI components
 
 const Home = (props) => {
   const navigate = useNavigate();
@@ -25,21 +26,25 @@ const Home = (props) => {
       <Navbar />
       <p>HOME</p>
       {/* Render sessions here */}
-      <div>
+      <Grid container spacing={3}> {/* Container with grid layout */}
         {sessions.map((session) => (
-          <div key={session.id}>
-            <h1>{session.name}</h1>
-            {/* Render other session details as needed */}
-            <h3>{session.address}</h3>
-            <h3>{session.date}</h3>
-            <h3>{session.startTime}</h3>
-            <h3>{session.duration} hour(s)</h3>
-            <h3>{session.interest}</h3>
-            <h3>{session.slots} slots left</h3>
-            <h3>{session.host}</h3>
-          </div>
+          <Grid item xs={4} key={session.id}> {/* Each card component takes 4 grid units */}
+            <Card elevation={3} className="customCard">
+              <CardContent>
+                <img src= {SwoleMates} style={{ marginBottom: '10px' }} />
+                <Typography variant="h5" component="h2">{session.name}</Typography>
+                <Typography variant="body1">Location: {session.address}</Typography>
+                <Typography variant="body1">Date: {session.date}</Typography>
+                <Typography variant="body1">Start Time: {session.startTime}</Typography>
+                <Typography variant="body1">Duration: {session.duration} hour(s)</Typography>
+                <Typography variant="body1">Interest: {session.interest}</Typography>
+                <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
+                <Typography variant="body1">Host: {session.host}</Typography>
+              </CardContent>
+            </Card>
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </div>
   );
 };
