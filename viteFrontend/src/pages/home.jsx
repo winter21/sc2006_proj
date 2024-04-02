@@ -32,7 +32,8 @@ const Home = (props) => {
           <Grid item xs={4} key={session.id}> {/* Each card component takes 4 grid units */}
             <Card elevation={3} className="customCard">
               <CardContent>
-              <img src={UluPandan} style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />                <Typography variant="h5" component="h2">{session.name}</Typography>
+              <img src={UluPandan} style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />                
+                <Typography variant="h5" component="h2" style={{ fontWeight:'bold'}}>{session.name}</Typography>
                 <Typography variant="body1">Location: {session.address}</Typography>
                 <Typography variant="body1">Date: {session.date}</Typography>
                 <Typography variant="body1">Start Time: {session.startTime}</Typography>
