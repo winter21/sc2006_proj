@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
+import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
 import axios from "axios";
 import { Box, Typography, CardContent, Card, Grid } from "@mui/material"; // Import MUI components
@@ -31,8 +32,7 @@ const Home = (props) => {
           <Grid item xs={4} key={session.id}> {/* Each card component takes 4 grid units */}
             <Card elevation={3} className="customCard">
               <CardContent>
-                <img src= {SwoleMates} style={{ marginBottom: '10px' }} />
-                <Typography variant="h5" component="h2">{session.name}</Typography>
+              <img src={UluPandan} style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />                <Typography variant="h5" component="h2">{session.name}</Typography>
                 <Typography variant="body1">Location: {session.address}</Typography>
                 <Typography variant="body1">Date: {session.date}</Typography>
                 <Typography variant="body1">Start Time: {session.startTime}</Typography>
