@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import DefaultAvatar from "../assets/Zenitsu.png";
 import { Avatar, IconButton } from "@mui/material";
+import axios from "axios";
 //import IconButton from '@material-ui/core/IconButton';
 //email and name required
 //email must be unique
@@ -20,6 +21,8 @@ const CreateUserInfo = (props) => {
   let username = location.state?.username || "";
   const handleProfilePictureChange = (file) => {
     setProfilePicture(file); // Update the profile picture state
+    console.log(profilePicture);
+    console.log(URL.createObjectURL(profilePicture));
   };
 
   const handleNameChange = (event) => {
@@ -32,6 +35,7 @@ const CreateUserInfo = (props) => {
 
   const handleGenderChange = (event) => {
     setGender(event.target.value);
+    console.log(gender);
   };
 
   const handleAboutMe = (event) => {
@@ -44,14 +48,87 @@ const CreateUserInfo = (props) => {
     } else {
       setInterests(interests.filter((item) => item !== interest));
     }
+    console.log(interests);
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission here
     // Navigate page here too
-    // Navigate to the "home" page
-    navigate("/onboardingPg1");
+    // if (!usernameError === "" && !passwordError === "") return;
+    createUserI();
+  };
+
+  const createUserI = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("photo", profilePicture);
+      formData.append("email", email);
+      formData.append("name", name);
+      formData.append("aboutMe", aboutme);
+      formData.append("gender", gender);
+      formData.append("interest", interests);
+      formData.append("accountID", id);
+      formData.append("type", "profilePicture");
+      const res = await axios.post("http://localhost:3000/user", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }); /* {
+        email: email,
+        name: name,
+        aboutMe: aboutme,
+        gender: gender,
+        interest: interests,
+        accountID: id,
+      }); /*
+        .then((result) => {
+          console.log("test worked");
+          window.alert("test worked");
+        })
+        .catch((error) => {
+          if (error.response) {
+            console.log(error.response.data);
+            window.alert("test error");
+          }
+        });
+      */
+      //console.log(JSON.stringify({ username, token: res.data }));
+      console.log(res);
+      navigate("/onboardingPg1", { replace: true });
+      /*localStorage.setItem(
+        "user",
+        JSON.stringify({ username, token: res.data })
+      );
+      props.setLoggedIn(true);
+      props.setUsername(username);
+      navigate(from, { replace: true });*/
+      //if (!authController.isAuthenticated()) {
+      /*
+      hen((r) => {
+                  });*/
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.error("Error 401:", error.response.data);
+        setPasswordError(error.response.data.message);
+      } else if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Server responded with status:", error.response.status);
+        console.error("Response data:", error.response.data);
+        console.error("Response headers:", error.response.headers);
+        window.alert(error.response.data.message);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error);
+        window.alert("No response received from server: " + error.message);
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.log(error);
+        //window.alert(error.response.data.message);
+        console.error("Error setting up the request:", error.message);
+        window.alert("Error setting up the request: " + error.message);
+      }
+    }
   };
 
   const workoutInterestExamples = [
@@ -68,7 +145,7 @@ const CreateUserInfo = (props) => {
     "Hiking",
     "Rowing",
   ];
-
+  if (username === "") return <Navigate to="/home" replace />;
   return (
     <div className={"mainContainer"}>
       <div className={"titleContainer"}>
