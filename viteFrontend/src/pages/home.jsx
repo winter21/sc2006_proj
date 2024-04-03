@@ -36,16 +36,12 @@ const Home = (props) => {
   const scrollContainerStyle = {
     display: 'flex',
     overflowX: 'auto',
+    // Hiding the scrollbar
+    scrollbarWidth: 'none', // For Firefox
     '&::-webkit-scrollbar': {
-      height: '8px', // You can adjust the height of the scrollbar here
+      display: 'none', // For Chrome, Safari, and Opera
     },
-    '&::-webkit-scrollbar-thumb': {
-      background: '#888',
-      borderRadius: '4px',
-    },
-    '&::-webkit-scrollbar-thumb:hover': {
-      background: '#555',
-    },
+    '-ms-overflow-style': 'none', // For Internet Explorer and Edge
   };
 
   const filteredSessions = sessions.filter(session =>
