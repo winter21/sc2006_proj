@@ -8,9 +8,10 @@ import axios from "axios";
 //email and name required
 //email must be unique
 const CreateUserInfo = (props) => {
-  //const { username } = props;
   let location = useLocation();
   const navigate = useNavigate();
+  const [genderError, setGenderError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -21,8 +22,6 @@ const CreateUserInfo = (props) => {
   let username = location.state?.username || "";
   const handleProfilePictureChange = (file) => {
     setProfilePicture(file); // Update the profile picture state
-    console.log(profilePicture);
-    console.log(URL.createObjectURL(profilePicture));
   };
 
   const handleNameChange = (event) => {
@@ -54,15 +53,37 @@ const CreateUserInfo = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission here
-    // Navigate page here too
-    // if (!usernameError === "" && !passwordError === "") return;
+    setGenderError("");
+    setEmailError("");
+
+    if ("" === email) {
+      setEmailError("Please enter your email");
+      return;
+    }
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError("Please enter a valid email");
+      return;
+    }
+    if ("" === gender) {
+      setGenderError("Please select a gender");
+      return;
+    }
+    if (!genderError === "" && !emailError === "") return;
     createUserI();
   };
 
   const createUserI = async () => {
     try {
       const formData = new FormData();
-      formData.append("photo", profilePicture);
+      const input = document.getElementById("contained-button-file");
+      const defaultFile = input.defaultValue;
+      handleProfilePictureChange(defaultFile);
+      const file = new File([DefaultAvatar], "Zenitsu.png", {
+        type: "image/png",
+      });
+      formData.append("photo", profilePicture || file);
+      console.log(file);
+      //formData.append("photo", profilePicture);
       formData.append("email", email);
       formData.append("name", name);
       formData.append("aboutMe", aboutme);
@@ -70,6 +91,7 @@ const CreateUserInfo = (props) => {
       formData.append("interest", interests);
       formData.append("accountID", id);
       formData.append("type", "profilePicture");
+      console.log(formData);
       const res = await axios.post("http://localhost:3000/user", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -95,6 +117,12 @@ const CreateUserInfo = (props) => {
       */
       //console.log(JSON.stringify({ username, token: res.data }));
       console.log(res);
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ username, token: res.data })
+      );
+      props.setLoggedIn(true);
+      props.setUsername(username);
       navigate("/onboardingPg1", { replace: true });
       /*localStorage.setItem(
         "user",
@@ -178,6 +206,13 @@ const CreateUserInfo = (props) => {
           style={{
             display: "none",
           }}
+          ref={(input) => {
+            // Store a reference to the input element
+            if (input) {
+              input.value = ""; // Reset the input value
+              input.defaultValue = DefaultAvatar; // Set the default file
+            }
+          }}
         />
         <label htmlFor="contained-button-file">
           <IconButton component="span">
@@ -250,7 +285,7 @@ const CreateUserInfo = (props) => {
         <label htmlFor="name">Name:</label>
         <input type="text" id="name" value={name} onChange={handleNameChange} />
       </div>
-  <br />*/}
+     <br />*/}
 
       {/* Input for Email */}
       <div>Email</div>
@@ -261,6 +296,7 @@ const CreateUserInfo = (props) => {
           onChange={handleEmailChange}
           className={"inputBox"}
         />
+        <label className="errorLabel">{emailError}</label>
       </div>
       <br />
 
@@ -289,14 +325,36 @@ const CreateUserInfo = (props) => {
 
       {/*Dropdown for Gender*/}
       <form onSubmit={handleSubmit}>
-        <div style={{ textAlign: "center" }}>Gender:</div>
-        <div className={"inputContainer"}>
-          <select id="Gender" value={gender} onChange={handleGenderChange}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+        <div
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          Gender:
+          <div className={"inputContainer"}>
+            <select id="Gender" value={gender} onChange={handleGenderChange}>
+              <option value="">Select Gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="PREFER NOT TO SAY">Other</option>
+            </select>
+            <label
+              style={{
+                display: "block",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                width: "100%", // Ensure the label takes up the full width
+                margin: "auto",
+                color: "red",
+                fontSize: "12px",
+              }}
+            >
+              {genderError}
+            </label>
+          </div>
         </div>
         <br />
 
