@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SwoleMates from "../assets/SwoleMates.png";
 import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
-import BackgroundImage from "../assets/RedBg.jpg";
 import axios from "axios";
-import { TextField, Box, Typography, CardContent, Card, Grid, List, ListItem } from "@mui/material"; // Import MUI components
-import SearchIcon from "../assets/SearchIcon.png";
+import { Typography, CardContent, Card, Grid, List, ListItem, Chip, Box } from "@mui/material"; // Import MUI components
 
 const Home = (props) => {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedInterests, setSelectedInterests] = useState([]);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
   useEffect(() => {
@@ -34,79 +32,68 @@ const Home = (props) => {
     setIsInputFocused(false);
   };
 
-  const scrollContainerStyle = {
-    display: 'flex',
-    overflowX: 'auto',
-    // Hiding the scrollbar
-    scrollbarWidth: 'none', // For Firefox
-    '&::-webkit-scrollbar': {
-      display: 'none', // For Chrome, Safari, and Opera
-    },
-    '-ms-overflow-style': 'none', // For Internet Explorer and Edge
+  const handleInterestClick = (interest) => {
+    if (selectedInterests.includes(interest)) {
+      setSelectedInterests(prevInterests => prevInterests.filter(item => item !== interest));
+    } else {
+      setSelectedInterests(prevInterests => [...prevInterests, interest]);
+    }
   };
 
   const filteredSessions = sessions.filter(session =>
-    session.name.toLowerCase().includes(searchTerm.toLowerCase())
+    session.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedInterests.length === 0 || selectedInterests.every(interest => session.interest.includes(interest)))
   );
+  
 
- 
+  const interests = [...new Set(sessions.flatMap(session => session.interest))]; // Extract unique interests
 
   return (
-    <div><Navbar />
     <div>
-      <div className="inputContainer" id="searchBox" sx={{ marginBottom: '20px' }} >
-        <input id="searchBar"
-          label={isInputFocused ? "" : "Search for sessions"}
-          placeholder="Search for sessions"
-          variant="outlined"
-          value={searchTerm}
-          className = {"inputBox"}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-          fullWidth
-        />
-        <img
-          src={SearchIcon}
-          /*onClick={togglePasswordVisibility}*/
-          className={"SearchIcon"}
-          style={{ cursor: "pointer" }}
-        />
-      </div>
-      <Grid container spacing={3}>
-        {filteredSessions.map((session) => (
-          <Grid item xs={2.7} key={session.id} style={{ marginLeft: '20px' }}>
-              <Card elevation={5} className="customCard" sx={{ minWidth: 275, maxWidth: 300, borderRadius: '20px' }}>
-              <CardContent>
-                <img src={UluPandan} alt="Ulu Pandan" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
-                <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
-                <Typography variant="body1">Date: {session.date}</Typography>
-                <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+      <Navbar />
+      <div>
+        <div className="inputContainer" id="searchBox" sx={{ marginBottom: '20px' }}>
+          <input id="searchBar"
+            placeholder="Search for sessions"
+            variant="outlined"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
+            fullWidth
+          />
+        </div>
 
-      <Box sx={scrollContainerStyle}>
-        <List style={{ display: 'flex' }}>
+        {/* Render interests as chips */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          {interests.map(interest => (
+            <Chip
+              key={interest}
+              label={interest}
+              onClick={() => handleInterestClick(interest)}
+              variant={selectedInterests.includes(interest) ? "outlined" : "default"}
+              style={{ margin: '0 5px', cursor: 'pointer' }}
+            />
+          ))}
+        </Box>
+
+        {/* Render sessions */}
+        <Grid container spacing={3}>
           {filteredSessions.map((session) => (
-            <ListItem key={session.id} style={{ display: 'inline-block', width: 'auto', marginRight: '20px'}}>
-              <Card elevation={6} className="customCard" sx={{ minWidth: 275, maxWidth: 345, borderRadius: '20px', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.5)' }}>
+            <Grid item xs={2.7} key={session.id} style={{ marginLeft: '20px' }}>
+              <Card elevation={5} className="customCard" sx={{ minWidth: 275, maxWidth: 300, borderRadius: '20px' }}>
                 <CardContent>
-                  <img src={UluPandan} alt="Ulu Pandan" style={{ width: '100%', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
+                  <img src={UluPandan} alt="Ulu Pandan" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
                   <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
-                  <Typography variant="body1">Location: {session.address}</Typography>
                   <Typography variant="body1">Date: {session.date}</Typography>
                   <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
+                  <Typography variant="body1">Interests: {session.interest}</Typography>
                 </CardContent>
               </Card>
-            </ListItem>
+            </Grid>
           ))}
-        </List>
-      </Box>
-
-    </div>
+        </Grid>
+      </div>
     </div>
   );
 };
