@@ -9,6 +9,8 @@
   
     /* additional styling */
     padding: 20px;
+
+    min-height: 90vh;
   }
   
   .enter-details {
@@ -40,6 +42,8 @@
     flex-direction: row;
     width: auto
   }
+
+
   .map {
     grid-row: 1 / span 2;
     /* span two rows */
@@ -52,10 +56,16 @@
     flex-direction: column;
   }
   
-  .enter-details .searchRadius {
+  .enter-details {
     display: flex;
     flex-direction: column;
-    margin-top: 30px;
+    margin-top: 10 px;
+  }
+
+  .searchRadius {
+    display: flex;
+    flex-direction: column;
+    margin-top:10px;
   }
   
   .enter-details .searchRadius label {
@@ -103,3 +113,32 @@
     margin-top: 0;
     margin-bottom: 100px;
   }
+
+
+  .close-button {
+    position: absolute;
+    top: 0px;
+    right: 0px; 
+    cursor: pointer;
+    background: red;
+    color: white;
+    border: none;
+    border-radius: 0 10px 0 10px; 
+    z-index: 1100; 
+    padding: 5px 10px; 
+  }
+
+  .submit-button {
+    border-radius: 20px;
+    margin-left: 40%;
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    width: auto;
+    max-width: 100px;
+    margin-bottom: 10px;
+  }
+  
+
