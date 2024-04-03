@@ -94,6 +94,11 @@
   padding-left: 8px;
 }
 
+.searchBox {
+  background-color: #ffffff;
+  border-radius: 0px;
+}
+
 /*Started editing from here*/
 .redUnderlineButton {
   color: red;
