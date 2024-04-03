@@ -4,11 +4,14 @@ import SwoleMates from "../assets/SwoleMates.png";
 import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { Box, Typography, CardContent, Card, Grid } from "@mui/material"; // Import MUI components
+import { TextField, Box, Typography, CardContent, Card, Grid } from "@mui/material"; // Import MUI components
+import SearchIcon from "@mui/icons-material/Search";
 
 const Home = (props) => {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -22,18 +25,43 @@ const Home = (props) => {
     fetchSessions();
   }, []);
 
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+  };
+
+  const filteredSessions = sessions.filter(session =>
+    session.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div>
       <Navbar />
-      <p>HOME</p>
-      {/* Render sessions here */}
-      <Grid container spacing={3}> {/* Container with grid layout */}
-        {sessions.map((session) => (
-          <Grid item xs={4} key={session.id}> {/* Each card component takes 4 grid units */}
+      <Box className="searchBox" sx={{ marginBottom: '20px' }}>
+        <TextField
+          label={isInputFocused ? "" : "Search for sessions"}
+          placeholder="Search for sessions"
+          variant="outlined"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          fullWidth
+          InputProps={{
+            endAdornment: <SearchIcon />,
+          }}
+        />
+      </Box>
+      <Grid container spacing={3}>
+        {filteredSessions.map((session) => (
+          <Grid item xs={4} key={session.id}>
             <Card elevation={3} className="customCard">
               <CardContent>
-              <img src={UluPandan} style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />                
-                <Typography variant="h5" component="h2" style={{ fontWeight:'bold'}}>{session.name}</Typography>
+                <img src={UluPandan} alt="Ulu Pandan" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
+                <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
                 <Typography variant="body1">Location: {session.address}</Typography>
                 <Typography variant="body1">Date: {session.date}</Typography>
                 <Typography variant="body1">Start Time: {session.startTime}</Typography>
