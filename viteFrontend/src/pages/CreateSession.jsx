@@ -33,6 +33,7 @@ const CreateSession = () => {
   const [durationError, setDurationError] = useState("");
   const [slotsError, setSlotsError] = useState("");
   const [locationError, setLocationError] = useState("");
+  const [timeError, setTimeError] = useState("");
 
 
   const handleSessionPictureChange = (file) => {
@@ -69,10 +70,12 @@ const CreateSession = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    handleAddress(searchInput.current.value);
     setDurationError("")
     setSlotsError("")
     setNameError("")
     setLocationError("")
+    setTimeError("")
 
     if ("" === name) {
       setNameError("Please enter a session name");
@@ -90,17 +93,26 @@ const CreateSession = () => {
       setSlotsError("Please enter a valid integer for the number of slots");
     }
     
-    if (address.trim() === "") {
+    if (searchInput.current.value ===  "") {
       setLocationError("Please select a location");
     }
 
-    if (!durationError === "" && !slotsError === "" && !nameError === "") return;
+    if ("" === startHr || "" === startMin ) { 
+      setTimeError("Please enter a start time");
+    } else if (!isInteger(startHr) || !isInteger(startMin) ) {
+      setTimeError("Please enter a valid integer for the start time");
+    } else if ((startHr>23) || (startMin>59)) {
+      setTimeError("Please enter a valid time");
+    } else if ((startHr.length !== 2) || (startMin.length !== 2)) {
+      setTimeError("Please enter a start time in 24hr format");
+    }
+
+    if (!locationError === "" && !timeError === "" && !durationError === "" && !slotsError === "" && !nameError === "") return;
     createSes();
   }
 
   const createSes = async () => {
     try {
-      handleAddress(searchInput.current.value);
       const formData = new FormData();
       if(!sessionPicture){
         let blob = await fetch(DefaultAvatar).then(r => r.blob());
@@ -112,7 +124,7 @@ const CreateSession = () => {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", (date + "T" + startTime + ":00Z"));
+      formData.append("date", (date + "T" + startHr + ":" + startMin + ":00Z"));
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
@@ -242,16 +254,14 @@ const CreateSession = () => {
             />
           </IconButton>
         </label></div>
-      <div>Click on the Session Picture to upload an image</div><br/>
+      <p>Click on the Session Picture to upload an image</p><br/>
           <div className={"titleContainer"}>
             <label>Session Name:</label>
           </div>
-          <div className={"inputContainer"}
-              style={{
-                alignItems: "center",
-              }}><input
+          <div className={"detailsInputContainer"}>
+            <input
               value={name}
-              placeholder="eg: Zenitsu's Workout Session"
+              placeholder="Zenitsu's Workout Session"
               onChange={(e) => setName(e.target.value)}
               className={"inputBox"}
             />
@@ -274,35 +284,36 @@ const CreateSession = () => {
             <label>Session Start Time (24hr):</label>
           </div>
           <div className={"detailsInputContainer"}>
-  <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex'}}>
           <input
               value={startHr}
               placeholder="01"
               onChange={(e) => setStartHr(e.target.value)}
               className={"timeInputBox"}
+              maxLength={2} 
               style={{ marginRight: '10px' }} // Adjust the spacing between input boxes
             />
             <h3>:</h3> 
             <input
             value={startMin}
-            placeholder="59"
+            placeholder="23"
             onChange={(e) => setStartMin(e.target.value)}
             className={"timeInputBox"}
+            maxLength={2} 
             style={{ marginLeft: '10px' }} 
             />
           </div>
-        </div>
+            <label className="errorLabel">{timeError}</label>
+            </div>
         
           <br />
           <div className={"titleContainer"}>
-            <label>Session Duration:</label>
+            <label>Session Duration (hrs):</label>
           </div>
-          <div className={"inputContainer"}
-              style={{
-                alignItems: "center",
-              }}><input
+          <div className={"detailsInputContainer"}>
+            <input
               value={duration}
-              placeholder="How many hours, eg: 2"
+              placeholder="3"
               onChange={(e) => setDuration(e.target.value)}
               className={"inputBox"}
             />
@@ -312,19 +323,14 @@ const CreateSession = () => {
           <div className={"titleContainer"}>
             <label htmlFor="location-input">Session Location:</label>
           </div>
-          <div
-            className="inputContainer"
-            style={{
-              alignItems: "center",
-            }}
-          >
+          <div className={"detailsInputContainer"}>
             <Autocomplete
               onPlaceChanged={(place) => onPlaceChanged(place)}
               onLoad={onLoad}
             >
               <input
                 type="text"
-                placeholder="eg: North Hill Gym"
+                placeholder="North Hill Gym"
                 size="auto"
                 ref={searchInput}
                 className={"inputBox"}
@@ -352,14 +358,12 @@ const CreateSession = () => {
           /></div><br/> */}
           <br />
           <div className={"titleContainer"}>
-            <label>Session Slots:</label>
+            <label>Max Number of Participants:</label>
           </div>
-          <div className={"inputContainer"}
-              style={{
-                alignItems: "center",
-              }}><input
+          <div className={"detailsInputContainer"}>
+            <input
               value={slots}
-              placeholder="Max number of participants, eg: 6"
+              placeholder="30"
               onChange={(e) => setSlots(e.target.value)}
               className={"inputBox"}
             />
