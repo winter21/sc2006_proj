@@ -79,6 +79,26 @@
   justify-content: center;
 }
 
+#searchBox {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  padding-left: 0; /* Remove left padding */
+  padding-right: 0; /* Remove right padding */
+}
+
+#searchBar {
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items:flex-start;
+  justify-content: center;
+  border-radius: 25px;
+  padding: 20px; /* Adjust the value to change the amount of padding */
+}
+
 .inputContainer > .errorLabel {
   color: red;
   font-size: 12px;
@@ -94,10 +114,10 @@
   padding-left: 8px;
 }
 
-.searchBox {
+/*.searchBox {
   background-color: #ffffff;
   border-radius: 0px;
-}
+}*/
 
 /*Started editing from here*/
 .redUnderlineButton {
@@ -159,6 +179,14 @@
   position: relative; /* Set position to relative */
   right: -360px; /* Shift 10 pixels to the right */
   top: -37px; /* Shift 5 pixels up */
+  width: 30px;
+  height:auto
+}
+
+.SearchIcon{
+  position:relative;
+  right: -1150px; 
+  top: -40px; 
   width: 30px;
   height:auto
 }

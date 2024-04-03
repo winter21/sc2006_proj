@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
+import BackgroundImage from "../assets/RedBg.jpg";
 import axios from "axios";
 import { TextField, Box, Typography, CardContent, Card, Grid, List, ListItem } from "@mui/material"; // Import MUI components
-import SearchIcon from "@mui/icons-material/Search";
+import SearchIcon from "../assets/SearchIcon.png";
 
 const Home = (props) => {
   const navigate = useNavigate();
@@ -48,38 +49,39 @@ const Home = (props) => {
     session.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+ 
+
   return (
+    <div><Navbar />
     <div>
-      <Navbar />
-      <Box className="searchBox" sx={{ marginBottom: '20px' }}>
-        <TextField
+      <div className="inputContainer" id="searchBox" sx={{ marginBottom: '20px' }} >
+        <input id="searchBar"
           label={isInputFocused ? "" : "Search for sessions"}
           placeholder="Search for sessions"
           variant="outlined"
           value={searchTerm}
+          className = {"inputBox"}
           onChange={(e) => setSearchTerm(e.target.value)}
           onFocus={handleInputFocus}
           onBlur={handleInputBlur}
           fullWidth
-          InputProps={{
-            endAdornment: <SearchIcon />,
-          }}
         />
-      </Box>
+        <img
+          src={SearchIcon}
+          /*onClick={togglePasswordVisibility}*/
+          className={"SearchIcon"}
+          style={{ cursor: "pointer" }}
+        />
+      </div>
       <Grid container spacing={3}>
         {filteredSessions.map((session) => (
-          <Grid item xs={4} key={session.id}>
-            <Card elevation={3} className="customCard">
+          <Grid item xs={2.7} key={session.id} style={{ marginLeft: '20px' }}>
+              <Card elevation={5} className="customCard" sx={{ minWidth: 275, maxWidth: 300, borderRadius: '20px' }}>
               <CardContent>
                 <img src={UluPandan} alt="Ulu Pandan" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
                 <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
-                <Typography variant="body1">Location: {session.address}</Typography>
                 <Typography variant="body1">Date: {session.date}</Typography>
-                <Typography variant="body1">Start Time: {session.startTime}</Typography>
-                <Typography variant="body1">Duration: {session.duration} hour(s)</Typography>
-                <Typography variant="body1">Interest: {session.interest}</Typography>
                 <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
-                <Typography variant="body1">Host: {session.host}</Typography>
               </CardContent>
             </Card>
           </Grid>
@@ -104,6 +106,7 @@ const Home = (props) => {
         </List>
       </Box>
 
+    </div>
     </div>
   );
 };
