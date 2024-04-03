@@ -10,5 +10,13 @@ exports.moveImageFromTemp = async (tempPath, folderName, fileName) => {
 }
 
 exports.deleteImage = async (path) => {
-    fs.unlink(path)
+    fs.stat(path, function(err, stat){
+        if (err == null) {
+            fs.unlink(path)
+        } else if (err.code === 'ENOENT') {
+            fs.writeFile('log.txt', 'Some log\n');
+        } else {
+            console.log('Some other error: ', err.code);
+        }
+    })
 }

@@ -42,8 +42,13 @@ exports.createUser = async (req, res) => {
     const tempPath = req.file.path
     const folderName = req.body.type + '/'
     const fileName = req.file.filename
-    const interest = tempInterest.split(',')
+    const picturePath = ''
+    var hasMovedImage = false;
+    const interest = []
     try{
+        if(tempInterest != ''){
+            interest = tempInterest.split(',')
+        }
         const oneUser = await User.findOne({email: email})
         const currentAccount = await Account.findOne({_id: accountID})
         if(!currentAccount){
@@ -54,6 +59,7 @@ exports.createUser = async (req, res) => {
         }
         const newUser = new User({email, name, gender, aboutMe, interest})
         const picturePath = await utils.moveImageFromTemp(tempPath, folderName, fileName)
+        hasMovedImage = true
         newUser.profilePicture = picturePath
         await newUser.save()
         currentAccount.user = newUser._id
@@ -62,7 +68,8 @@ exports.createUser = async (req, res) => {
         res.status(201).send(token)
     }catch(err){
         console.log(err.message)
-        await utils.deleteImage(tempPath)
+        const deletePath = hasMovedImage ? picturePath : tempPath 
+        await utils.deleteImage(deletePath)
         if(err.message == "Duplicate email"){
             res.status(409).send({
                 type:"UserExist",
