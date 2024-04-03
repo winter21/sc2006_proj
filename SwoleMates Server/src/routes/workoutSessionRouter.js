@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const workoutSessionController = require('../controllers/workoutSessionController');
+const multer = require('../middlewares/multer');
 
 //POST method to create 1 new workout session
-router.post("/create",workoutSessionController.createWorkoutSession);
+router.post("/create", multer.single('photo'), workoutSessionController.createWorkoutSession);
 
 //GET method to get all workout sessions
 router.get("/",workoutSessionController.getAllWorkoutSessions);

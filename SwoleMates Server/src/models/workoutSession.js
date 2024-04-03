@@ -59,6 +59,9 @@ const workoutSessionSchema = new Schema({
             "Rowing",
           ]
     },
+    workoutPicture:{
+        type: String
+    },
     on:{
         type: Boolean,
         default: false
