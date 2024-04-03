@@ -1,10 +1,14 @@
 const WorkoutSession = require("../models/workoutSession");
 const axios = require('axios');
+const utils = require("../middlewares/utils")
 
 
 exports.createWorkoutSession = async (req, res) => {
     const { name, date, address, duration, slots, host, interest} = req.body;
-    
+    const tempPath = req.file.path;
+    const folderName = req.body.type + '/';
+    const fileName = req.file.filename;
+
     try {
         if (!address) {
             return res.status(400).send("Address is required");
@@ -37,9 +41,13 @@ exports.createWorkoutSession = async (req, res) => {
             on: true
         });
 
+        const picturePath = await utils.moveImageFromTemp(tempPath, folderName, fileName);
+        newWorkoutSession.workoutPicture = picturePath;
+
         await newWorkoutSession.save();
         res.status(201).send("Workout Session created successfully");
     } catch (error) {
+        await utils.deleteImage(tempPath);
         console.error('Failed to create Workout Session:', error);
         res.status(500).send("Failed to create Workout Session: " + error.message);
     }
