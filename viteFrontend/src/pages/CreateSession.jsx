@@ -8,6 +8,9 @@ import {
   GoogleMap,
 } from "@react-google-maps/api";
 import Navbar from "../components/Navbar";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns";
 import BackgroundImage from "../assets/RedBg.jpg";
 import DefaultAvatar from "../assets/UluPandan.png";
 import { Avatar, IconButton } from "@mui/material";
@@ -16,13 +19,9 @@ import { colors } from "@mui/material";
 const CreateSession = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
-  const [date, setDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
   const [startHr, setStartHr] = useState("");
   const [startMin, setStartMin] = useState("");
-  // const [coordinates, setCoordinates] = useState({
-  //   longitude: '',
-  //   latitude: ''
-  // });
   const [duration, setDuration] = useState("");
   const [slots, setSlots] = useState("");
   const [interests, setInterests] = useState([]);
@@ -33,15 +32,19 @@ const CreateSession = () => {
   const [durationError, setDurationError] = useState("");
   const [slotsError, setSlotsError] = useState("");
   const [locationError, setLocationError] = useState("");
+  const [dateError, setDateError] = useState("");
   const [timeError, setTimeError] = useState("");
 
+  const handleSelectedDate = (date) => {
+    setSelectedDate(date);
+  };
 
   const handleSessionPictureChange = (file) => {
     setSessionPicture(file); 
   };
   
-  const handleAddress = (event) => {
-    setAddress(event);
+  const handleAddress = (location) => {
+    setAddress(location);
   };
 
   const libraries = ["places"];
@@ -50,7 +53,6 @@ const CreateSession = () => {
     libraries: libraries,
   });
   const searchInput = useRef()
-
   //const user = JSON.parse(localStorage.getItem("userID"))
 
   function onLoad(autocomplete) {
@@ -75,6 +77,7 @@ const CreateSession = () => {
     setSlotsError("")
     setNameError("")
     setLocationError("")
+    setDateError("")
     setTimeError("")
 
     if ("" === name) {
@@ -97,6 +100,10 @@ const CreateSession = () => {
       setLocationError("Please select a location");
     }
 
+    if (selectedDate === null) {
+      setDateError("Please select a session date");
+    }
+
     if ("" === startHr || "" === startMin ) { 
       setTimeError("Please enter a start time");
     } else if (!isInteger(startHr) || !isInteger(startMin) ) {
@@ -107,13 +114,14 @@ const CreateSession = () => {
       setTimeError("Please enter a start time in 24hr format");
     }
 
-    if (!locationError === "" && !timeError === "" && !durationError === "" && !slotsError === "" && !nameError === "") return;
+    if (!dateError === "" && !locationError === "" && !timeError === "" && !durationError === "" && !slotsError === "" && !nameError === "") return;
     createSes();
   }
 
   const createSes = async () => {
     try {
       const formData = new FormData();
+      const date = formatDate(selectedDate)
       if(!sessionPicture){
         let blob = await fetch(DefaultAvatar).then(r => r.blob());
         const defaultFile = new File([blob], "DefaultAvatar.png", {
@@ -124,7 +132,7 @@ const CreateSession = () => {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", (date + "T" + startHr + ":" + startMin + ":00Z"));
+      formData.append("date", ( date + "T" + startHr + ":" + startMin + ":00Z"));
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
@@ -148,6 +156,11 @@ const CreateSession = () => {
     // Use parseInt to parse the value and check if it's a valid integer
     return typeof value === 'string' && /^\d+$/.test(value);
   }
+
+  const formatDate = (date) => {
+    return format(date, "yyyy-MM-dd");
+  };
+
 
   const handleInterestChange = (interest) => {
     if (!interests.includes(interest)) {
@@ -271,13 +284,14 @@ const CreateSession = () => {
           <div className={"titleContainer"}>
             <label>Session Date:</label>
           </div>
-          <div className={"inputContainer"}>
-            <input
-              value={date}
-              placeholder="yyyy-mm-dd"
-              onChange={(e) => setDate(e.target.value)}
-              className={"inputBox"}
+          <div className={"detailsInputContainer"}>
+            <DatePicker selected={selectedDate} 
+            onChange={handleSelectedDate}
+            dateFormat="yyyy-MM-dd"
+            placeholderText="yyyy-mm-dd"
+            className={"inputBox"}
             />
+            <label className="errorLabel">{dateError}</label>
           </div>
           <br />
           <div className={"titleContainer"}>
