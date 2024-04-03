@@ -12,6 +12,7 @@ const CreateUserInfo = (props) => {
   const navigate = useNavigate();
   const [genderError, setGenderError] = useState("");
   const [emailError, setEmailError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -55,35 +56,43 @@ const CreateUserInfo = (props) => {
     // Handle form submission here
     setGenderError("");
     setEmailError("");
-
-    if ("" === email) {
+    setNameError("");
+    if ("" === name) {
+      setNameError("Please enter your name");
+    }
+    /*if ("" === email) {
       setEmailError("Please enter your email");
       return;
-    }
+    }*/
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailError("Please enter a valid email");
-      return;
     }
     if ("" === gender) {
       setGenderError("Please select a gender");
-      return;
     }
-    if (!genderError === "" && !emailError === "") return;
+    if (!genderError === "" && !emailError === "" && !nameError === "") return;
+    console.log("sent");
     createUserI();
   };
 
   const createUserI = async () => {
     try {
       const formData = new FormData();
-      const input = document.getElementById("contained-button-file");
-      const defaultFile = input.defaultValue;
-      handleProfilePictureChange(defaultFile);
+      /*if (profilePicture) {
+        formData.append("photo", profilePicture);
+      } else {
+        const defaultFile = new File([DefaultAvatar], "DefaultAvatar.png", {
+          type: "image/png",
+        });
+        formData.append("photo", defaultFile);
+        console.log(defaultFile);
+      }
+
       const file = new File([DefaultAvatar], "Zenitsu.png", {
         type: "image/png",
       });
-      formData.append("photo", profilePicture || file);
-      console.log(file);
-      //formData.append("photo", profilePicture);
+      formData.append("photo", profilePicture || file);*/
+      formData.append("photo", profilePicture);
       formData.append("email", email);
       formData.append("name", name);
       formData.append("aboutMe", aboutme);
@@ -121,24 +130,17 @@ const CreateUserInfo = (props) => {
         "user",
         JSON.stringify({ username, token: res.data })
       );
-      props.setLoggedIn(true);
-      props.setUsername(username);
-      navigate("/onboardingPg1", { replace: true });
-      /*localStorage.setItem(
-        "user",
-        JSON.stringify({ username, token: res.data })
-      );
-      props.setLoggedIn(true);
-      props.setUsername(username);
-      navigate(from, { replace: true });*/
+      //props.setLoggedIn(true);
+      //props.setUsername(username);
+      //navigate("/onboardingPg1", { replace: true });
       //if (!authController.isAuthenticated()) {
       /*
       hen((r) => {
                   });*/
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.error("Error 401:", error.response.data);
-        setPasswordError(error.response.data.message);
+      if (error.response && error.response.status === 409) {
+        console.error("Error 409:", error.response.data);
+        setEmailError(error.response.data.message);
       } else if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Server responded with status:", error.response.status);
@@ -206,13 +208,6 @@ const CreateUserInfo = (props) => {
           style={{
             display: "none",
           }}
-          ref={(input) => {
-            // Store a reference to the input element
-            if (input) {
-              input.value = ""; // Reset the input value
-              input.defaultValue = DefaultAvatar; // Set the default file
-            }
-          }}
         />
         <label htmlFor="contained-button-file">
           <IconButton component="span">
@@ -278,6 +273,7 @@ const CreateUserInfo = (props) => {
           onChange={handleNameChange}
           className={"inputBox"}
         />
+        <label className="errorLabel">{nameError}</label>
       </div>
       <br />
 

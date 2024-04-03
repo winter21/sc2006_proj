@@ -117,15 +117,15 @@ function App() {
               <Login setLoggedIn={setLoggedIn} setUsername={setUsername} />
             }
           />
-          <Route
-            path="/signup"
-            element={
-              <Signup setLoggedIn={setLoggedIn} setUsername={setUsername} />
-            }
-          />
+          <Route path="/signup" element={<Signup />} />
           <Route
             path="/createUserInfo"
-            element={<CreateUserInfo username={username} />}
+            element={
+              <CreateUserInfo
+                setLoggedIn={setLoggedIn}
+                setUsername={setUsername}
+              />
+            }
           />
           <Route
             path="/home"
@@ -145,13 +145,13 @@ function App() {
             }
           />
           <Route
-          path="/sessionDetails/:id"
-          element={
-            <RequireAuth loggedIn={loggedIn} username={username}>
-              <SessionDetails />
-            </RequireAuth>
-          }
-        />
+            path="/sessionDetails/:id"
+            element={
+              <RequireAuth loggedIn={loggedIn} username={username}>
+                <SessionDetails />
+              </RequireAuth>
+            }
+          />
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />

@@ -3,7 +3,6 @@ const User = require("../models/user")
 const bcrypt = require("bcrypt")
 const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-const account = require("../models/account");
 const secret = "CooCooPioPio"
 
 //Create account with POST request
@@ -44,7 +43,12 @@ exports.login = async (req,res) => {
         if(oneAccount){
             const validAccount = await checkPassword(oneAccount,password)
             if(validAccount){
-                const token  = await jwt.sign({userId: oneAccount.user}, secret, {
+                if(!oneAccount.user){
+                    throw new Error("User not Created")
+                }
+                const currentUser = await User.findById(oneAccount.user)
+                console.log(currentUser)
+                const token  = await jwt.sign({userId: currentUser._id, name: currentUser.name}, secret, {
                     expiresIn:'24h'
                 })
                 res.status(201).send(token)
@@ -61,7 +65,14 @@ exports.login = async (req,res) => {
                 status: 401,
                 message: "You have entered the wrong username/password"
             })
-        }else{
+        }else if(err.message == "User not Created"){
+            res.status(403).send({
+                type:"UserNotCreated",
+                status: 403,
+                message: "You have not create a user profile."
+            })
+        }
+        else{
             res.status(500).send({
                 type:"LoginAccountError",
                 status: 500,
