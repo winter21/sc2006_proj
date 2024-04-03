@@ -8,9 +8,11 @@ import axios from "axios";
 //email and name required
 //email must be unique
 const CreateUserInfo = (props) => {
-  //const { username } = props;
   let location = useLocation();
   const navigate = useNavigate();
+  const [genderError, setGenderError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [nameError, setNameError] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -21,8 +23,6 @@ const CreateUserInfo = (props) => {
   let username = location.state?.username || "";
   const handleProfilePictureChange = (file) => {
     setProfilePicture(file); // Update the profile picture state
-    console.log(profilePicture);
-    console.log(URL.createObjectURL(profilePicture));
   };
 
   const handleNameChange = (event) => {
@@ -54,14 +54,44 @@ const CreateUserInfo = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     // Handle form submission here
-    // Navigate page here too
-    // if (!usernameError === "" && !passwordError === "") return;
+    setGenderError("");
+    setEmailError("");
+    setNameError("");
+    if ("" === name) {
+      setNameError("Please enter your name");
+    }
+    /*if ("" === email) {
+      setEmailError("Please enter your email");
+      return;
+    }*/
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError("Please enter a valid email");
+    }
+    if ("" === gender) {
+      setGenderError("Please select a gender");
+    }
+    if (!genderError === "" && !emailError === "" && !nameError === "") return;
+    console.log("sent");
     createUserI();
   };
 
   const createUserI = async () => {
     try {
       const formData = new FormData();
+      /*if (profilePicture) {
+        formData.append("photo", profilePicture);
+      } else {
+        const defaultFile = new File([DefaultAvatar], "DefaultAvatar.png", {
+          type: "image/png",
+        });
+        formData.append("photo", defaultFile);
+        console.log(defaultFile);
+      }
+
+      const file = new File([DefaultAvatar], "Zenitsu.png", {
+        type: "image/png",
+      });
+      formData.append("photo", profilePicture || file);*/
       formData.append("photo", profilePicture);
       formData.append("email", email);
       formData.append("name", name);
@@ -70,6 +100,7 @@ const CreateUserInfo = (props) => {
       formData.append("interest", interests);
       formData.append("accountID", id);
       formData.append("type", "profilePicture");
+      console.log(formData);
       const res = await axios.post("http://localhost:3000/user", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -95,22 +126,21 @@ const CreateUserInfo = (props) => {
       */
       //console.log(JSON.stringify({ username, token: res.data }));
       console.log(res);
-      navigate("/onboardingPg1", { replace: true });
-      /*localStorage.setItem(
+      localStorage.setItem(
         "user",
         JSON.stringify({ username, token: res.data })
       );
-      props.setLoggedIn(true);
-      props.setUsername(username);
-      navigate(from, { replace: true });*/
+      //props.setLoggedIn(true);
+      //props.setUsername(username);
+      //navigate("/onboardingPg1", { replace: true });
       //if (!authController.isAuthenticated()) {
       /*
       hen((r) => {
                   });*/
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        console.error("Error 401:", error.response.data);
-        setPasswordError(error.response.data.message);
+      if (error.response && error.response.status === 409) {
+        console.error("Error 409:", error.response.data);
+        setEmailError(error.response.data.message);
       } else if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Server responded with status:", error.response.status);
@@ -243,6 +273,7 @@ const CreateUserInfo = (props) => {
           onChange={handleNameChange}
           className={"inputBox"}
         />
+        <label className="errorLabel">{nameError}</label>
       </div>
       <br />
 
@@ -250,7 +281,7 @@ const CreateUserInfo = (props) => {
         <label htmlFor="name">Name:</label>
         <input type="text" id="name" value={name} onChange={handleNameChange} />
       </div>
-  <br />*/}
+     <br />*/}
 
       {/* Input for Email */}
       <div>Email</div>
@@ -261,6 +292,7 @@ const CreateUserInfo = (props) => {
           onChange={handleEmailChange}
           className={"inputBox"}
         />
+        <label className="errorLabel">{emailError}</label>
       </div>
       <br />
 
@@ -289,14 +321,36 @@ const CreateUserInfo = (props) => {
 
       {/*Dropdown for Gender*/}
       <form onSubmit={handleSubmit}>
-        <div style={{ textAlign: "center" }}>Gender:</div>
-        <div className={"inputContainer"}>
-          <select id="Gender" value={gender} onChange={handleGenderChange}>
-            <option value="">Select Gender</option>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-          </select>
+        <div
+          style={{
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+          }}
+        >
+          Gender:
+          <div className={"inputContainer"}>
+            <select id="Gender" value={gender} onChange={handleGenderChange}>
+              <option value="">Select Gender</option>
+              <option value="MALE">Male</option>
+              <option value="FEMALE">Female</option>
+              <option value="PREFER NOT TO SAY">Other</option>
+            </select>
+            <label
+              style={{
+                display: "block",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                width: "100%", // Ensure the label takes up the full width
+                margin: "auto",
+                color: "red",
+                fontSize: "12px",
+              }}
+            >
+              {genderError}
+            </label>
+          </div>
         </div>
         <br />
 

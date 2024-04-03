@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
@@ -8,6 +8,7 @@ import {
   GoogleMap,
 } from "@react-google-maps/api";
 import Navbar from "../components/Navbar";
+import BackgroundImage from "../assets/RedBg.jpg";
 import { colors } from "@mui/material";
 
 const CreateSession = () => {
@@ -22,16 +23,16 @@ const CreateSession = () => {
   const [duration, setDuration] = useState("");
   const [slots, setSlots] = useState("");
   const [interests, setInterests] = useState([]);
+  const [searchResult, setSearchResult] = useState("");
 
   const libraries = ["places"];
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
     libraries: libraries,
   });
-
-  const [searchResult, setSearchResult] = useState("");
-
   const searchInput = useRef();
+
+  //const user = JSON.parse(localStorage.getItem("user"))
 
   function onLoad(autocomplete) {
     setSearchResult(autocomplete);
@@ -50,6 +51,7 @@ const CreateSession = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    //console.log(user.username)
     const address = searchInput.current.value;
     const session = await axios
       .post("http://localhost:3000/workoutSession/create", {
@@ -62,13 +64,13 @@ const CreateSession = () => {
         address: address,
         duration: duration,
         slots: slots,
-        host: "65fb29f281ef4e9ed5fc5356",
+        host: user,
         interest: interests,
       })
       .then(() => {
         navigate("/home");
       });
-  };
+  }
 
   const handleInterestChange = (interest) => {
     if (!interests.includes(interest)) {
@@ -93,9 +95,37 @@ const CreateSession = () => {
     "Rowing",
   ];
 
+  const containerStyle = {
+    borderRadius: "20px",
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.5)",
+    padding: "40px",
+    textAlign: "center",
+    margin: "20px",
+    marginTop: "15vh",
+    maxWidth: "600px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "white",
+  };
+
+  const fullScreenBackgroundStyle = {
+    width: "100vw",
+    height: "100vh",
+    backgroundImage: `url(${BackgroundImage})`,
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: 'cover',
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    zIndex: -1
+  };
+
   return (
     <div>
       <Navbar />
+      <div style={fullScreenBackgroundStyle} /> 
+      <div style={containerStyle}>
       <div className={"mainContainer"}>
       <div className={"headerContainer"}>
         <h2>Create a New Workout Session</h2>
@@ -230,6 +260,7 @@ const CreateSession = () => {
           </div>
         </form>
       </div>
+    </div>
     </div>
   );
 };
