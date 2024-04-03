@@ -7,6 +7,7 @@ import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
 import CreateSession from "./pages/createSession";
+import SessionDetails from "./pages/SessionDetails";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
@@ -136,13 +137,21 @@ function App() {
           />
           <Route path="/explore" element={<Explore />} />
           <Route
-            path="/CreateSession"
+            path="/createSession"
             element={
               <RequireAuth loggedIn={loggedIn} username={username}>
                 <CreateSession />
               </RequireAuth>
             }
           />
+          <Route
+          path="/sessionDetails/:id"
+          element={
+            <RequireAuth loggedIn={loggedIn} username={username}>
+              <SessionDetails />
+            </RequireAuth>
+          }
+        />
           <Route path="/onboardingPg1" element={<Onboarding1 />} />
           <Route path="/onboardingPg2" element={<Onboarding2 />} />
           <Route path="/onboardingPg3" element={<Onboarding3 />} />
