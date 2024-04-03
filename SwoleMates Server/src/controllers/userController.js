@@ -1,8 +1,8 @@
 const User = require("../models/user");
 const Account = require("../models/account");
 const fs = require('fs-extra')
-const jwt = require('jsonwebtoken')
-const secret = "CooCooPioPio"
+const auth = require("../middlewares/auth")
+const utils = require("../middlewares/utils")
 
 exports.getOneUser = async (req, res) => {
     const userID = req.params.userId
@@ -42,7 +42,7 @@ exports.createUser = async (req, res) => {
     const tempPath = req.file.path
     const folderName = req.body.type + '/'
     const fileName = req.file.filename
-    const interest = tempInterest[0].split(',')
+    const interest = tempInterest.split(',')
     try{
         const oneUser = await User.findOne({email: email})
         const currentAccount = await Account.findOne({_id: accountID})
@@ -53,18 +53,16 @@ exports.createUser = async (req, res) => {
             throw new Error("Duplicate email")
         }
         const newUser = new User({email, name, gender, aboutMe, interest})
-        const picturePath = await moveImageFromTemp(tempPath, folderName, fileName)
+        const picturePath = await utils.moveImageFromTemp(tempPath, folderName, fileName)
         newUser.profilePicture = picturePath
         await newUser.save()
-        console.log(newUser._id)
         currentAccount.user = newUser._id
         await currentAccount.save()
-        const token  = await jwt.sign({userId: newUser._id}, secret, {
-            expiresIn:'24h'
-        })
+        const token  = await auth.generateToken(newUser._id, '24h')
         res.status(201).send(token)
     }catch(err){
-        await deleteImage(tempPath)
+        console.log(err.message)
+        await utils.deleteImage(tempPath)
         if(err.message == "Duplicate email"){
             res.status(409).send({
                 type:"UserExist",
@@ -158,17 +156,4 @@ exports.updateProfilePicture = async (req, res) => {
             })
         }
     }
-}
-
-const moveImageFromTemp = async (tempPath, folderName, fileName) => { 
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
-    }
-    const picturePath = folderName + fileName
-    await fs.move(tempPath,picturePath)
-    return picturePath;
-}
-
-const deleteImage = async (path) => {
-    fs.unlink(path)
 }
