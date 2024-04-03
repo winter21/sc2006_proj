@@ -134,11 +134,11 @@ const MySessions = () => {
       </div>
       {isHosted ? (
         <div>
-          <p>Showing Hosted Sessions...</p>
+          <p>Showing <span style={{ fontSize: '120px', fontWeight: 'bold' }}>Hosted</span> Sessions...</p>
         </div>
       ) : (
         <div>
-          <p>Showing Joined Sessions...</p>
+          <p>Showing <span style={{ fontSize: '120px', fontWeight: 'bold' }}>Joined</span> Sessions...</p>
         </div>
       )}
     </div>
