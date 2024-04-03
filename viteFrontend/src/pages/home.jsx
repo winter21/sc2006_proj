@@ -44,6 +44,22 @@ const Home = (props) => {
     session.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (selectedInterests.length === 0 || selectedInterests.every(interest => session.interest.includes(interest)))
   );
+
+
+  const interestColors = {
+    "Running": "#FF7043",
+    "HIIT": "#AB47BC",
+    "Yoga": "#5C6BC0",
+    "Pilates": "#42A5F5",
+    "Dance": "#26A69A",
+    "Hiking": "#9CCC65",
+    "Boxing": "#D4E157",
+    "Cycling": "#EF5350",
+    "Rowing": "#EC407A",
+    "Weightlifting": "#FFA726",
+    "Swimming": "#8D6E63",
+    "CrossFit": "#78909C",
+  };
   
 
   const interests = [...new Set(sessions.flatMap(session => session.interest))]; // Extract unique interests
@@ -72,7 +88,16 @@ const Home = (props) => {
               label={interest}
               onClick={() => handleInterestClick(interest)}
               variant={selectedInterests.includes(interest) ? "outlined" : "default"}
-              style={{ margin: '0 5px', cursor: 'pointer' }}
+              style={{
+                margin: '0 5px',
+                cursor: 'pointer',
+                // Border color changes based on whether the chip is selected
+                border: `1.5px solid ${interestColors[interest] ? interestColors[interest] : '#e0e0e0'}`,
+                // Background color changes based on selection
+                backgroundColor: selectedInterests.includes(interest) ? 'transparent' : (interestColors[interest] || 'default'),
+                // Text color changes based on selection
+                color: selectedInterests.includes(interest) ? interestColors[interest] : 'white',
+              }}
             />
           ))}
         </Box>
