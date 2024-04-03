@@ -301,7 +301,7 @@ function Explore() {
             </button>
             <Card variant="outlined" sx={{ width: '100%', border: 'none', boxShadow: 'none', borderRadius: '10px'}}>
               <CardContent sx={{ 
-                maxHeight: '64vh', 
+                maxHeight: '53vh', 
                 borderRadius: '10px',
                 // backgroundColor: 'red',
                 overflowY: "auto",
