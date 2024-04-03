@@ -12,6 +12,28 @@
 
 // export default Profile;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
@@ -146,3 +168,181 @@ const Profile = (props) => {
 };
 
 export default Profile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect } from 'react';
+// import axios from 'axios';
+// import Navbar from '../components/Navbar';
+// import { Box, Typography, Avatar, List, ListItem, ListItemText } from '@mui/material';
+
+// const Profile = () => {
+//   const [user, setUser] = useState(null);
+
+//   useEffect(() => {
+//     // Replace 'userId' with the actual user ID you want to fetch
+//     const userId = '660c1d4c98429a652603208d';
+//     const fetchUserData = async () => {
+//       try {
+//         const response = await axios.get(`http://localhost:3000/users/${userId}`); // Make sure the URL matches your backend route
+//         setUser(response.data);
+//       } catch (error) {
+//         console.error("Error fetching user data:", error);
+//       }
+//     };
+
+//     fetchUserData();
+//   }, []); // The empty array ensures this effect runs only once after the initial render
+
+//   return (
+//     <div>
+//       <Navbar />
+//       <h1>This is the profile page</h1>
+//       {user ? (
+//         <Box sx={{ maxWidth: 600, margin: 'auto', textAlign: 'center' }}>
+//           <Avatar
+//             alt={user.name}
+//             src={user.profilePicture}
+//             sx={{ width: 100, height: 100, margin: 'auto' }}
+//           />
+//           <Typography variant="h4">{user.name}</Typography>
+//           <Typography variant="body1">{user.email}</Typography>
+//           <Typography variant="body1">{user.gender}</Typography>
+//           <Typography variant="body1">{user.aboutMe}</Typography>
+//           <Typography variant="h6">Interests</Typography>
+//           <List>
+//             {user.interest.map((interest, index) => (
+//               <ListItem key={index}>
+//                 <ListItemText primary={interest} />
+//               </ListItem>
+//             ))}
+//           </List>
+//         </Box>
+//       ) : (
+//         <Typography>Loading...</Typography>
+//       )}
+//     </div>
+//   );
+// };
+
+// export default Profile;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from 'react';
+// import Navbar from '../components/Navbar';
+
+// // Assuming you're running your backend on localhost:5000
+// const API_URL = 'http://localhost:3000/user/'; // Update with your actual API URL
+
+// const Profile = () => {
+//   const [user, setUser] = useState(null);
+//   const userId = 'someUserId'; // You should replace this with the actual user ID
+
+//   useEffect(() => {
+//     // Function to fetch user data
+//     const fetchUserData = async () => {
+//       try {
+//         const response = await fetch(`${API_URL}/${userId}`);
+//         if (!response.ok) {
+//           throw new Error('Could not fetch user data');
+//         }
+//         const data = await response.json();
+//         setUser(data);
+//       } catch (error) {
+//         console.error("Error fetching user data:", error);
+//       }
+//     };
+
+//     fetchUserData();
+//   }, [userId]); // This effect depends on userId, so it runs when userId changes
+
+//   if (!user) {
+//     return <div>Loading...</div>;
+//   }
+
+//   return (
+//     <div>
+//       <Navbar/>
+//       <h1>This is the profile page</h1>
+//       <div>
+//         <h2>{user.name}</h2>
+//         <p>Email: {user.email}</p>
+//         <p>Gender: {user.gender}</p>
+//         <p>About Me: {user.aboutMe}</p>
+//         {user.profilePicture && (
+//           <img src={user.profilePicture} alt="Profile" style={{ width: '100px', height: '100px' }} />
+//         )}
+//         <p>Interests:</p>
+//         <ul>
+//           {user.interest.map((interest, index) => (
+//             <li key={index}>{interest}</li>
+//           ))}
+//         </ul>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Profile;

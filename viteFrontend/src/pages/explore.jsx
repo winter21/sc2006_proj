@@ -16,6 +16,7 @@ import Spinner from "../components/Spinner";
 import GymIcon from "../assets/gym-icon.png";
 import RedBg from "../assets/RedBg.jpg";
 
+
 const libraries = ["places"];
 function Explore() {
   const { isLoaded } = useJsApiLoader({
@@ -225,7 +226,7 @@ function Explore() {
                       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
                       border: 'none',
                       padding: '10px', 
-                      width: '120%',
+                      width: '115%',
                     }}
                   />
                 </Autocomplete>
