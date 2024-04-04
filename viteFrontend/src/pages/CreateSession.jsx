@@ -124,7 +124,7 @@ const CreateSession = () => {
       const token = JSON.parse(localStorage.getItem("user")).token
       const decodedToken = await axios.post("http://localhost:3000/account/decode-jwt", {
         token: token
-      }); 
+      });
       const userId = decodedToken.data.userId
       const date = formatDate(selectedDate)
       if(!sessionPicture){
