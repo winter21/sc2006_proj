@@ -97,6 +97,7 @@ const CreateUserInfo = (props) => {
   useEffect(() => {
     if (Object.keys(errors).length === 0 && submitting) {
       console.log("sent");
+      createUserI();
     }
   }, [errors]);
 
@@ -155,9 +156,9 @@ const CreateUserInfo = (props) => {
         "user",
         JSON.stringify({ username, token: res.data })
       );
-      //props.setLoggedIn(true);
-      //props.setUsername(username);
-      //navigate("/onboardingPg1", { replace: true });
+      props.setLoggedIn(true);
+      props.setUsername(username);
+      navigate("/onboardingPg1", { replace: true });
       //if (!authController.isAuthenticated()) {
       /*
       hen((r) => {
@@ -165,7 +166,7 @@ const CreateUserInfo = (props) => {
     } catch (error) {
       if (error.response && error.response.status === 409) {
         console.error("Error 409:", error.response.data);
-        setEmailError(error.response.data.message);
+        setErrors({ email: error.response.data.message });
       } else if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Server responded with status:", error.response.status);
