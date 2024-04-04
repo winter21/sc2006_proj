@@ -111,13 +111,14 @@ exports.updateUser = async (req, res) => {
 
     let picturePath = ''
     var hasMovedImage = false;
+    const tempPath = ''
 
     let interest = []
     try{
         if (!req.file) {
             throw new Error("No Image File")
         }
-        const tempPath = req.file.path
+        tempPath = req.file.path
         const folderName = req.body.type + '/'
         const fileName = req.file.filename
 
@@ -150,6 +151,9 @@ exports.updateUser = async (req, res) => {
 
         res.status(201).send(oneUser)
     }catch(err){
+        console.log(err.message)
+        const deletePath = hasMovedImage ? picturePath : tempPath 
+        await utils.deleteImage(deletePath)
         if(err.message == "No Image File"){
             res.status(400).send({
                 type:"NoImageFile",
