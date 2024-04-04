@@ -10,9 +10,6 @@ router.get("/:userId", userController.getOneUser)
 router.post("/", multer.single('photo'), userController.createUser)
 
 //PUT method to update 1 user details
-router.put("/:userId", userController.updateUser)
-
-//PUT method to update 1 user details
-router.put("/profilePicture/:userId", multer.single('photo'), userController.updateProfilePicture)
+router.put("/:userId", multer.single('photo'), userController.updateUser)
 
 module.exports = router;
