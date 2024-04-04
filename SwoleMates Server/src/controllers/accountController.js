@@ -37,12 +37,14 @@ exports.createAccount = async (req,res) => {
 exports.login = async (req,res) => {
     const username = req.body.username
     const password = req.body.password
+    let accountId =''
     try{
         const oneAccount = await Account.findOne({username: username})
         if(oneAccount){
             const validAccount = await checkPassword(oneAccount,password)
             if(validAccount){
                 if(!oneAccount.user){
+                    accountId = oneAccount._id
                     throw new Error("User not Created")
                 }
                 const currentUser = await User.findById(oneAccount.user)
@@ -65,7 +67,8 @@ exports.login = async (req,res) => {
             res.status(403).send({
                 type:"UserNotCreated",
                 status: 403,
-                message: "You have not create a user profile."
+                message: "You have not create a user profile.",
+                accountId: accountId
             })
         }
         else{
@@ -167,7 +170,6 @@ exports.checkJwtToken = async (req, res) => {
         result = auth.verifyToken(token)
         if(result){
             res.status(200).send(result)
-            console.log(result)
         }else{
             throw new Error("invalid token")
         }
