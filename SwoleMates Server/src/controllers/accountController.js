@@ -46,7 +46,6 @@ exports.login = async (req,res) => {
                     throw new Error("User not Created")
                 }
                 const currentUser = await User.findById(oneAccount.user)
-                console.log(currentUser)
                 const token  = await auth.generateToken(currentUser._id, currentUser.name, '24h')
                 res.status(201).send(token)
             }else{
@@ -92,7 +91,6 @@ exports.forgetPassword = async (req, res) => {
         const token  = await auth.generateToken(user._id,"", '24h')
         
         let url = "http://localhost:5173/reset-password?token="+token
-        console.log(token)
         
         var mailOptions = {
             from: "swolemates.auth.service@gmail.com",
@@ -139,7 +137,7 @@ exports.updatePassword = async (req, res) => {
     try{
         const authorised  = await verifyToken(token)
         const account = await Account.findOne({user:authorised._id})
-        console.log(authorised._id)
+
         account.password = req.body.password
         await account.save()
         res.status(201).send(account)
@@ -184,7 +182,6 @@ exports.decodeJwtToken = async (req, res) => {
             const userId = decodedToken.userId
             const name = decodedToken.name
             const combinedJson = {userId: userId, name:name}
-            console.log(decodedToken)
             res.status(200).send(combinedJson)
         }else{
             throw new Error("invalid token")
