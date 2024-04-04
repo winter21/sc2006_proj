@@ -63,12 +63,12 @@ const Signup = (props) => {
     }
 
     // Authentication calls will be made here...
-    if (
+    /*if (
       !usernameError === "" &&
       !passwordError === "" &&
       !confirmPasswordError === ""
     )
-      return;
+      return;*/
     handleSignup();
   };
 

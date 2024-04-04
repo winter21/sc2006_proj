@@ -60,7 +60,7 @@ const Login = (props) => {
     }
 
     // Authentication calls will be made here...
-    if (!usernameError === "" && !passwordError === "") return;
+    //if (!usernameError === "" && !passwordError === "") return;
     login();
   };
 
@@ -135,19 +135,23 @@ const Login = (props) => {
     width: "100vw",
     height: "100vh",
     backgroundImage: `url(${BackgroundImage})`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    position: 'fixed',
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    position: "fixed",
     top: 0,
     left: 0,
-    zIndex: -1
+    zIndex: -1,
   };
 
   return (
-    <div> {/* Wrap everything in a single parent div */}
+    <div>
+      {" "}
+      {/* Wrap everything in a single parent div */}
       <div style={fullScreenBackgroundStyle} /> {/* Background image */}
-      <div style={containerStyle}> {/* Container */}
+      <div style={containerStyle}>
+        {" "}
+        {/* Container */}
         <div className={"loginContainer"}>
           <div className={"titleContainer"}>
             {/* Insert the <img> element here */}

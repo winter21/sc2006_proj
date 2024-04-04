@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation, Navigate } from "react-router-dom";
 import SwoleMates from "../assets/SwoleMates.png";
 import DefaultAvatar from "../assets/Zenitsu.png";
@@ -10,9 +10,11 @@ import axios from "axios";
 const CreateUserInfo = (props) => {
   let location = useLocation();
   const navigate = useNavigate();
-  const [genderError, setGenderError] = useState("");
+  /*const [genderError, setGenderError] = useState("");
   const [emailError, setEmailError] = useState("");
-  const [nameError, setNameError] = useState("");
+  const [nameError, setNameError] = useState("");*/
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [gender, setGender] = useState("");
@@ -51,10 +53,27 @@ const CreateUserInfo = (props) => {
     console.log(interests);
   };
 
+  const validateValues = () => {
+    let errors = {};
+
+    if ("" === name) {
+      errors.name = "Please enter your name";
+    }
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      errors.email = "Please enter a valid email";
+    }
+    if ("" === gender) {
+      errors.gender = "Please select a gender";
+    }
+    return errors;
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    setErrors(validateValues());
+    setSubmitting(true);
     // Handle form submission here
-    setGenderError("");
+    /*setGenderError("");
     setEmailError("");
     setNameError("");
     if ("" === name) {
@@ -63,7 +82,7 @@ const CreateUserInfo = (props) => {
     /*if ("" === email) {
       setEmailError("Please enter your email");
       return;
-    }*/
+    }
     if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
       setEmailError("Please enter a valid email");
     }
@@ -72,8 +91,14 @@ const CreateUserInfo = (props) => {
     }
     if (!genderError === "" && !emailError === "" && !nameError === "") return;
     console.log("sent");
-    createUserI();
+    createUserI();*/
   };
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && submitting) {
+      console.log("sent");
+    }
+  }, [errors]);
 
   const createUserI = async () => {
     try {
@@ -272,8 +297,11 @@ const CreateUserInfo = (props) => {
           placeholder="Enter your name here"
           onChange={handleNameChange}
           className={"inputBox"}
+          style={{ border: errors.name ? "1px solid red" : null }}
         />
-        <label className="errorLabel">{nameError}</label>
+        {errors.name ? (
+          <label className="errorLabel">{errors.name}</label>
+        ) : null}
       </div>
       <br />
 
@@ -291,8 +319,11 @@ const CreateUserInfo = (props) => {
           placeholder="Enter your email here"
           onChange={handleEmailChange}
           className={"inputBox"}
+          style={{ border: errors.email ? "1px solid red" : null }}
         />
-        <label className="errorLabel">{emailError}</label>
+        {errors.email ? (
+          <label className="errorLabel">{errors.email}</label>
+        ) : null}
       </div>
       <br />
 
@@ -330,26 +361,33 @@ const CreateUserInfo = (props) => {
         >
           Gender:
           <div className={"inputContainer"}>
-            <select id="Gender" value={gender} onChange={handleGenderChange}>
+            <select
+              id="Gender"
+              value={gender}
+              onChange={handleGenderChange}
+              style={{ border: errors.gender ? "1px solid red" : null }}
+            >
               <option value="">Select Gender</option>
               <option value="MALE">Male</option>
               <option value="FEMALE">Female</option>
               <option value="PREFER NOT TO SAY">Other</option>
             </select>
-            <label
-              style={{
-                display: "block",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                width: "100%", // Ensure the label takes up the full width
-                margin: "auto",
-                color: "red",
-                fontSize: "12px",
-              }}
-            >
-              {genderError}
-            </label>
+            {errors.gender ? (
+              <label
+                style={{
+                  display: "block",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  width: "100%", // Ensure the label takes up the full width
+                  margin: "auto",
+                  color: "red",
+                  fontSize: "12px",
+                }}
+              >
+                {errors.gender}
+              </label>
+            ) : null}
           </div>
         </div>
         <br />
