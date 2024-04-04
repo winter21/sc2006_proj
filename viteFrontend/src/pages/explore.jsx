@@ -1,7 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-//import Navbar from 'scenes/navbar'
 import "../explore.css";
 import {
   useJsApiLoader,
@@ -10,8 +9,7 @@ import {
   Autocomplete,
   DirectionsRenderer
 } from "@react-google-maps/api";
-//import { useRef, useState} from 'react'
-import { Box, Typography, CardContent, Card, Slider } from "@mui/material";
+import { Box, Typography, CardContent, Card, Slider,  List, ListItem } from "@mui/material";
 import Spinner from "../components/Spinner";
 import GymIcon from "../assets/gym-icon.png";
 import RedBg from "../assets/RedBg.jpg";
@@ -203,6 +201,17 @@ function Explore() {
       );
     }
   };
+
+  const scrollContainerStyle = {
+    display: 'flex',
+    overflowX: 'auto',
+    // Hiding the scrollbar
+    scrollbarWidth: 'none', // For Firefox
+    '&::-webkit-scrollbar': {
+      display: 'none', // For Chrome, Safari, and Opera
+    },
+    '-ms-overflow-style': 'none', // For Internet Explorer and Edge
+  };
   
 
   return (
@@ -303,6 +312,7 @@ function Explore() {
             <Card variant="outlined" sx={{ width: '100%', border: 'none', boxShadow: 'none', borderRadius: '10px'}}>
               <CardContent sx={{ 
                 maxHeight: '53vh', 
+                maxWidth:'100%',
                 borderRadius: '10px',
                 // backgroundColor: 'red',
                 overflowY: "auto",
@@ -318,16 +328,36 @@ function Explore() {
                   padding: '20px', // Padding inside the div for some spacing around the content
                   margin: '0px', // Margin outside the div to separate it from other elements or the edge of its container
                 }}>
-                  <div>
+                      
+                  <div style={{
+                    maxWidth:'400px', 
+                    maxheight: '220 px', 
+                    overflowX: 'scroll', 
+                    overflowY: 'hidden',
+                    display: 'flex', 
+                    flexDirection: 'row',  
+                    alignItems: 'center', 
+                    borderRadius: '10px',
+                  
+
+                    // Making the scrollbar invisible
+                    scrollbarWidth: 'none', /* For Firefox */
+                    msOverflowStyle: 'none',  /* For Internet Explorer and Edge */
+                    '::-webkit-scrollbar': {
+                      display: 'none' /* For WebKit browsers */
+                    }
+                  }}>
                     {places.photos.map((photoUrl, index) => (
                       <img
                         key={index}
                         src={photoUrl}
                         alt="Place"
                         style={{
-                          width: "100px",
-                          height: "100px",
+                          width: 'auto',
+                          height: "200px",
                           marginRight: "5px",
+                          borderRadius: '10px', 
+                          flexShrink: 0,
                         }}
                       />
                     ))}
@@ -337,26 +367,44 @@ function Explore() {
                     <br></br>
                     <button
                       onClick={() => calculateAndDisplayRoute(places.vicinity)}
-                      style={{
-                        backgroundColor: 'red', // Red background
-                        color: 'white', // White text
-                        border: 'none', // Removes the default border
-                        padding: '8px 10px', // Adds some padding around the text
-                        borderRadius: '15px', // Rounds the corners of the button
-                        cursor: 'pointer', // Changes the mouse cursor to a pointer on hover
-                        boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)', // Adds a shadow
-                        fontWeight: 'bold',
-                      }}
+                      className="direction-button"
                     >
                       Directions
                     </button>
                   </Typography>
-                  <Typography sx={{ fontSize: 14 }} component="div">
-                    Opening Status: {places.business_status}
-                  </Typography>
+    
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    Opening Hours: {places.opening_hours}
+                    <span style={{ fontWeight: 'bold', color: 'red' }}>Opening Hours:</span> <br />
+                    {places.opening_hours && places.opening_hours
+                      .split(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/)
+                      .filter(Boolean) // Remove any empty strings that might be caused by the split
+                      .reduce((acc, line, index, arr) => {
+                        // Combine the day and its hours into single entries in a new array
+                        if (index % 2 === 0) { // Even indexes are days of the week
+                          acc.push(`${arr[index]} ${arr[index + 1]}`);
+                        }
+                        return acc;
+                      }, [])
+                      .map((entry, index, arr) => {
+                        // Split each entry into the day and the hours
+                        const [day, ...hours] = entry.split(': ');
+                        return (
+                          <React.Fragment key={index}>
+                            {/* Apply bold styling only to the day */}
+                            <span style={{ fontWeight: 'bold' }}>{day}:</span> {hours.join(': ')}
+                            {index < arr.length - 1 && <br />}
+                          </React.Fragment>
+                        );
+                      })
+                    }
                   </Typography>
+
+                  {places.business_status !== 'OPERATIONAL' && (
+                    <Typography sx={{ fontSize: 14 }} component="div">
+                      Opening Status: {places.business_status}
+                    </Typography>
+                  )}
+
                   <Typography variant="body1">
                     <span style={{fontWeight: 'bold', color: 'red' }}>Distance:</span>  {places.distance}
                     <br />
@@ -415,8 +463,8 @@ function Explore() {
               position={place.geometry.location}
               icon={{
                 url: GymIcon,
-                size: new window.google.maps.Size(32, 32),
-                scaledSize: new window.google.maps.Size(32, 32),
+                size: new window.google.maps.Size(50, 50),
+                scaledSize: new window.google.maps.Size(50, 50),
               }}
               onClick={() => {
                 DisplayMarker(place);
