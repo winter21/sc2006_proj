@@ -7,3 +7,11 @@ exports.generateToken = (userId, time) => {
     })
     return token
 }
+
+exports.verifyToken = (token) => {
+    return jwt.verify(token,secret)
+}
+
+exports.decodeToken = (token) => {
+    return jwt.decode(token,secret)
+}

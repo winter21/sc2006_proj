@@ -1,9 +1,8 @@
 const Account = require("../models/account");
 const User = require("../models/user")
 const bcrypt = require("bcrypt")
-const jwt = require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-const secret = "CooCooPioPio"
+const auth = require("../middlewares/auth")
 
 //Create account with POST request
 exports.createAccount = async (req,res) => {
@@ -48,9 +47,7 @@ exports.login = async (req,res) => {
                 }
                 const currentUser = await User.findById(oneAccount.user)
                 console.log(currentUser)
-                const token  = await jwt.sign({userId: currentUser._id, name: currentUser.name}, secret, {
-                    expiresIn:'24h'
-                })
+                const token  = await auth.generateToken({userId: currentUser._id, name: currentUser.name}, '24h')
                 res.status(201).send(token)
             }else{
                 throw new Error("Wrong Login details")
@@ -92,9 +89,7 @@ exports.forgetPassword = async (req, res) => {
         if(!user){
             throw new Error("Invalid Email")
         }
-        const token  = await jwt.sign({_id: user._id}, secret, {
-            expiresIn:'10m'
-        })
+        const token  = await auth.generateToken({_id: user._id}, '24h')
         
         let url = "http://localhost:5173/reset-password?token="+token
         console.log(token)
@@ -142,7 +137,7 @@ exports.forgetPassword = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     const token = req.body.token;
     try{
-        const authorised  = await jwt.verify(token, secret);
+        const authorised  = await verifyToken(token)
         const account = await Account.findOne({user:authorised._id})
         console.log(authorised._id)
         account.password = req.body.password
@@ -171,8 +166,7 @@ exports.updatePassword = async (req, res) => {
 exports.checkJwtToken = async (req, res) => {
     const token  = req.body.token
     try{
-        result = jwt.verify(token,secret)
-        if(result){
+        if(auth.verifyToken(token)){
             res.status(200).send(result)
         }else{
             throw new Error("invalid token")
@@ -183,10 +177,10 @@ exports.checkJwtToken = async (req, res) => {
 }
 
 exports.decodeJwtToken = async (req, res) => {
-    const token  = req.body.token
+    const token = req.body.token
     try{
-        if(jwt.verify(token,secret)){
-            const decodedToken = jwt.decode(token)
+        if(auth.verifyToken(token)){
+            const decodedToken = auth.decodeToken(token)
             const userId = decodedToken.userId
             const name = decodedToken.name
             const combinedJson = JSON.stringify({userId: userId, name:name})
