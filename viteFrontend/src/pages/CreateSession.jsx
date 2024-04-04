@@ -121,6 +121,11 @@ const CreateSession = () => {
   const createSes = async () => {
     try {
       const formData = new FormData();
+      const token = JSON.parse(localStorage.getItem("user")).token
+      const decodedToken = await axios.post("http://localhost:3000/account/decode-jwt", {
+        token: token
+      }); 
+      const userId = decodedToken.data.userId
       const date = formatDate(selectedDate)
       if(!sessionPicture){
         let blob = await fetch(DefaultAvatar).then(r => r.blob());
@@ -136,7 +141,7 @@ const CreateSession = () => {
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
-      formData.append("host", "65fb29f281ef4e9ed5fc5356");
+      formData.append("host", userId);
       formData.append("interest", interests);
       formData.append("type", "workoutPicture");
       formData.append("on", true);

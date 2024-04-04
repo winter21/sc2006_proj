@@ -19,4 +19,7 @@ router.put("/password-reset", accountController.updatePassword)
 
 router.post("/check-jwt", accountController.checkJwtToken)
 
+//POST method to decode jwt and get the values
+router.post("/decode-jwt", accountController.decodeJwtToken)
+
 module.exports = router;

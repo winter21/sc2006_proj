@@ -182,6 +182,23 @@ exports.checkJwtToken = async (req, res) => {
     }
 }
 
+exports.decodeJwtToken = async (req, res) => {
+    const token  = req.body.token
+    try{
+        if(jwt.verify(token,secret)){
+            const decodedToken = jwt.decode(token)
+            const userId = decodedToken.userId
+            const name = decodedToken.name
+            const combinedJson = JSON.stringify({userId: userId, name:name})
+            res.status(200).send(combinedJson)
+        }else{
+            throw new Error("invalid token")
+        }
+    }catch(err){
+        res.status(500).send(err.message)
+    }
+}
+
 //Helper methods
 const checkPassword = (account, password) => {
     return bcrypt.compare(password,account.password);
