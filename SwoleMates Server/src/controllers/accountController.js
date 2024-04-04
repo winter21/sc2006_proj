@@ -47,7 +47,7 @@ exports.login = async (req,res) => {
                 }
                 const currentUser = await User.findById(oneAccount.user)
                 console.log(currentUser)
-                const token  = await auth.generateToken({userId: currentUser._id, name: currentUser.name}, '24h')
+                const token  = await auth.generateToken(currentUser._id, currentUser.name, '24h')
                 res.status(201).send(token)
             }else{
                 throw new Error("Wrong Login details")
@@ -89,7 +89,7 @@ exports.forgetPassword = async (req, res) => {
         if(!user){
             throw new Error("Invalid Email")
         }
-        const token  = await auth.generateToken({_id: user._id}, '24h')
+        const token  = await auth.generateToken(user._id,"", '24h')
         
         let url = "http://localhost:5173/reset-password?token="+token
         console.log(token)
@@ -183,7 +183,8 @@ exports.decodeJwtToken = async (req, res) => {
             const decodedToken = auth.decodeToken(token)
             const userId = decodedToken.userId
             const name = decodedToken.name
-            const combinedJson = JSON.stringify({userId: userId, name:name})
+            const combinedJson = {userId: userId, name:name}
+            console.log(decodedToken)
             res.status(200).send(combinedJson)
         }else{
             throw new Error("invalid token")

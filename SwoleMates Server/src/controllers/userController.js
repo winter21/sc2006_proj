@@ -71,7 +71,7 @@ exports.createUser = async (req, res) => {
         currentAccount.user = newUser._id
         await currentAccount.save()
 
-        const token  = await auth.generateToken({userId: newUser._id, name: newUser.name}, '24h')
+        const token  = await auth.generateToken(newUser._id, newUser.name, '24h')
         res.status(201).send(token)
     }catch(err){
         console.log(err.message)
