@@ -164,8 +164,10 @@ exports.updatePassword = async (req, res) => {
 exports.checkJwtToken = async (req, res) => {
     const token  = req.body.token
     try{
-        if(auth.verifyToken(token)){
+        result = auth.verifyToken(token)
+        if(result){
             res.status(200).send(result)
+            console.log(result)
         }else{
             throw new Error("invalid token")
         }
