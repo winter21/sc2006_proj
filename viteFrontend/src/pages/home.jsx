@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import the necessary hooks
 import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
 import axios from "axios";
-import { Typography, CardContent, Card, Grid, List, ListItem, Chip, Box } from "@mui/material"; // Import MUI components
+import { Typography, CardContent, Card, Grid, ListItem, Chip, Box } from "@mui/material"; // Import MUI components
 
 const Home = (props) => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize useNavigate hook
   const [sessions, setSessions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedInterests, setSelectedInterests] = useState([]);
@@ -45,6 +45,10 @@ const Home = (props) => {
     (selectedInterests.length === 0 || selectedInterests.every(interest => session.interest.includes(interest)))
   );
 
+  const handleCardClick = (sessionId) => {
+    console.log(sessionId)
+    navigate(`/SessionDetails/${sessionId}`); // Navigate to SessionDetails page with session id
+  };
 
   const interestColors = {
     "Running": "#FF7043",
@@ -60,7 +64,6 @@ const Home = (props) => {
     "Swimming": "#8D6E63",
     "CrossFit": "#78909C",
   };
-  
 
   const interests = [...new Set(sessions.flatMap(session => session.interest))]; // Extract unique interests
 
@@ -80,7 +83,6 @@ const Home = (props) => {
           />
         </div>
 
-        {/* Render interests as chips */}
         <Box sx={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
           {interests.map(interest => (
             <Chip
@@ -91,30 +93,40 @@ const Home = (props) => {
               style={{
                 margin: '0 5px',
                 cursor: 'pointer',
-                // Border color changes based on whether the chip is selected
                 border: `1.5px solid ${interestColors[interest] ? interestColors[interest] : '#e0e0e0'}`,
-                // Background color changes based on selection
                 backgroundColor: selectedInterests.includes(interest) ? 'transparent' : (interestColors[interest] || 'default'),
-                // Text color changes based on selection
                 color: selectedInterests.includes(interest) ? interestColors[interest] : 'white',
               }}
             />
           ))}
         </Box>
 
-        {/* Render sessions */}
         <Grid container spacing={3}>
           {filteredSessions.map((session) => (
             <Grid item xs={2.7} key={session.id} style={{ marginLeft: '20px' }}>
-              <Card elevation={5} className="customCard" sx={{ minWidth: 275, maxWidth: 300, borderRadius: '20px' }}>
-                <CardContent>
-                  <img src={UluPandan} alt="Ulu Pandan" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
-                  <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
-                  <Typography variant="body1">Date: {session.date}</Typography>
-                  <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
-                  <Typography variant="body1">Interests: {session.interest}</Typography>
-                </CardContent>
-              </Card>
+              <ListItem button onClick={() => handleCardClick(session._id)}>
+                <Card
+                  elevation={5}
+                  className="customCard"
+                  sx={{
+                    minWidth: 275,
+                    maxWidth: 300,
+                    borderRadius: '20px',
+                    transition: 'transform 0.3s',
+                    '&:hover': {
+                      transform: 'scale(1.05)', // Scale up by 5% on hover
+                    },
+                  }}
+                >
+                  <CardContent>
+                    <img src={session.workoutpicture} alt="No Need" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
+                    <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
+                    <Typography variant="body1">Date: {session.date}</Typography>
+                    <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
+                    <Typography variant="body1">Interests: {session.interest}</Typography>
+                  </CardContent>
+                </Card>
+              </ListItem>
             </Grid>
           ))}
         </Grid>
