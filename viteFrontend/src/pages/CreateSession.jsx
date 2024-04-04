@@ -126,6 +126,8 @@ const CreateSession = () => {
         token: token
       });
       const userId = decodedToken.data.userId
+      console.log(userId)
+      console.log(decodedToken.data)
       const date = formatDate(selectedDate)
       if(!sessionPicture){
         let blob = await fetch(DefaultAvatar).then(r => r.blob());
