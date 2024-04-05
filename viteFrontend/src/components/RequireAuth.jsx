@@ -1,6 +1,6 @@
 import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
-const RequireAuth = ({ loggedIn, username, children }) => {
+const RequireAuth = ({ loggedIn, children }) => {
   let location = useLocation();
 
   if (!loggedIn) {

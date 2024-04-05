@@ -98,6 +98,13 @@ const Login = (props) => {
       if (error.response && error.response.status === 401) {
         console.error("Error 401:", error.response.data);
         setPasswordError(error.response.data.message);
+      } else if (error.response && error.response.status === 403) {
+        console.error("user profile not created");
+        console.log(username);
+        console.log(error.response.data.accountId);
+        navigate("/createUserInfo", {
+          state: { id: error.response.data.accountId, username: username },
+        });
       } else if (error.response) {
         // The request was made and the server responded with a status code
         console.error("Server responded with status:", error.response.status);

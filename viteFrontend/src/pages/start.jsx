@@ -6,78 +6,91 @@ import SwoleMates from "../assets/SwoleMates.png";
 import BackgroundVideo from "../assets/BgVideo.mp4";
 
 const Start = (props) => {
-    const navigate = useNavigate();
-    const { loggedIn, username } = props;
+  const navigate = useNavigate();
+  const { loggedIn, username } = props;
 
-    const onButtonClick = () => {
-      // You'll update this function later Done :)
-      //navigate("/login");
-      if (loggedIn) {
-        localStorage.removeItem("suser");
-        props.setLoggedIn(false);
-        props.setUsername("");
-      } else {
-        navigate("/login");
-      }
-    };
+  const onButtonClick = () => {
+    // You'll update this function later Done :)
+    //navigate("/login");
+    if (loggedIn) {
+      localStorage.removeItem("user");
+      props.setLoggedIn(false);
+      props.setUsername("");
+    } else {
+      navigate("/login");
+    }
+  };
 
-    const containerStyle = {
-        borderRadius: "20px",
-        boxShadow: "0 10px 20px rgba(0, 0, 0, 0.5)",
-        padding: "20px",
-        textAlign: "center",
-        margin: "20px",
-        marginTop: "15vh",
-        maxWidth: "600px",
-        marginLeft: "auto",
-        marginRight: "auto",
-        backgroundColor: "white",
-        transform: "translate(0, 50%)",
-        zIndex: 2,
-    };
+  const containerStyle = {
+    borderRadius: "20px",
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.5)",
+    padding: "20px",
+    textAlign: "center",
+    margin: "20px",
+    marginTop: "15vh",
+    maxWidth: "600px",
+    marginLeft: "auto",
+    marginRight: "auto",
+    backgroundColor: "white",
+    transform: "translate(0, 50%)",
+    zIndex: 2,
+  };
 
-    const videoContainerStyle = {
-        position: 'fixed',
-        right: 0,
-        bottom: 0,
-        minWidth: '100%',
-        minHeight: '100%',
-        zIndex: -1,
-        overflow: 'hidden',
-    };
+  const videoContainerStyle = {
+    position: "fixed",
+    right: 0,
+    bottom: 0,
+    minWidth: "100%",
+    minHeight: "100%",
+    zIndex: -1,
+    overflow: "hidden",
+  };
 
-    const videoOverlayStyle = {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100%',
-        height: '100%',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    };
+  const videoOverlayStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  };
 
-    return (
-        <div>
-            <div style={videoContainerStyle}> {/* Video container */}
-                <video autoPlay loop muted style={{ width: '100%', height: '100%' }}>
-                    <source src={BackgroundVideo} type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-                <div style={videoOverlayStyle}></div> {/* Video dark overlay */}
-            </div>
-            <div style={containerStyle}> {/* Container */}
-                <div className={"startContainer"}>
-                    <img src={SwoleMates} alt="SwoleMates Logo" style={{ width: "450px", height: "auto" }} />
-                </div>
-                <div>Sweat Together, Swole Together!</div>
-                <br />
-                <div className={"buttonContainer"}>
-                    <input className={"inputButton"} type="button" onClick={onButtonClick} value={loggedIn ? "Log Out" : "Log In"} />
-                    {loggedIn ? <div>Your username is {username}</div> : <div />}
-                </div>
-            </div>
+  return (
+    <div>
+      <div style={videoContainerStyle}>
+        {" "}
+        {/* Video container */}
+        <video autoPlay loop muted style={{ width: "100%", height: "100%" }}>
+          <source src={BackgroundVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+        <div style={videoOverlayStyle}></div> {/* Video dark overlay */}
+      </div>
+      <div style={containerStyle}>
+        {" "}
+        {/* Container */}
+        <div className={"startContainer"}>
+          <img
+            src={SwoleMates}
+            alt="SwoleMates Logo"
+            style={{ width: "450px", height: "auto" }}
+          />
         </div>
-    );
-}
+        <div>Sweat Together, Swole Together!</div>
+        <br />
+        <div className={"buttonContainer"}>
+          <input
+            className={"inputButton"}
+            type="button"
+            onClick={onButtonClick}
+            value={loggedIn ? "Log Out" : "Log In"}
+          />
+          {loggedIn ? <div>Your username is {username}</div> : <div />}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Start;
 
@@ -89,43 +102,42 @@ export default Start;
 //   const { loggedIn, username } = props;
 //   const navigate = useNavigate();
 
-  // const onButtonClick = () => {
-  //   // You'll update this function later Done :)
-  //   //navigate("/login");
-  //   if (loggedIn) {
-  //     localStorage.removeItem("suser");
-  //     props.setLoggedIn(false);
-  //     props.setUsername("");
-  //   } else {
-  //     navigate("/login");
-  //   }
-  // };
+// const onButtonClick = () => {
+//   // You'll update this function later Done :)
+//   //navigate("/login");
+//   if (loggedIn) {
+//     localStorage.removeItem("suser");
+//     props.setLoggedIn(false);
+//     props.setUsername("");
+//   } else {
+//     navigate("/login");
+//   }
+// };
 
 //   return (
 //     <div className="mainContainer">
 //       <div className={"titleContainer"}>
 //         <div>Welcome!</div>
 //         {/* Insert the <img> element here */}
-        // <img
-        //   src={SwoleMates}
-        //   alt="SwoleMates Logo"
-        //   style={{ width: "400px", height: "auto" }}
-        // />
+// <img
+//   src={SwoleMates}
+//   alt="SwoleMates Logo"
+//   style={{ width: "400px", height: "auto" }}
+// />
 //       </div>
 //       <div>Sweat Together, Swole Together!</div>
-      // <div className={"buttonContainer"}>
-      //   <input
-      //     className={"inputButton"}
-      //     type="button"
-      //     onClick={onButtonClick}
-      //     value={loggedIn ? "Log Out" : "Log In"}
-      //   />
-      //   {loggedIn ? <div>Your username is {username}</div> : <div />}
-      // </div>
+// <div className={"buttonContainer"}>
+//   <input
+//     className={"inputButton"}
+//     type="button"
+//     onClick={onButtonClick}
+//     value={loggedIn ? "Log Out" : "Log In"}
+//   />
+//   {loggedIn ? <div>Your username is {username}</div> : <div />}
+// </div>
 //     </div>
 //   );
 // };
-
 
 //this is back up for only red background and not a video
 // import React from "react";
@@ -160,7 +172,7 @@ export default Start;
 //         maxWidth: "600px",
 //         marginLeft: "auto",
 //         marginRight: "auto",
-//         backgroundColor: "white", 
+//         backgroundColor: "white",
 //         transform: "translate(0, 50%)",
 //     };
 
@@ -176,7 +188,6 @@ export default Start;
 //         left: 0,
 //         zIndex: -1
 //     };
-    
 
 //     return (
 //         <div> {/* Wrap everything in a single parent div */}
@@ -272,5 +283,3 @@ export default Start;
 // }
 
 // export default Start;
-
-

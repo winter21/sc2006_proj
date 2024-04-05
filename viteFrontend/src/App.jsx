@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 import Start from "./pages/start";
 import Login from "./pages/login";
 import Signup from "./pages/signup";
@@ -6,7 +6,7 @@ import CreateUserInfo from "./pages/createUserInfo";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
-import CreateSession from "./pages/createSession";
+import CreateSession from "./pages/CreateSession";
 import SessionDetails from "./pages/SessionDetails";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
@@ -104,11 +104,15 @@ function App() {
           <Route
             path="/"
             element={
-              <Start
-                username={username}
-                loggedIn={loggedIn}
-                setLoggedIn={setLoggedIn}
-              />
+              loggedIn ? (
+                <Navigate to="/home" replace />
+              ) : (
+                <Start
+                  username={username}
+                  loggedIn={loggedIn}
+                  setLoggedIn={setLoggedIn}
+                />
+              )
             }
           />
           <Route
@@ -130,7 +134,7 @@ function App() {
           <Route
             path="/home"
             element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
+              <RequireAuth loggedIn={loggedIn}>
                 <Home />
               </RequireAuth>
             }
@@ -139,7 +143,7 @@ function App() {
           <Route
             path="/createSession"
             element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
+              <RequireAuth loggedIn={loggedIn}>
                 <CreateSession />
               </RequireAuth>
             }
@@ -147,7 +151,7 @@ function App() {
           <Route
             path="/sessionDetails/:id"
             element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
+              <RequireAuth loggedIn={loggedIn}>
                 <SessionDetails />
               </RequireAuth>
             }
@@ -163,7 +167,7 @@ function App() {
           <Route
             path="/profile"
             element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
+              <RequireAuth loggedIn={loggedIn}>
                 <Profile setLoggedIn={setLoggedIn} setUsername={setUsername} />
               </RequireAuth>
             }
@@ -171,7 +175,7 @@ function App() {
           <Route
             path="/mySessions"
             element={
-              <RequireAuth loggedIn={loggedIn} username={username}>
+              <RequireAuth loggedIn={loggedIn}>
                 <MySessions />
               </RequireAuth>
             }
