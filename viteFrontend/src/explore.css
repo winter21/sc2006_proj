@@ -151,3 +151,29 @@
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Adds a shadow */
     font-weight: bold;
   }
+
+
+  .travel-mode-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  color: #000;
+  padding: 5px;
+  margin: 5px;
+  margin-top: 45px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.travel-mode-option img {
+  width: 20px; /* Or any size you prefer */
+  height: 20px; /* Maintain aspect ratio */
+  margin-right: 5px;
+}
+
+.travel-mode-option:hover {
+  background-color: #f0f0f0;
+}
