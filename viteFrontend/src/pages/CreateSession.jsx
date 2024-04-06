@@ -34,6 +34,7 @@ const CreateSession = () => {
   const [locationError, setLocationError] = useState("");
   const [dateError, setDateError] = useState("");
   const [timeError, setTimeError] = useState("");
+  const [interestError, setInterestError] = useState("");
 
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
@@ -79,6 +80,11 @@ const CreateSession = () => {
     setLocationError("");
     setDateError("");
     setTimeError("");
+    setInterestError("")
+
+    if (!(interests.length)) {
+      setInterestError("Please select at least one workout type")
+    }
 
     if ("" === name) {
       setNameError("Please enter a session name");
@@ -116,6 +122,7 @@ const CreateSession = () => {
 
     if (
       !dateError === "" &&
+      !interestError === "" &&
       !locationError === "" &&
       !timeError === "" &&
       !durationError === "" &&
@@ -372,24 +379,6 @@ const CreateSession = () => {
               </Autocomplete>
               <label className="errorLabel">{locationError}</label>
             </div>
-            {/* <label>Session coordinates:</label>
-        <input
-          value={coordinates.longitude} 
-          placeholder="Longitude, eg: 90"
-          onChange={(e) => setCoordinates(prevState => ({
-            ...prevState,
-            longitude: e.target.value
-          }))}
-          className={"inputBox"}
-        /></div><br/><div className={"inputContainer"}>
-        <input
-          value={coordinates.latitude}
-          placeholder="Latitude, eg: 90"
-          onChange={(e) => setCoordinates(prevState => ({
-            ...prevState,
-            latitude: e.target.value
-          }))}className={"inputBox"}
-          /></div><br/> */}
             <br />
             <div className={"titleContainer"}>
               <label>Max Number of Participants:</label>
@@ -420,6 +409,7 @@ const CreateSession = () => {
                 </div>
               ))}
             </div>
+              <label style={{fontSize: 15, color: 'red' }} >{interestError}</label>
             <br />
             <div className={"inputContainer"}>
               <input
