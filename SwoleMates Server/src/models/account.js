@@ -22,6 +22,10 @@ const AccountSchema = new Schema ({
 
 AccountSchema.pre('save', async function(next) {
     const account = this
+    if (!account.isModified('password')) {
+        console.log("password not changed")
+        return next();
+    }
     const salt = await bcrypt.genSalt(10)
     const hash = await bcrypt.hash(account.password,salt)
     account.password = hash
