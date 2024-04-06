@@ -1,13 +1,18 @@
 const multer = require('multer')
 const fs = require('fs-extra')
-folderName = 'public/tempDir/'
+const public = 'public/'
+const folderName = 'tempDir/'
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        if (!fs.existsSync(folderName)) {
-            fs.mkdirSync(folderName)
+        if (!fs.existsSync(public)) {
+            fs.mkdirSync(public)
         }
-        cb(null, folderName)
+        const publicFolder = public + folderName
+        if (!fs.existsSync(publicFolder)) {
+            fs.mkdirSync(publicFolder)
+        }
+        cb(null, publicFolder)
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname)
