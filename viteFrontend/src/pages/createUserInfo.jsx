@@ -118,7 +118,15 @@ const CreateUserInfo = (props) => {
         type: "image/png",
       });
       formData.append("photo", profilePicture || file);*/
-      formData.append("photo", profilePicture);
+      if (!profilePicture) {
+        let blob = await fetch(DefaultAvatar).then((r) => r.blob());
+        const defaultFile = new File([blob], "DefaultAvatar.png", {
+          type: "image/png",
+        });
+        formData.append("photo", defaultFile);
+      } else {
+        formData.append("photo", profilePicture);
+      }
       formData.append("email", email);
       formData.append("name", name);
       formData.append("aboutMe", aboutme);

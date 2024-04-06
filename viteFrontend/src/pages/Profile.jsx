@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import DefaultAvatar from "../assets/Zenitsu.png";
+import { getImageURL } from "../utils/image";
 import "../profile.css";
 
 const Profile = (props) => {
@@ -65,7 +65,7 @@ const Profile = (props) => {
             name: interest,
             color: indexToColor(index), // Generate color dynamically
           })),
-          profilePicUrl: DefaultAvatar, // Placeholder image URL
+          profilePicUrl: resp.data.profilePicture,
         });
       } catch (error) {
         if (error.response) {
@@ -116,10 +116,11 @@ const Profile = (props) => {
     <div>
       <Navbar />
       <div className="profile-container">
-        <div
+        <img
           className="profile-pic"
-          style={{ backgroundImage: `url(${userData.profilePicUrl})` }}
-        ></div>
+          src={getImageURL(userData.profilePicUrl)}
+          alt="No Need"
+        />
         <h1>{userData.name}</h1>
         <p>Email: {userData.email}</p>
         <p>Gender: {userData.gender}</p>
