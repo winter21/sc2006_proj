@@ -7,7 +7,8 @@ import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
 import CreateSession from "./pages/CreateSession";
-import SessionDetails from "./pages/SessionDetails";
+import SessionDetails from "./pages/sessionDetails";
+import EditSession from "./pages/EditSession";
 import Onboarding1 from "./pages/onboardingPg1";
 import Onboarding2 from "./pages/onboardingPg2";
 import Onboarding3 from "./pages/onboardingPg3";
@@ -153,6 +154,14 @@ function App() {
             element={
               <RequireAuth loggedIn={loggedIn}>
                 <SessionDetails />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/editSession/:id"
+            element={
+              <RequireAuth loggedIn={loggedIn}>
+                <EditSession />
               </RequireAuth>
             }
           />
