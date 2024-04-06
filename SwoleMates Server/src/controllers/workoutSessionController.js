@@ -106,7 +106,23 @@ exports.updateWorkoutSession = async (req, res) => {
     }
 };
 
+exports.cancelWorkoutSession = async (req, res) => {
+    const sessionId = req.params.id;
+    const status = req.body.on;
 
+    try {
+        const oneWorkoutSession = await WorkoutSession.findById(sessionId)
+        if (!oneWorkoutSession) {
+            return res.status(404).send("Workout session not found");
+        }
+        oneWorkoutSession.on = status
+        await oneWorkoutSession.save()
+        res.status(200).json(oneWorkoutSession);
+    } catch (error) {
+        console.error("Failed to update Workout Session:", error);
+        res.status(500).send("Failed to update Workout Session: " + error.message);
+    }
+}
 
 exports.deleteWorkoutSession = async (req, res) => {
     try {

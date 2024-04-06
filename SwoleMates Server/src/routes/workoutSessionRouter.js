@@ -15,6 +15,9 @@ router.get("/:id",workoutSessionController.getWorkoutSession);
 //Put method to update one workout session
 router.put("/:id",workoutSessionController.updateWorkoutSession);
 
+//Put method to cancel one workout session
+router.put("/cancel/:id",workoutSessionController.cancelWorkoutSession);
+
 //DELETE method to delete one workout session
 router.delete("/:id",workoutSessionController.deleteWorkoutSession);
 
