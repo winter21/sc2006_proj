@@ -2,11 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-//import { getImageURL } from "../utils/image";
+import { Avatar } from "@mui/material";
 import "../profile.css";
 
 const Profile = (props) => {
-  console.log(window.location.origin)
+  console.log(window.location.origin);
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -117,10 +117,13 @@ const Profile = (props) => {
     <div>
       <Navbar />
       <div className="profile-container">
-        <img
-          className="profile-pic"
+        <Avatar
           src={`http://localhost:3000/${userData.profilePicUrl}`}
-          alt="No Need"
+          style={{
+            width: "150px",
+            height: "150px",
+          }}
+          className="profile-pic"
         />
         <h1>{userData.name}</h1>
         <p>Email: {userData.email}</p>

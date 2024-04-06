@@ -61,8 +61,7 @@ const CreateSession = () => {
   }
 
   const onPlaceChanged = (place) => {
-    setSearchResult(place);
-    console.log(searchResult);
+    setAddress(searchInput.current.value);
   };
 
   if (!isLoaded) {

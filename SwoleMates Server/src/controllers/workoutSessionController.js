@@ -8,10 +8,16 @@ exports.createWorkoutSession = async (req, res) => {
     const tempPath = req.file.path;
     const folderName = req.body.type + '/';
     const fileName = req.file.filename;
+    let splitInterest = []
 
     try {
         if (!address) {
             return res.status(400).send("Address is required");
+        }
+
+        
+        if(interest != ""){
+            splitInterest = interest.split(",")
         }
 
         // Call Google Geocoding API to convert address to coordinates
@@ -24,7 +30,7 @@ exports.createWorkoutSession = async (req, res) => {
         }
 
         const coordinates = geocodeResponse.data.results[0].geometry.location;
-
+        console.log(splitInterest)
         // Create a new WorkoutSession with the obtained coordinates
         const newWorkoutSession = new WorkoutSession({
             name, 
@@ -37,7 +43,7 @@ exports.createWorkoutSession = async (req, res) => {
             duration, 
             slots, 
             host,
-            interest,
+            interest: splitInterest,
             on: true
         });
 
@@ -100,7 +106,22 @@ exports.updateWorkoutSession = async (req, res) => {
     }
 };
 
+exports.cancelWorkoutSession = async (req, res) => {
+    const sessionId = req.params.id;
 
+    try {
+        const oneWorkoutSession = await WorkoutSession.findById(sessionId)
+        if (!oneWorkoutSession) {
+            return res.status(404).send("Workout session not found");
+        }
+        oneWorkoutSession.on = false
+        await oneWorkoutSession.save()
+        res.status(200).json(oneWorkoutSession);
+    } catch (error) {
+        console.error("Failed to update Workout Session:", error);
+        res.status(500).send("Failed to update Workout Session: " + error.message);
+    }
+}
 
 exports.deleteWorkoutSession = async (req, res) => {
     try {
