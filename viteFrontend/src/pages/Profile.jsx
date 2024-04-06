@@ -2,10 +2,11 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { getImageURL } from "../utils/image";
+//import { getImageURL } from "../utils/image";
 import "../profile.css";
 
 const Profile = (props) => {
+  console.log(window.location.origin)
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({});
   const navigate = useNavigate();
@@ -118,7 +119,7 @@ const Profile = (props) => {
       <div className="profile-container">
         <img
           className="profile-pic"
-          src={getImageURL(userData.profilePicUrl)}
+          src={`http://localhost:3000/${userData.profilePicUrl}`}
           alt="No Need"
         />
         <h1>{userData.name}</h1>

@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./src/middlewares/db");
 const dotenv = require('dotenv');
+const path = require("path");
 dotenv.config();
 
 // Express Code
@@ -27,6 +28,7 @@ app.use("/user",userRouter);
 app.use("/workoutSession",workoutSessionRouter);
 app.use("/gym",gymRouter);
 app.use("/gymReview",gymReviewRouter);
+app.use("/public", express.static(path.join(__dirname, "public")));
 
 
 app.listen(port, () => {

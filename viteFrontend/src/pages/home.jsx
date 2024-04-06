@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom"; // Import the necessary hooks
 import UluPandan from "../assets/UluPandan.png";
 import Navbar from "../components/Navbar";
-import { getImageURL } from "../utils/image";
 import axios from "axios";
 import { Typography, CardContent, Card, Grid, ListItem, Chip, Box } from "@mui/material"; // Import MUI components
 
@@ -119,7 +118,7 @@ const Home = (props) => {
                   }}
                 >
                   <CardContent>
-                    <img src={getImageURL(session.workoutPicture)} alt="No Need" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
+                    <img src={`http://localhost:3000/${session.workoutPicture}`} alt="No Need" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
                     <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
                     <Typography variant="body1">Date: {session.date}</Typography>
                     <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>

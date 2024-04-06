@@ -1,6 +1,6 @@
 const multer = require('multer')
 const fs = require('fs-extra')
-folderName = 'tempDir/'
+folderName = 'public/tempDir/'
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {

@@ -1,10 +1,11 @@
 const fs = require('fs-extra')
+const public = "public/"
 
 exports.moveImageFromTemp = async (tempPath, folderName, fileName) => { 
-    if (!fs.existsSync(folderName)) {
-        fs.mkdirSync(folderName);
+    if (!fs.existsSync(public+folderName)) {
+        fs.mkdirSync(public+folderName);
     }
-    const picturePath = folderName + fileName
+    const picturePath = public+folderName + fileName
     await fs.move(tempPath,picturePath)
     return picturePath;
 }
@@ -14,7 +15,7 @@ exports.deleteImage = async (path) => {
         if (err == null) {
             fs.unlink(path)
         } else if (err.code === 'ENOENT') {
-            fs.writeFile('log.txt', 'Some log\n');
+            console.log("File Error")
         } else {
             console.log('Some other error: ', err.code);
         }
