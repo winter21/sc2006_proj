@@ -45,7 +45,7 @@
     font-size: 14px;
   }
 
-  button {
+  #profSignOut {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: red;
@@ -55,6 +55,6 @@
     cursor: pointer;
   }
 
-  button:hover {
+  #profSignOut:hover {
     background-color: darkred;
   }
