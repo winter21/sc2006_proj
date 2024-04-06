@@ -20,17 +20,7 @@ exports.createWorkoutSession = async (req, res) => {
             splitInterest = interest.split(",")
         }
 
-        // Call Google Geocoding API to convert address to coordinates
-        const googleMapsApiKey = 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY'; 
-        const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${googleMapsApiKey}`;
-        
-        const geocodeResponse = await axios.get(googleGeocodeUrl);
-        if (geocodeResponse.data.status !== 'OK' || !geocodeResponse.data.results[0]) {
-            return res.status(404).send("Address not found");
-        }
-
-        const coordinates = geocodeResponse.data.results[0].geometry.location;
-        console.log(splitInterest)
+        const coordinates = getCoordinatesFromAddress(address)
         // Create a new WorkoutSession with the obtained coordinates
         const newWorkoutSession = new WorkoutSession({
             name, 
@@ -82,24 +72,41 @@ exports.getWorkoutSession = async (req, res) => {
 
 exports.updateWorkoutSession = async (req, res) => {
     const sessionId = req.params.id;
-    const updateData = req.body;
-
-    console.log("Updating workout session with ID:", sessionId);
-    console.log("Update data:", updateData);
+    const { name, date, address, duration, slots, interest} = req.body;
+    const tempPath = req.file.path;
+    const folderName = req.body.type + '/';
+    const fileName = req.file.filename;
+    let splitInterest = []
 
     try {
-        const updatedWorkoutSession = await WorkoutSession.findByIdAndUpdate(
-            sessionId,
-            updateData,
-            { new: true }
-        );
-
-        if (!updatedWorkoutSession) {
-            return res.status(404).send("Workout session not found");
+        if (!address) {
+            return res.status(400).send("Address is required");
         }
 
-        console.log("Updated workout session:", updatedWorkoutSession);
-        res.status(200).json(updatedWorkoutSession);
+        
+        if(interest != ""){
+            splitInterest = interest.split(",")
+        }
+        const coordinates = await getCoordinatesFromAddress(address)
+        // Create a new WorkoutSession with the obtained coordinates
+        const oneWorkoutSession = await WorkoutSession.findById(sessionId)
+        oneWorkoutSession.name = name
+        oneWorkoutSession.date = date
+        oneWorkoutSession.address = address
+        oneWorkoutSession.coordinates = { 
+            latitude: coordinates.lat,
+            longitude: coordinates.lng
+        }
+        oneWorkoutSession.duration = duration
+        oneWorkoutSession.slots = slots
+        oneWorkoutSession.interest= splitInterest
+
+        const picturePath = await utils.moveImageFromTemp(tempPath, folderName, fileName);
+        await utils.deleteImage(oneWorkoutSession.workoutPicture)
+        oneWorkoutSession.workoutPicture = picturePath;
+
+        await oneWorkoutSession.save();
+        res.status(201).send("Workout Session created successfully");
     } catch (error) {
         console.error("Failed to update Workout Session:", error);
         res.status(500).send("Failed to update Workout Session: " + error.message);
@@ -232,5 +239,17 @@ exports.getHostWorkoutSessions = async (req, res) => {
 };
 
 // to add retrievation of workouut session image
-
+//Helper methods
+const getCoordinatesFromAddress = async (address) => {
+    // Call Google Geocoding API to convert address to coordinates
+    const googleMapsApiKey = 'AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY'; 
+    const googleGeocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${googleMapsApiKey}`;
+    
+    const geocodeResponse = await axios.get(googleGeocodeUrl);
+    if (geocodeResponse.data.status !== 'OK' || !geocodeResponse.data.results[0]) {
+        return res.status(404).send("Address not found");
+    }
+    
+    return geocodeResponse.data.results[0].geometry.location;
+}
 

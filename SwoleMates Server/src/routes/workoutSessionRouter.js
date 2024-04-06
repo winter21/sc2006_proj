@@ -13,7 +13,7 @@ router.get("/",workoutSessionController.getAllWorkoutSessions);
 router.get("/:id",workoutSessionController.getWorkoutSession);
 
 //Put method to update one workout session
-router.put("/:id",workoutSessionController.updateWorkoutSession);
+router.put("/:id", multer.single('photo'),workoutSessionController.updateWorkoutSession);
 
 //Put method to cancel one workout session
 router.put("/cancel/:id",workoutSessionController.cancelWorkoutSession);
