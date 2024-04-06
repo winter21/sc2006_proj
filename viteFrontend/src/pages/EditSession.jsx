@@ -40,6 +40,10 @@ const EditSession = () => {
   const params = useParams();
   const { id } = params;
 
+  const loadSessionPictureToBlob = async (picture) => {
+    let blob = await fetch(picture).then(r => r.blob());
+    setSessionPicture(blob)
+  }
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
   };
@@ -291,7 +295,7 @@ const EditSession = () => {
               src={
                 sessionPicture
                   ? URL.createObjectURL(sessionPicture)
-                  : DefaultAvatar
+                  : DefaultAvatar  //can change to something else, idk change to wat to show loading.
               }
               style={{
                 margin: "10px",
@@ -387,6 +391,8 @@ const EditSession = () => {
                 setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
                 setDuration(session.duration.toString());
                 setSlots(session.slots.toString());
+                loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
+                //setHasPictureLoaded(session.workoutPicture);
                 //console.log(session.slots)
                 setAddress(session.address)
                 setInterests(session.interest)
