@@ -75,16 +75,31 @@ exports.getWorkoutSession = async (req, res) => {
 };
 
 exports.updateWorkoutSession = async (req, res) => {
+    const sessionId = req.params.id;
+    const updateData = req.body;
+
+    console.log("Updating workout session with ID:", sessionId);
+    console.log("Update data:", updateData);
+
     try {
-        const updatedWorkoutSession = await WorkoutSession.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        const updatedWorkoutSession = await WorkoutSession.findByIdAndUpdate(
+            sessionId,
+            updateData,
+            { new: true }
+        );
+
         if (!updatedWorkoutSession) {
             return res.status(404).send("Workout session not found");
         }
+
+        console.log("Updated workout session:", updatedWorkoutSession);
         res.status(200).json(updatedWorkoutSession);
     } catch (error) {
+        console.error("Failed to update Workout Session:", error);
         res.status(500).send("Failed to update Workout Session: " + error.message);
     }
 };
+
 
 
 exports.deleteWorkoutSession = async (req, res) => {
