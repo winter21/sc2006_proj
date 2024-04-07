@@ -36,7 +36,6 @@ const EditSession = () => {
   const [dateError, setDateError] = useState("");
   const [timeError, setTimeError] = useState("");
   const [interestError, setInterestError] = useState("");
-  const [loading, setLoading] = useState("");
 
   const params = useParams();
   const { id } = params;
@@ -57,11 +56,11 @@ const EditSession = () => {
     setAddress(location);
   };
 
-//   const libraries = ["places"];
-//   const { isLoaded } = useJsApiLoader({
-//     googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
-//     libraries: libraries,
-//   }); 
+  const libraries = ["places"];
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
+    libraries: libraries,
+  }); 
   
   const searchInput = useRef()
 
@@ -106,10 +105,11 @@ const EditSession = () => {
     }
     console.log(session)
     //if (!session) return <div>Loading...</div>;
-  }, [loading, session]);
+  }, [isLoaded, session]);
 
-  if (loading) {
-    return <div>Loading...</div>
+  
+  if (!isLoaded) {
+    return <div>Loading...</div>;
   }
 
   const handleSubmit = async (e) => {
@@ -393,46 +393,24 @@ const EditSession = () => {
           </div>
           <br />
           <div className={"titleContainer"}>
-            <label htmlFor="location-input">Session Location:</label>
-          </div>
-          <LoadScript
-            googleMapsApiKey="AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY"
-            libraries={["places"]}
-            onLoad={() => {
-                // if (session && session!== undefined){
-                // setName(session.name)
-                // setSelectedDate((session.date).split('T')[0])
-                // const dateTime = new Date(session.date);
-                // setStartHr(dateTime.getUTCHours().toString());
-                // setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
-                // setDuration(session.duration.toString());
-                // setSlots(session.slots.toString());
-                // loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
-                // //setHasPictureLoaded(session.workoutPicture);
-                // //console.log(session.slots)
-                // setAddress(session.address)
-                // setInterests(session.interest)}
-                setLoading(false)
-            }}
-            >
+              <label htmlFor="location-input">Session Location:</label>
+            </div>
             <div className={"detailsInputContainer"}>
-                <Autocomplete
+              <Autocomplete
                 onPlaceChanged={(place) => onPlaceChanged(place)}
                 onLoad={onLoad}
-                >
+              >
                 <input
-                defaultValue={address}
-                    type="text"
-                    placeholder="North Hill Gym"
-                    size="auto"
-                    ref={searchInput}
-                    //defaultValue={address}
-                    className={"inputBox"}
+                  type="text"
+                  defaultValue={address}
+                  placeholder="North Hill Gym"
+                  size="auto"
+                  ref={searchInput}
+                  className={"inputBox"}
                 />
-                </Autocomplete>
-                <label className="errorLabel">{locationError}</label>
+              </Autocomplete>
+              <label className="errorLabel">{locationError}</label>
             </div> 
-            </LoadScript>
           <br />
           <div className={"titleContainer"}>
             <label>Max Number of Participants:</label>
