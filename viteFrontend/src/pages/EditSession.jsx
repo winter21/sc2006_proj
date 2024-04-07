@@ -36,6 +36,7 @@ const EditSession = () => {
   const [dateError, setDateError] = useState("");
   const [timeError, setTimeError] = useState("");
   const [interestError, setInterestError] = useState("");
+  const [loading, setLoading] = useState("");
 
   const params = useParams();
   const { id } = params;
@@ -69,7 +70,7 @@ const EditSession = () => {
   }
 
   const onPlaceChanged = (place) => {
-    setSearchResult(place);
+    setAddress(searchInput.current.value);
   };
 
   //const [map, setMap] = useState(/** @type google.maps.Map */(null))
@@ -88,13 +89,28 @@ const EditSession = () => {
     fetchSession()
   }, []);
 
-//   useEffect(() => {
-//     if (session ) {
-//     }
-//     console.log(session)
-//     //if (!session) return <div>Loading...</div>;
-//   }, [session]);
+  useEffect(() => {
+    if (session) {
+        setName(session.name)
+        setSelectedDate((session.date).split('T')[0])
+        const dateTime = new Date(session.date);
+        setStartHr(dateTime.getUTCHours().toString());
+        setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
+        setDuration(session.duration.toString());
+        setSlots(session.slots.toString());
+        loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
+        //setHasPictureLoaded(session.workoutPicture);
+        //console.log(session.slots)
+        setAddress(session.address)
+        setInterests(session.interest)
+    }
+    console.log(session)
+    //if (!session) return <div>Loading...</div>;
+  }, [loading, session]);
 
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -383,19 +399,20 @@ const EditSession = () => {
             googleMapsApiKey="AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY"
             libraries={["places"]}
             onLoad={() => {
-                if (session && session!== undefined){
-                setName(session.name)
-                setSelectedDate((session.date).split('T')[0])
-                const dateTime = new Date(session.date);
-                setStartHr(dateTime.getUTCHours().toString());
-                setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
-                setDuration(session.duration.toString());
-                setSlots(session.slots.toString());
-                loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
-                //setHasPictureLoaded(session.workoutPicture);
-                //console.log(session.slots)
-                setAddress(session.address)
-                setInterests(session.interest)}
+                // if (session && session!== undefined){
+                // setName(session.name)
+                // setSelectedDate((session.date).split('T')[0])
+                // const dateTime = new Date(session.date);
+                // setStartHr(dateTime.getUTCHours().toString());
+                // setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
+                // setDuration(session.duration.toString());
+                // setSlots(session.slots.toString());
+                // loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
+                // //setHasPictureLoaded(session.workoutPicture);
+                // //console.log(session.slots)
+                // setAddress(session.address)
+                // setInterests(session.interest)}
+                setLoading(false)
             }}
             >
             <div className={"detailsInputContainer"}>
