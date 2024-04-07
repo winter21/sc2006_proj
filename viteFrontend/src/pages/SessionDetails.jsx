@@ -196,6 +196,7 @@ const SessionDetails = () => {
       <Navbar />
       <div style={fullScreenBackgroundStyle} /> 
       <div style={containerStyle}>
+        <img src={`http://localhost:3000/${session.workoutPicture}`} alt="No Need" style={{ width: '100%', height: 'auto', marginBottom: '10px', borderRadius: '4%' }} />
       <div className={"mainDetailsContainer"}>
         <div className={"headerContainer"}>
           <h2>{session.name}</h2>
