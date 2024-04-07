@@ -182,3 +182,18 @@ exports.updateUser = async (req, res) => {
         }
     }
 }
+
+exports.getListOfUsers = async (req, res) => {
+    const userList = req.body.userList
+    try{
+        const userListInfo = await User.find({_id:{$in:userList}})
+        res.status(201).send(userListInfo)
+    }catch{
+        res.status(500).send({
+            type:"UpdateAccountError",
+            status: 500,
+            message: "Error Creating User",
+            err: err.stack
+        })
+    }
+}
