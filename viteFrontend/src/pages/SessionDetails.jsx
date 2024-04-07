@@ -34,8 +34,8 @@ const SessionDetails = () => {
     renderActionButtons()
     setDate(String(session.date).split('T')[0])
     const dateTime = new Date(session.date);
-    const hours = dateTime.getUTCHours();
-    const minutes = dateTime.getUTCMinutes();
+    const hours = String(dateTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(dateTime.getUTCMinutes()).padStart(2, '0');
     setTime(`${hours}:${minutes}`)
     if (session.participants === undefined) {
       setNumParticipants(0)
@@ -197,7 +197,7 @@ const SessionDetails = () => {
       <div style={fullScreenBackgroundStyle} /> 
       <div style={containerStyle}>
         <img src={`http://localhost:3000/${session.workoutPicture}`} alt="No Need" style={{ width: '100%', height: 'auto', marginBottom: '10px', borderRadius: '4%' }} />
-      <div className={"mainDetailsContainer"}>
+   
         <div className={"headerContainer"}>
           <h2>{session.name}</h2>
         </div>
@@ -208,7 +208,7 @@ const SessionDetails = () => {
           <p>Duration: {session.duration} hour(s)</p>
           <p>Location: {session.address}</p>
             <p className="interestsLabel">Interests:</p>
-            <div className="interestsContainer">
+            <div className="interestsContainer" style={{fontSize:15}}>
               {session.interest && session.interest.map((interest, index) => (
                 <div
                   key={index}
@@ -223,7 +223,7 @@ const SessionDetails = () => {
           <p>List of Participants: {session.participants}</p>
         </div> <br/>
         {renderActionButtons()}
-      </div>
+    
     </div>
     </div>
   );

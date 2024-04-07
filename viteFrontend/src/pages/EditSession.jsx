@@ -157,9 +157,7 @@ const EditSession = () => {
       setTimeError("Please enter a valid integer for the start time");
     } else if ((startHr>23) || (startMin>59)) {
       setTimeError("Please enter a valid time");
-    } else if ((startHr.length !== 2) || (startMin.length !== 2)) {
-      setTimeError("Please enter a start time in 24hr format");
-    }
+    } 
     
     
     if (
@@ -188,7 +186,7 @@ const EditSession = () => {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", ( formatDate(selectedDate) + "T" + startHr + ":" + startMin + ":00Z"));
+      formData.append("date", ( formatDate(selectedDate) + "T" + startHr.padStart(2, '0') + ":" + startMin.padStart(2, '0') + ":00Z"));
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
@@ -203,7 +201,7 @@ const EditSession = () => {
         },
       }); 
       console.log(res);
-      //navigate((-1), { replace: true });
+      navigate((-1), { replace: true });
     } catch (error) {
       console.log(error.stack)
     }
