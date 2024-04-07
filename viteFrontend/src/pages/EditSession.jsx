@@ -383,7 +383,7 @@ const EditSession = () => {
             googleMapsApiKey="AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY"
             libraries={["places"]}
             onLoad={() => {
-                onPlaceChanged(session.address)
+                if (session && session!== undefined){
                 setName(session.name)
                 setSelectedDate((session.date).split('T')[0])
                 const dateTime = new Date(session.date);
@@ -395,7 +395,7 @@ const EditSession = () => {
                 //setHasPictureLoaded(session.workoutPicture);
                 //console.log(session.slots)
                 setAddress(session.address)
-                setInterests(session.interest)
+                setInterests(session.interest)}
             }}
             >
             <div className={"detailsInputContainer"}>
