@@ -34,8 +34,8 @@ const SessionDetails = () => {
     renderActionButtons()
     setDate(String(session.date).split('T')[0])
     const dateTime = new Date(session.date);
-    const hours = dateTime.getUTCHours();
-    const minutes = dateTime.getUTCMinutes();
+    const hours = String(dateTime.getUTCHours()).padStart(2, '0');
+    const minutes = String(dateTime.getUTCMinutes()).padStart(2, '0');
     setTime(`${hours}:${minutes}`)
     if (session.participants === undefined) {
       setNumParticipants(0)
