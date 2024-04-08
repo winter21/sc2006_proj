@@ -3,15 +3,19 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { Avatar, IconButton } from "@mui/material";
+import DefaultAvatar from "../assets/Zenitsu.png";
 import "../profile.css";
 
 const Profile = (props) => {
   //console.log(window.location.origin);
   const [profilePicture, setProfilePicture] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [interests, setInterests] = useState([]);
   const [userData, setUserData] = useState({});
   const [newData, setNewData] = useState({});
   const [errors, setErrors] = useState({});
+  const [userID, setUserID] = useState("");
 
   const navigate = useNavigate();
   const handleSignOut = () => {
@@ -35,10 +39,28 @@ const Profile = (props) => {
     Swimming: "#8D6E63",
     CrossFit: "#78909C",
   };
+  const workoutInterestExamples = [
+    "Weightlifting",
+    "Running",
+    "Yoga",
+    "Cycling",
+    "Swimming",
+    "HIIT",
+    "Pilates",
+    "Boxing",
+    "CrossFit",
+    "Dance",
+    "Hiking",
+    "Rowing",
+  ];
   const genderLabels = {
     MALE: "Male",
     FEMALE: "Female",
     "PREFER NOT TO SAY": "Other",
+  };
+  const loadProfilePictureToBlob = async (picture) => {
+    let blob = await fetch(picture).then((r) => r.blob());
+    setProfilePicture(blob);
   };
   useEffect(() => {
     const verify = async () => {
@@ -52,6 +74,7 @@ const Profile = (props) => {
         );
         console.log(res);
         console.log(res.data.userId);
+        setUserID(res.data.userId);
         const resp = await axios.get(
           `http://localhost:3000/user/${res.data.userId}`
         );
@@ -73,12 +96,13 @@ const Profile = (props) => {
           email: resp.data.email,
           gender: resp.data.gender,
           aboutMe: resp.data.aboutMe,
-          interests: resp.data.interest.map((interest, index) => ({
-            name: interest,
-            color: interestColors[interest], // Generate color dynamically
-          })),
           //profilePicUrl: resp.data.profilePicture,
         });
+        loadProfilePictureToBlob(
+          `http://localhost:3000/${userData.profilePicUrl}`
+        );
+        setInterests(resp.data.interest);
+        console.log(interests);
       } catch (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
@@ -106,14 +130,98 @@ const Profile = (props) => {
       [name]: value,
     }));
   };
+  const handleInterestChange = (interest) => {
+    if (!interests.includes(interest)) {
+      setInterests([...interests, interest]);
+    } else {
+      setInterests(interests.filter((item) => item !== interest));
+    }
+    console.log(interests);
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
-    setIsEditing(false);
     console.log(newData);
     //window.location.reload();
-    //add cancel button also
-    //setErrors(validateValues());
-    //setSubmitting(true);
+    setErrors(validateValues());
+    setSubmitting(true);
+    setIsEditing(false);
+  };
+  const handleCancel = () => {
+    window.location.reload();
+  };
+  const validateValues = () => {
+    let errors = {};
+
+    if ("" === newData.name) {
+      errors.name = "Please enter your name";
+    }
+    if (!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(newData.email)) {
+      errors.email = "Please enter a valid email";
+    }
+    return errors;
+  };
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && submitting) {
+      console.log("sent");
+      updateUser();
+    }
+  }, [errors]);
+  const updateUser = async () => {
+    try {
+      const formData = new FormData();
+      if (!profilePicture) {
+        let blob = await fetch(DefaultAvatar).then((r) => r.blob());
+        const defaultFile = new File([blob], "DefaultAvatar.png", {
+          type: "image/png",
+        });
+        formData.append("photo", defaultFile);
+      } else {
+        formData.append("photo", profilePicture);
+      }
+      formData.append("email", newData.email);
+      formData.append("name", newData.name);
+      formData.append("aboutMe", newData.aboutme);
+      formData.append("gender", newData.gender);
+      formData.append("interest", interests);
+      formData.append("type", "profilePicture");
+      console.log(formData);
+      const res = await axios.put(
+        `http://localhost:3000/user/${userID}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      //console.log(JSON.stringify({ username, token: res.data }));
+      console.log(res);
+      //if (!authController.isAuthenticated()) {
+      /*
+      hen((r) => {
+                  });*/
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        console.error("Error 409:", error.response.data);
+        setErrors({ email: error.response.data.message });
+      } else if (error.response) {
+        // The request was made and the server responded with a status code
+        console.error("Server responded with status:", error.response.status);
+        console.error("Response data:", error.response.data);
+        console.error("Response headers:", error.response.headers);
+        window.alert(error.response.data.message);
+      } else if (error.request) {
+        // The request was made but no response was received
+        console.error("No response received:", error);
+        window.alert("No response received from server: " + error.message);
+      } else {
+        // Something happened in setting up the request that triggered an error
+        console.log(error);
+        //window.alert(error.response.data.message);
+        console.error("Error setting up the request:", error.message);
+        window.alert("Error setting up the request: " + error.message);
+      }
+    }
   };
   /*useEffect(() => {
     // Mock user data
@@ -175,7 +283,10 @@ const Profile = (props) => {
                   src={
                     profilePicture
                       ? URL.createObjectURL(profilePicture)
-                      : `http://localhost:3000/${userData.profilePicUrl}`
+                      : DefaultAvatar
+                    /*profilePicture
+                      ? URL.createObjectURL(profilePicture)
+                      : `http://localhost:3000/${userData.profilePicUrl}`*/
                   }
                   style={{
                     margin: "10px",
@@ -234,7 +345,7 @@ const Profile = (props) => {
           </div>
           <br />
           {/*Dropdown for Gender*/}
-          <form onSubmit={handleSubmit}>
+          <form id="editProfile" onSubmit={handleSubmit}>
             <div
               style={{
                 justifyContent: "center",
@@ -256,28 +367,38 @@ const Profile = (props) => {
                 </select>
               </div>
               <br />
-              {/*
-            <div style={{ textAlign: "center" }}>Workout Interests:</div>
-            <br />
-            <div className={"interestsContainer"}>
-              {workoutInterestExamples.map((interest, index) => (
-                <div
-                  key={index}
-                  className={`interestItem ${
-                    interests.includes(interest) ? "selectedWorkout" : ""
-                  }`}
-                  onClick={() => handleInterestChange(interest)}
-                >
-                  {interest}
-                </div>
-              ))}
-            </div>*/}
-              {/* Form Submit Button */}
-              <button className="profileButton" type="submit">
-                Save Changes
-              </button>
+              <div style={{ textAlign: "center" }}>Workout Interests:</div>
+              <br />
+              <div className={"interestsContainer"}>
+                {workoutInterestExamples.map((interest, index) => (
+                  <div
+                    key={index}
+                    className={`interestItem ${
+                      interests.includes(interest) ? "selectedWorkout" : ""
+                    }`}
+                    onClick={() => handleInterestChange(interest)}
+                  >
+                    {interest}
+                  </div>
+                ))}
+              </div>
             </div>
           </form>
+
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              gap: "10px",
+            }}
+          >
+            <button form="editProfile" className="profileButton" type="submit">
+              Save Changes
+            </button>
+            <button className="profileButton" onClick={() => handleCancel()}>
+              Cancel
+            </button>
+          </div>
         </div>
       ) : (
         <div className="profile-container">
