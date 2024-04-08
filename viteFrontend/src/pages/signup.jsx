@@ -62,6 +62,24 @@ const Signup = (props) => {
       return;
     }
 
+    // Checking for at least one uppercase letter
+    if (!/[A-Z]/.test(password)) {
+      setPasswordError("The password must contain at least one uppercase character");
+      return;
+    }
+
+    // Checking for at least one number
+    if (!/\d/.test(password)) {
+      setPasswordError("The password must contain at least one number");
+      return;
+    }
+
+    // Checking for at least one special character
+    if (!/[@#$%^&+=!]/.test(password)) {
+      setPasswordError("The password must contain at least one special character (@#$%^&+=!)");
+      return;
+    }
+
     // Authentication calls will be made here...
     /*if (
       !usernameError === "" &&
