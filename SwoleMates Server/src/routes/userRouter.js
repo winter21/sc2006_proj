@@ -4,7 +4,7 @@ const userController = require('../controllers/userController');
 const multer = require('../middlewares/multer');
 
 //GET method to get 1 user
-router.get("/userList", userController.getListOfUsers)
+router.get("/userList/:userList", userController.getListOfUsers)
 
 //GET method to get 1 user
 router.get("/:userId", userController.getOneUser)
