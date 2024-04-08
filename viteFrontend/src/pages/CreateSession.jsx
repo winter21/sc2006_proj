@@ -115,9 +115,7 @@ const CreateSession = () => {
       setTimeError("Please enter a valid integer for the start time");
     } else if (startHr > 23 || startMin > 59) {
       setTimeError("Please enter a valid time");
-    } else if (startHr.length !== 2 || startMin.length !== 2) {
-      setTimeError("Please enter a start time in 24hr format");
-    }
+    } 
 
     if (
       !dateError === "" &&
@@ -143,7 +141,6 @@ const CreateSession = () => {
         }
       );
       const userId = decodedToken.data.userId;
-      const date = formatDate(selectedDate);
       if (!sessionPicture) {
         let blob = await fetch(DefaultAvatar).then((r) => r.blob());
         const defaultFile = new File([blob], "DefaultAvatar.png", {
@@ -154,7 +151,7 @@ const CreateSession = () => {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", date + "T" + startHr + ":" + startMin + ":00Z");
+      formData.append("date", formatDate(selectedDate) + "T" + startHr.padStart(2, '0') + ":" + startMin.padStart(2, '0') + ":00Z");
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);

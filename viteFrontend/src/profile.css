@@ -45,7 +45,7 @@
     font-size: 14px;
   }
 
-  #profSignOut {
+  .profileButton {
     margin-top: 20px;
     padding: 10px 20px;
     background-color: red;
@@ -55,6 +55,6 @@
     cursor: pointer;
   }
 
-  #profSignOut:hover {
+  .profileButton:hover {
     background-color: darkred;
   }

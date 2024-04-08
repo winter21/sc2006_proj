@@ -177,7 +177,11 @@ function App() {
             path="/profile"
             element={
               <RequireAuth loggedIn={loggedIn}>
-                <Profile setLoggedIn={setLoggedIn} setUsername={setUsername} />
+                <Profile
+                  username={username}
+                  setLoggedIn={setLoggedIn}
+                  setUsername={setUsername}
+                />
               </RequireAuth>
             }
           />

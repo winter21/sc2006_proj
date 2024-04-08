@@ -2,13 +2,17 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import { Avatar } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
 import "../profile.css";
 
 const Profile = (props) => {
-  console.log(window.location.origin);
+  //console.log(window.location.origin);
+  const [profilePicture, setProfilePicture] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [userData, setUserData] = useState({});
+  const [newData, setNewData] = useState({});
+  const [errors, setErrors] = useState({});
+
   const navigate = useNavigate();
   const handleSignOut = () => {
     //  the sign-out logic (like clearing tokens)
@@ -17,24 +21,20 @@ const Profile = (props) => {
     props.setUsername("");
     navigate("/login");
   };
-  console.log("run");
-  function indexToColor(index) {
-    const colors = [
-      "#FF7043", // Deep orange
-      "#AB47BC", // Purple
-      "#5C6BC0", // Indigo
-      "#42A5F5", // Blue
-      "#26A69A", // Teal
-      "#9CCC65", // Light green
-      "#D4E157", // Lime
-      "#EF5350", // Red
-      "#EC407A", // Pink
-      "#FFA726", // Orange
-      "#8D6E63", // Brown
-      "#78909C", // Blue Grey
-    ];
-    return colors[index % colors.length]; // Use modulo to ensure cycling through colors
-  }
+  const interestColors = {
+    Running: "#FF7043",
+    HIIT: "#AB47BC",
+    Yoga: "#5C6BC0",
+    Pilates: "#42A5F5",
+    Dance: "#26A69A",
+    Hiking: "#9CCC65",
+    Boxing: "#D4E157",
+    Cycling: "#EF5350",
+    Rowing: "#EC407A",
+    Weightlifting: "#FFA726",
+    Swimming: "#8D6E63",
+    CrossFit: "#78909C",
+  };
   const genderLabels = {
     MALE: "Male",
     FEMALE: "Female",
@@ -64,9 +64,20 @@ const Profile = (props) => {
           aboutMe: resp.data.aboutMe,
           interests: resp.data.interest.map((interest, index) => ({
             name: interest,
-            color: indexToColor(index), // Generate color dynamically
+            color: interestColors[interest], // Generate color dynamically
           })),
           profilePicUrl: resp.data.profilePicture,
+        });
+        setNewData({
+          name: resp.data.name,
+          email: resp.data.email,
+          gender: resp.data.gender,
+          aboutMe: resp.data.aboutMe,
+          interests: resp.data.interest.map((interest, index) => ({
+            name: interest,
+            color: interestColors[interest], // Generate color dynamically
+          })),
+          //profilePicUrl: resp.data.profilePicture,
         });
       } catch (error) {
         if (error.response) {
@@ -88,6 +99,22 @@ const Profile = (props) => {
     };
     verify();
   }, []);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNewData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setIsEditing(false);
+    console.log(newData);
+    //window.location.reload();
+    //add cancel button also
+    //setErrors(validateValues());
+    //setSubmitting(true);
+  };
   /*useEffect(() => {
     // Mock user data
     setUserData({
@@ -116,38 +143,198 @@ const Profile = (props) => {
   return (
     <div>
       <Navbar />
-      <div className="profile-container">
-        <Avatar
-          src={`http://localhost:3000/${userData.profilePicUrl}`}
-          style={{
-            width: "150px",
-            height: "150px",
-          }}
-          className="profile-pic"
-        />
-        <h1>{userData.name}</h1>
-        <p>Email: {userData.email}</p>
-        <p>Gender: {userData.gender}</p>
-        <div className="interests-container">
-          {userData.interests &&
-            userData.interests.map((interest, index) => (
-              <span
-                key={index}
-                className="interest-tag"
-                style={{ backgroundColor: interest.color }}
-              >
-                {interest.name}
-              </span>
-            ))}
-        </div>
-        <div className="about-me">
-          <p>About Me:</p>
-          <p>{userData.aboutMe}</p>
-        </div>
-        <button id="profSignOut" onClick={handleSignOut}>
-          Sign Out
-        </button>
+      <div
+        style={{
+          textDecoration: "underline",
+          fontFamily: "'monaco', monospace",
+          textAlign: "center",
+          fontSize: "20px",
+          fontWeight: "bolder",
+        }}
+      >
+        {props.username + (props.username.endsWith("s") ? "'" : "'s")} Profile
       </div>
+      {isEditing ? (
+        <div className={"mainContainer"}>
+          {/*Input for Profile Picture*/}
+          <div>Click on the Profile Picture to upload an image</div>
+          <br />
+          <div className={"inputContainer"}>
+            <input
+              accept="image/*"
+              id="contained-button-file"
+              type="file"
+              onChange={(event) => setProfilePicture(event.target.files[0])}
+              style={{
+                display: "none",
+              }}
+            />
+            <label htmlFor="contained-button-file">
+              <IconButton component="span">
+                <Avatar
+                  src={
+                    profilePicture
+                      ? URL.createObjectURL(profilePicture)
+                      : `http://localhost:3000/${userData.profilePicUrl}`
+                  }
+                  style={{
+                    margin: "10px",
+                    width: "150px",
+                    height: "150px",
+                    borderRadius: "50%",
+                    border: "8px solid #ccc",
+                  }}
+                />
+              </IconButton>
+            </label>
+          </div>
+          <br />
+          {/* Input for Name */}
+          <div>Name</div>
+          <div className={"inputContainer"}>
+            <input
+              name="name"
+              value={newData.name}
+              placeholder="Enter your name here"
+              onChange={handleInputChange}
+              className={"inputBox"}
+              style={{ border: errors.name ? "1px solid red" : null }}
+            />
+            {errors.name ? (
+              <label className="errorLabel">{errors.name}</label>
+            ) : null}
+          </div>
+          <br />
+          {/* Input for Email */}
+          <div>Email</div>
+          <div className={"inputContainer"}>
+            <input
+              name="email"
+              value={newData.email}
+              placeholder="Enter your email here"
+              onChange={handleInputChange}
+              className={"inputBox"}
+              style={{ border: errors.email ? "1px solid red" : null }}
+            />
+            {errors.email ? (
+              <label className="errorLabel">{errors.email}</label>
+            ) : null}
+          </div>
+          <br />
+          <div>About Me!</div>
+          <div className={"inputContainer"}>
+            <textarea
+              name="aboutMe"
+              value={newData.aboutMe}
+              placeholder="Tell us about yourself..."
+              onChange={handleInputChange}
+              className={"inputBox"}
+              style={{ fontFamily: "sans-serif", height: "120px" }}
+            />
+          </div>
+          <br />
+          {/*Dropdown for Gender*/}
+          <form onSubmit={handleSubmit}>
+            <div
+              style={{
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+              }}
+            >
+              Gender:
+              <div className={"inputContainer"}>
+                <select
+                  id="Gender"
+                  name="gender"
+                  value={newData.gender}
+                  onChange={handleInputChange}
+                >
+                  <option value="MALE">Male</option>
+                  <option value="FEMALE">Female</option>
+                  <option value="PREFER NOT TO SAY">Other</option>
+                </select>
+              </div>
+              <br />
+              {/*
+            <div style={{ textAlign: "center" }}>Workout Interests:</div>
+            <br />
+            <div className={"interestsContainer"}>
+              {workoutInterestExamples.map((interest, index) => (
+                <div
+                  key={index}
+                  className={`interestItem ${
+                    interests.includes(interest) ? "selectedWorkout" : ""
+                  }`}
+                  onClick={() => handleInterestChange(interest)}
+                >
+                  {interest}
+                </div>
+              ))}
+            </div>*/}
+              {/* Form Submit Button */}
+              <button className="profileButton" type="submit">
+                Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : (
+        <div className="profile-container">
+          <Avatar
+            src={`http://localhost:3000/${userData.profilePicUrl}`}
+            style={{
+              width: "150px",
+              height: "150px",
+            }}
+            className="profile-pic"
+          />
+          <h1>{userData.name}</h1>
+          <p>Email: {userData.email}</p>
+          <p>Gender: {userData.gender}</p>
+          <div className="interests-container">
+            {userData.interests &&
+              userData.interests.map((interest, index) => (
+                <span
+                  key={index}
+                  className="interest-tag"
+                  style={{ backgroundColor: interest.color }}
+                >
+                  {interest.name}
+                </span>
+              ))}
+          </div>
+
+          <div className="about-me">
+            <p>About Me:</p>
+            <p>{userData.aboutMe}</p>
+          </div>
+          {isEditing ? (
+            <div>
+              {/* Editing form goes here */}
+              <button
+                className="profileButton"
+                onClick={() => setIsEditing(false)}
+              >
+                Save Changes
+              </button>
+            </div>
+          ) : (
+            <div>
+              {/* Display profile information */}
+              <button
+                className="profileButton"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit Profile
+              </button>
+            </div>
+          )}
+          <button className="profileButton" onClick={handleSignOut}>
+            Sign Out
+          </button>
+        </div>
+      )}
     </div>
   );
 };

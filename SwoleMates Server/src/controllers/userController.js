@@ -182,3 +182,18 @@ exports.updateUser = async (req, res) => {
         }
     }
 }
+
+exports.getListOfUsers = async (req, res) => {
+    const userList = req.params.userList.split(",")
+    try{
+        const userListInfo = await User.find({_id:{$in:userList}})
+        res.status(201).send(userListInfo)
+    }catch(err){
+        res.status(500).send({
+            type:"GetListError",
+            status: 500,
+            message: "Error Getting List of User Info",
+            err: err.stack
+        })
+    }
+}

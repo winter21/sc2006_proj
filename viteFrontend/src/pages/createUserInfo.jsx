@@ -234,7 +234,6 @@ const CreateUserInfo = (props) => {
           accept="image/*"
           //className={classes.input}
           id="contained-button-file"
-          multiple
           type="file"
           onChange={(event) =>
             handleProfilePictureChange(event.target.files[0])

@@ -20,7 +20,7 @@ exports.createWorkoutSession = async (req, res) => {
             splitInterest = interest.split(",")
         }
 
-        const coordinates = getCoordinatesFromAddress(address)
+        const coordinates = await getCoordinatesFromAddress(address)
         // Create a new WorkoutSession with the obtained coordinates
         const newWorkoutSession = new WorkoutSession({
             name, 
