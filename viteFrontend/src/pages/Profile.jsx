@@ -98,9 +98,6 @@ const Profile = (props) => {
           aboutMe: resp.data.aboutMe,
           //profilePicUrl: resp.data.profilePicture,
         });
-        loadProfilePictureToBlob(
-          `http://localhost:3000/${userData.profilePicUrl}`
-        );
         setInterests(resp.data.interest);
         console.log(interests);
       } catch (error) {
@@ -123,6 +120,12 @@ const Profile = (props) => {
     };
     verify();
   }, []);
+  useEffect(() => {
+    if (userData.profilePicUrl)
+      loadProfilePictureToBlob(
+        `http://localhost:3000/${userData.profilePicUrl}`
+      );
+  }, [userData]); // Add userData as a dependency for the useEffect hook
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setNewData((prevData) => ({
@@ -144,7 +147,6 @@ const Profile = (props) => {
     //window.location.reload();
     setErrors(validateValues());
     setSubmitting(true);
-    setIsEditing(false);
   };
   const handleCancel = () => {
     window.location.reload();
@@ -180,7 +182,7 @@ const Profile = (props) => {
       }
       formData.append("email", newData.email);
       formData.append("name", newData.name);
-      formData.append("aboutMe", newData.aboutme);
+      formData.append("aboutMe", newData.aboutMe);
       formData.append("gender", newData.gender);
       formData.append("interest", interests);
       formData.append("type", "profilePicture");
@@ -194,12 +196,9 @@ const Profile = (props) => {
           },
         }
       );
-      //console.log(JSON.stringify({ username, token: res.data }));
       console.log(res);
-      //if (!authController.isAuthenticated()) {
-      /*
-      hen((r) => {
-                  });*/
+      setIsEditing(false);
+      window.location.reload();
     } catch (error) {
       if (error.response && error.response.status === 409) {
         console.error("Error 409:", error.response.data);
@@ -430,27 +429,15 @@ const Profile = (props) => {
             <p>About Me:</p>
             <p>{userData.aboutMe}</p>
           </div>
-          {isEditing ? (
-            <div>
-              {/* Editing form goes here */}
-              <button
-                className="profileButton"
-                onClick={() => setIsEditing(false)}
-              >
-                Save Changes
-              </button>
-            </div>
-          ) : (
-            <div>
-              {/* Display profile information */}
-              <button
-                className="profileButton"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Profile
-              </button>
-            </div>
-          )}
+          {/* Display profile information */}
+          <div>
+            <button
+              className="profileButton"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit Profile
+            </button>
+          </div>
           <button className="profileButton" onClick={handleSignOut}>
             Sign Out
           </button>

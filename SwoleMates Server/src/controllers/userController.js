@@ -23,9 +23,9 @@ exports.getOneUser = async (req, res) => {
         }
         else{
             res.status(500).send({
-                type:"CreateAccountError",
+                type:"GetAccountError",
                 status: 500,
-                message: "Error Creating User",
+                message: "Error Getting User",
                 err: err.stack
             })
         }
@@ -111,7 +111,7 @@ exports.updateUser = async (req, res) => {
 
     let picturePath = ''
     var hasMovedImage = false;
-    const tempPath = ''
+    let tempPath = ''
 
     let interest = []
     try{
@@ -151,7 +151,7 @@ exports.updateUser = async (req, res) => {
 
         res.status(201).send(oneUser)
     }catch(err){
-        console.log(err.message)
+        console.log(err.stack)
         const deletePath = hasMovedImage ? picturePath : tempPath 
         await utils.deleteImage(deletePath)
         if(err.message == "No Image File"){
