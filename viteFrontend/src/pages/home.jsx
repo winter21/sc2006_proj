@@ -41,9 +41,11 @@ const Home = (props) => {
   };
 
   const filteredSessions = sessions.filter(session =>
+    session.on &&
     session.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
     (selectedInterests.length === 0 || selectedInterests.every(interest => session.interest.includes(interest)))
   );
+  
 
   const handleCardClick = (sessionId) => {
     navigate(`/SessionDetails/${sessionId}`); // Navigate to SessionDetails page with session id
@@ -118,11 +120,13 @@ const Home = (props) => {
                   }}
                 >
                   <CardContent>
-                    <img src={`http://localhost:3000/${session.workoutPicture}`} alt="No Need" style={{ width: '250px', height: 'auto', marginBottom: '10px', borderRadius: '8%' }} />
+                    <img src={`http://localhost:3000/${session.workoutPicture}`} alt="No Need" style={{ width: '250px', height: '180px', overflow: 'hidden', marginBottom: '10px', borderRadius: '8%' }} />
                     <Typography variant="h5" component="h2" style={{ fontWeight: 'bold' }}>{session.name}</Typography>
-                    <Typography variant="body1">Date: {session.date}</Typography>
-                    <Typography variant="body1">Slots: {session.slots} slot(s) left</Typography>
-                    <Typography variant="body1">Interests: {session.interest}</Typography>
+                    <Typography variant="body1">Date: {session.date.slice(0, 10)}</Typography>
+                    <Typography variant="body1">Start Time: {session.date.slice(11, 16)}</Typography>
+                    <Typography variant="body1">
+                      Slots: {session.slots - session.participants.length}/{session.slots} slot(s) available
+                    </Typography>
                   </CardContent>
                 </Card>
               </ListItem>
