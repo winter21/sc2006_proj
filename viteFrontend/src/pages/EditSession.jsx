@@ -25,21 +25,19 @@ const EditSession = () => {
   const [startMin, setStartMin] = useState("");
   const [duration, setDuration] = useState("");
   const [slots, setSlots] = useState("");
+  const [numParticipants, setNumParticipants] = useState("");
   const [interests, setInterests] = useState([]);
   const [searchResult, setSearchResult] = useState("");
   const [sessionPicture, setSessionPicture] = useState(null);
   const [address, setAddress] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [durationError, setDurationError] = useState("");
-  const [slotsError, setSlotsError] = useState("");
-  const [locationError, setLocationError] = useState("");
-  const [dateError, setDateError] = useState("");
-  const [timeError, setTimeError] = useState("");
-  const [interestError, setInterestError] = useState("");
   const [pictureName, setPictureName] = useState("");
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const params = useParams();
   const { id } = params;
+
+  const currentDateTime = new Date();
 
   const loadSessionPictureToBlob = async (picture) => {
     let blob = await fetch(picture).then((r) => r.blob());
@@ -67,6 +65,13 @@ const EditSession = () => {
 
   const searchInput = useRef();
 
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && submitting) {
+      console.log("sent");
+      updateSes();
+    }
+  }, [errors]);
+
   function onLoad(autocomplete) {
     setSearchResult(autocomplete);
   }
@@ -76,6 +81,52 @@ const EditSession = () => {
   };
 
   //const [map, setMap] = useState(/** @type google.maps.Map */(null))
+
+  const validateValues = () => {
+    let errors = {};
+
+    if (!(interests.length)) {
+      errors.interest =("Please select at least one workout type")
+    }
+
+    if ("" === name) {
+      errors.name = ("Please enter a session name");
+    }
+
+    if ("" === duration) {
+      errors.duration = ("Please enter a duration");
+    } else if (!isInteger(duration)) {
+      errors.duration =("Please enter a valid integer for duration");
+    }
+
+    if ("" === slots) {
+      errors.slots =("Please enter the number of slots");
+    } else if (!isInteger(slots)) {
+      errors.slots =("Please enter a valid integer for the number of slots");
+    } else if (parseInt(slots) < numParticipants) {
+      errors.slots = "Please enter a number not lower than the number of participants joined"
+    }
+
+    if (searchInput.current.value === "") {
+      errors.location =("Please select a location");
+    }
+
+    if (selectedDate === null) {
+      errors.selectedDate =("Please select a session date");
+    } else if (selectedDate <= currentDateTime) {
+      errors.selectedDate =("Please select a valid date");
+    }
+
+    if ("" === startHr || "" === startMin) {
+      errors.time =("Please enter a start time");
+    } else if (!isInteger(startHr) || !isInteger(startMin)) {
+      errors.time =("Please enter a valid number for the start time");
+    } else if (startHr > 23 || startMin > 59) {
+      errors.time =("Please enter a valid time");
+    } 
+    
+    return errors;
+  };
 
   const fetchSession = async () => {
     try {
@@ -102,6 +153,7 @@ const EditSession = () => {
       setStartMin(String(dateTime.getUTCMinutes()).padStart(2, "0"));
       setDuration(session.duration.toString());
       setSlots(session.slots.toString());
+      setNumParticipants((session.participants).length)
       loadSessionPictureToBlob(
         `http://localhost:3000/${session.workoutPicture}`
       );
@@ -121,62 +173,10 @@ const EditSession = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(sessionPicture);
+    console.log(name);
     handleAddress(searchInput.current.value);
-    setDurationError("");
-    setSlotsError("");
-    setNameError("");
-    setLocationError("");
-    setDateError("");
-    setTimeError("");
-    setInterestError("");
-
-    if (!interests.length) {
-      setInterestError("Please select at least one workout type");
-    }
-
-    if ("" === name) {
-      setNameError("Please enter a session name");
-    }
-
-    if ("" === duration) {
-      setDurationError("Please enter a duration");
-    } else if (!isInteger(duration)) {
-      setDurationError("Please enter a valid integer for duration");
-    }
-
-    if ("" === slots) {
-      setSlotsError("Please enter the number of slots");
-    } else if (!isInteger(slots)) {
-      setSlotsError("Please enter a valid integer for the number of slots");
-    }
-
-    if (searchInput.current.value === "") {
-      setLocationError("Please select a location");
-    }
-
-    if (selectedDate === null) {
-      setDateError("Please select a session date");
-    }
-
-    if ("" === startHr || "" === startMin) {
-      setTimeError("Please enter a start time");
-    } else if (!isInteger(startHr) || !isInteger(startMin)) {
-      setTimeError("Please enter a valid integer for the start time");
-    } else if (startHr > 23 || startMin > 59) {
-      setTimeError("Please enter a valid time");
-    }
-
-    if (
-      !dateError === "" &&
-      !interestError === "" &&
-      !locationError === "" &&
-      !timeError === "" &&
-      !durationError === "" &&
-      !slotsError === "" &&
-      !nameError === ""
-    )
-      return;
-    updateSes();
+    setErrors(validateValues());
+    setSubmitting(true);
   };
 
   const updateSes = async () => {
@@ -216,6 +216,7 @@ const EditSession = () => {
         }
       );
       console.log(res);
+      alert("You have successfully edited the workout session");
       navigate(-1, { replace: true });
     } catch (error) {
       console.log(error.stack);
@@ -343,13 +344,15 @@ const EditSession = () => {
               <input
                 defaultValue={name}
                 placeholder="Zenitsu's Workout Session"
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {setName(e.target.value); errors.name=""}}
                 className={"inputBox"}
+                style={{ border: errors.name ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{nameError}</label>
+              {errors.name ? (
+                <label className="errorLabel">{errors.name}</label>
+              ) : null}
             </div>
             <br />
-
             <div className={"titleContainer"}>
               <label>Session Date:</label>
             </div>
@@ -361,11 +364,13 @@ const EditSession = () => {
                 dateFormat="yyyy-MM-dd"
                 placeholderText="yyyy-mm-dd"
                 className={"inputBox"}
+                style={{ border: errors.selectedDate ? "1px solid red" : null }} // Apply red border if there is an error
               />
-              <label className="errorLabel">{dateError}</label>
+              {errors.selectedDate ? (
+                <label className="errorLabel">{errors.selectedDate}</label>
+              ) : null}
             </div>
             <br />
-
             <div className={"titleContainer"}>
               <label>Session Start Time (24hr):</label>
             </div>
@@ -374,24 +379,25 @@ const EditSession = () => {
                 <input
                   defaultValue={startHr}
                   placeholder="01"
-                  onChange={(e) => setStartHr(e.target.value)}
+                  onChange={(e) => {setStartHr(e.target.value); errors.time=""}}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginRight: "10px" }} // Adjust the spacing between input boxes
+                  style={{ marginRight: "10px", border: errors.time ? "1px solid red" : null }} // Adjust the spacing between input boxes
                 />
                 <h3>:</h3>
                 <input
                   defaultValue={startMin}
                   placeholder="23"
-                  onChange={(e) => setStartMin(e.target.value)}
+                  onChange={(e) => {setStartMin(e.target.value); errors.time=""}}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginLeft: "10px" }}
+                  style={{ marginLeft: "10px", border: errors.time ? "1px solid red" : null }}
                 />
-              </div>
-              <label className="errorLabel">{timeError}</label>
+                </div>
+                {errors.time ? (
+                  <label className="errorLabel">{errors.time}</label>
+                ) : null}
             </div>
-
             <br />
             <div className={"titleContainer"}>
               <label>Session Duration (hrs):</label>
@@ -400,10 +406,13 @@ const EditSession = () => {
               <input
                 defaultValue={duration}
                 placeholder="3"
-                onChange={(e) => setDuration(e.target.value)}
+                onChange={(e) => {setDuration(e.target.value); errors.duration=""}}
                 className={"inputBox"}
+                style={{ border: errors.duration ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{durationError}</label>
+              {errors.duration ? (
+                <label className="errorLabel">{errors.duration}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -411,7 +420,7 @@ const EditSession = () => {
             </div>
             <div className={"detailsInputContainer"}>
               <Autocomplete
-                onPlaceChanged={(place) => onPlaceChanged(place)}
+                onPlaceChanged={(place) => {onPlaceChanged(place); errors.location=""}}
                 onLoad={onLoad}
               >
                 <input
@@ -421,9 +430,12 @@ const EditSession = () => {
                   size="auto"
                   ref={searchInput}
                   className={"inputBox"}
+                  style = {{border: errors.location ? "1px solid red" : null}}
                 />
-              </Autocomplete>
-              <label className="errorLabel">{locationError}</label>
+              </Autocomplete> 
+                {errors.location ? (
+                  <label className="errorLabel">{errors.location}</label>
+                ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -435,8 +447,11 @@ const EditSession = () => {
                 placeholder="30"
                 onChange={(e) => setSlots(e.target.value)}
                 className={"inputBox"}
+                style={{ border: errors.slots ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{slotsError}</label>
+              {errors.slots ? (
+                <label className="errorLabel">{errors.slots}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -455,15 +470,15 @@ const EditSession = () => {
                 </div>
               ))}
             </div>
-            <label style={{ fontSize: 15, color: "red" }}>
-              {interestError}
-            </label>
+              {errors.interest ? (
+                <label style={{fontSize: 15, color: 'red' }} className="errorLabel">{errors.interest}</label>
+              ) : null}
             <br />
             <div className={"inputContainer"}>
               <input
                 className={"inputButton"}
                 type="submit"
-                value={"Edit Session"}
+                value={"Save Changes"}
               />
             </div>
           </form>

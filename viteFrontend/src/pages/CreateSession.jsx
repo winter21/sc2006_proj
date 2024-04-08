@@ -28,16 +28,19 @@ const CreateSession = () => {
   const [searchResult, setSearchResult] = useState("");
   const [sessionPicture, setSessionPicture] = useState(null);
   const [address, setAddress] = useState("");
-  const [nameError, setNameError] = useState("");
-  const [durationError, setDurationError] = useState("");
-  const [slotsError, setSlotsError] = useState("");
-  const [locationError, setLocationError] = useState("");
-  const [dateError, setDateError] = useState("");
-  const [timeError, setTimeError] = useState("");
-  const [interestError, setInterestError] = useState("");
+  // const [nameError, setNameError] = useState("");
+  // const [durationError, setDurationError] = useState("");
+  // const [slotsError, setSlotsError] = useState("");
+  // const [locationError, setLocationError] = useState("");
+  // const [dateError, setDateError] = useState("");
+  // const [timeError, setTimeError] = useState("");
+  // const [interestError, setInterestError] = useState("");
+  const [errors, setErrors] = useState({});
+  const [submitting, setSubmitting] = useState(false);
 
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
+    errors.selectedDate=""
   };
 
   const handleSessionPictureChange = (file) => {
@@ -48,12 +51,20 @@ const CreateSession = () => {
     setAddress(location);
   };
 
+  const currentDateTime = new Date();
+
   const libraries = ["places"];
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
     libraries: libraries,
   });
   const searchInput = useRef();
+  useEffect(() => {
+    if (Object.keys(errors).length === 0 && submitting) {
+      console.log("sent");
+      createSes();
+    }
+  }, [errors]);
   //const user = JSON.parse(localStorage.getItem("userID"))
 
   function onLoad(autocomplete) {
@@ -70,65 +81,64 @@ const CreateSession = () => {
 
   //const [map, setMap] = useState(/** @type google.maps.Map */(null))
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    handleAddress(searchInput.current.value);
-    setDurationError("");
-    setSlotsError("");
-    setNameError("");
-    setLocationError("");
-    setDateError("");
-    setTimeError("");
-    setInterestError("")
+  const validateValues = () => {
+    let errors = {};
 
     if (!(interests.length)) {
-      setInterestError("Please select at least one workout type")
+      errors.interest =("Please select at least one workout type")
     }
 
     if ("" === name) {
-      setNameError("Please enter a session name");
+      errors.name = ("Please enter a session name");
     }
 
     if ("" === duration) {
-      setDurationError("Please enter a duration");
+      errors.duration = ("Please enter a duration");
     } else if (!isInteger(duration)) {
-      setDurationError("Please enter a valid integer for duration");
+      errors.duration =("Please enter a valid integer for duration");
     }
 
     if ("" === slots) {
-      setSlotsError("Please enter the number of slots");
+      errors.slots =("Please enter the number of slots");
     } else if (!isInteger(slots)) {
-      setSlotsError("Please enter a valid integer for the number of slots");
+      errors.slots =("Please enter a valid integer for the number of slots");
     }
 
     if (searchInput.current.value === "") {
-      setLocationError("Please select a location");
+      errors.location =("Please select a location");
     }
 
     if (selectedDate === null) {
-      setDateError("Please select a session date");
+      errors.selectedDate =("Please select a session date");
+    } else if (selectedDate <= currentDateTime) {
+      errors.selectedDate =("Please select a valid date");
     }
 
     if ("" === startHr || "" === startMin) {
-      setTimeError("Please enter a start time");
+      errors.time =("Please enter a start time");
     } else if (!isInteger(startHr) || !isInteger(startMin)) {
-      setTimeError("Please enter a valid integer for the start time");
+      errors.time =("Please enter a valid number for the start time");
     } else if (startHr > 23 || startMin > 59) {
-      setTimeError("Please enter a valid time");
+      errors.time =("Please enter a valid time");
     } 
-
-    if (
-      !dateError === "" &&
-      !interestError === "" &&
-      !locationError === "" &&
-      !timeError === "" &&
-      !durationError === "" &&
-      !slotsError === "" &&
-      !nameError === ""
-    )
-      return;
-    createSes();
+    
+    return errors;
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    handleAddress(searchInput.current.value);
+    setErrors(validateValues());
+    setSubmitting(true);
+    // setDurationError("");
+    // setSlotsError("");
+    // setNameError("");
+    // setLocationError("");
+    // setDateError("");
+    // setTimeError("");
+    // setInterestError("")
+  };
+
 
   const createSes = async () => {
     try {
@@ -169,11 +179,13 @@ const CreateSession = () => {
         }
       );
       console.log(res);
+      alert("You have successfully created the workout session");
       navigate("/home", { replace: true });
     } catch (error) {
       console.log(error.stack);
     }
   };
+  
 
   function isInteger(value) {
     // Use parseInt to parse the value and check if it's a valid integer
@@ -296,11 +308,14 @@ const CreateSession = () => {
             <div className={"detailsInputContainer"}>
               <input
                 value={name}
-                placeholder="Zenitsu's Workout Session"
-                onChange={(e) => setName(e.target.value)}
+                placeholder="Zenitsu's Workout Session" 
+                onChange={(e) => {setName(e.target.value); errors.name=""}}
                 className={"inputBox"}
+                style={{ border: errors.name ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{nameError}</label>
+              {errors.name ? (
+                <label className="errorLabel">{errors.name}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -313,8 +328,11 @@ const CreateSession = () => {
                 dateFormat="yyyy-MM-dd"
                 placeholderText="yyyy-mm-dd"
                 className={"inputBox"}
+                style={{ border: errors.selectedDate ? "1px solid red" : null }} // Apply red border if there is an error
               />
-              <label className="errorLabel">{dateError}</label>
+              {errors.selectedDate ? (
+                <label className="errorLabel">{errors.selectedDate}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -325,24 +343,25 @@ const CreateSession = () => {
                 <input
                   value={startHr}
                   placeholder="01"
-                  onChange={(e) => setStartHr(e.target.value)}
+                  onChange={(e) => {setStartHr(e.target.value); errors.time=""}}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginRight: "10px" }} // Adjust the spacing between input boxes
+                  style={{ marginRight: "10px", border: errors.time ? "1px solid red" : null }} // Adjust the spacing between input boxes
                 />
                 <h3>:</h3>
                 <input
                   value={startMin}
                   placeholder="23"
-                  onChange={(e) => setStartMin(e.target.value)}
+                  onChange={(e) => {setStartMin(e.target.value); errors.time=""}}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginLeft: "10px" }}
+                  style={{ marginLeft: "10px", border: errors.time ? "1px solid red" : null }}
                 />
-              </div>
-              <label className="errorLabel">{timeError}</label>
+                </div>
+                {errors.time ? (
+                  <label className="errorLabel">{errors.time}</label>
+                ) : null}
             </div>
-
             <br />
             <div className={"titleContainer"}>
               <label>Session Duration (hrs):</label>
@@ -351,10 +370,13 @@ const CreateSession = () => {
               <input
                 value={duration}
                 placeholder="3"
-                onChange={(e) => setDuration(e.target.value)}
+                onChange={(e) => {setDuration(e.target.value); errors.duration=""}}
                 className={"inputBox"}
+                style={{ border: errors.duration ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{durationError}</label>
+              {errors.duration ? (
+                <label className="errorLabel">{errors.duration}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -362,7 +384,7 @@ const CreateSession = () => {
             </div>
             <div className={"detailsInputContainer"}>
               <Autocomplete
-                onPlaceChanged={(place) => onPlaceChanged(place)}
+                onPlaceChanged={(place) => {onPlaceChanged(place); errors.location=""}}
                 onLoad={onLoad}
               >
                 <input
@@ -371,9 +393,12 @@ const CreateSession = () => {
                   size="auto"
                   ref={searchInput}
                   className={"inputBox"}
+                  style = {{border: errors.location ? "1px solid red" : null}}
                 />
-              </Autocomplete>
-              <label className="errorLabel">{locationError}</label>
+              </Autocomplete> 
+                {errors.location ? (
+                  <label className="errorLabel">{errors.location}</label>
+                ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -385,8 +410,11 @@ const CreateSession = () => {
                 placeholder="30"
                 onChange={(e) => setSlots(e.target.value)}
                 className={"inputBox"}
+                style={{ border: errors.slots ? "1px solid red" : null }}
               />
-              <label className="errorLabel">{slotsError}</label>
+              {errors.slots ? (
+                <label className="errorLabel">{errors.slots}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -405,7 +433,9 @@ const CreateSession = () => {
                 </div>
               ))}
             </div>
-              <label style={{fontSize: 15, color: 'red' }} >{interestError}</label>
+              {errors.interest ? (
+                <label style={{fontSize: 15, color: 'red' }} className="errorLabel">{errors.interest}</label>
+              ) : null}
             <br />
             <div className={"inputContainer"}>
               <input
