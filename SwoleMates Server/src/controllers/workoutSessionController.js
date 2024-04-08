@@ -204,16 +204,14 @@ exports.leaveWorkoutSession = async (req, res) => {
 };
 
 exports.getUserWorkoutSessions = async (req, res) => {
+    const userId = req.params.userId;
     try {
-        // Assuming userId is passed as a query parameter
-        // i.e., /workoutsessions?userId=xxx
-        const userId = req.body.userId;
+        const workoutSessions = await WorkoutSession.find({participants: userId });
 
         if (!userId) {
             return res.status(400).send("UserId is required");
         }
 
-        const workoutSessions = await WorkoutSession.find({participants: userId });
 
         res.status(200).json(workoutSessions);
     } catch (error) {
