@@ -36,22 +36,25 @@ const EditSession = () => {
   const [dateError, setDateError] = useState("");
   const [timeError, setTimeError] = useState("");
   const [interestError, setInterestError] = useState("");
+  const [pictureName, setPictureName] = useState("");
 
   const params = useParams();
   const { id } = params;
 
   const loadSessionPictureToBlob = async (picture) => {
-    let blob = await fetch(picture).then(r => r.blob());
-    setSessionPicture(blob)
-  }
+    let blob = await fetch(picture).then((r) => r.blob());
+    blob = blob.slice(0, blob.size, "application/octet-stream");
+    setPictureName(picture.split("-")[1]);
+    setSessionPicture(blob);
+  };
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
   };
 
   const handleSessionPictureChange = (file) => {
-    setSessionPicture(file); 
+    setSessionPicture(file);
   };
-  
+
   const handleAddress = (location) => {
     setAddress(location);
   };
@@ -60,9 +63,9 @@ const EditSession = () => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: "AIzaSyDKEBSYBdvZtuTcN7Lx8Mg6RTBaGtPCOQY",
     libraries: libraries,
-  }); 
-  
-  const searchInput = useRef()
+  });
+
+  const searchInput = useRef();
 
   function onLoad(autocomplete) {
     setSearchResult(autocomplete);
@@ -76,7 +79,9 @@ const EditSession = () => {
 
   const fetchSession = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/workoutSession/"+ id) 
+      const response = await axios.get(
+        "http://localhost:3000/workoutSession/" + id
+      );
       setSession(response.data);
       console.log(response.data);
     } catch (error) {
@@ -85,65 +90,67 @@ const EditSession = () => {
   };
 
   useEffect(() => {
-    fetchSession()
+    fetchSession();
   }, []);
 
   useEffect(() => {
     if (session) {
-        setName(session.name)
-        setSelectedDate((session.date).split('T')[0])
-        const dateTime = new Date(session.date);
-        setStartHr(dateTime.getUTCHours().toString());
-        setStartMin(String(dateTime.getUTCMinutes()).padStart(2, '0'));
-        setDuration(session.duration.toString());
-        setSlots(session.slots.toString());
-        loadSessionPictureToBlob(`http://localhost:3000/${session.workoutPicture}`)
-        //setHasPictureLoaded(session.workoutPicture);
-        //console.log(session.slots)
-        setAddress(session.address)
-        setInterests(session.interest)
+      setName(session.name);
+      setSelectedDate(session.date.split("T")[0]);
+      const dateTime = new Date(session.date);
+      setStartHr(dateTime.getUTCHours().toString());
+      setStartMin(String(dateTime.getUTCMinutes()).padStart(2, "0"));
+      setDuration(session.duration.toString());
+      setSlots(session.slots.toString());
+      loadSessionPictureToBlob(
+        `http://localhost:3000/${session.workoutPicture}`
+      );
+      //setHasPictureLoaded(session.workoutPicture);
+      //console.log(session.slots)
+      setAddress(session.address);
+      setInterests(session.interest);
     }
-    console.log(session)
+    console.log(session);
     //if (!session) return <div>Loading...</div>;
   }, [isLoaded, session]);
 
-  
   if (!isLoaded) {
     return <div>Loading...</div>;
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
+    console.log(sessionPicture);
     handleAddress(searchInput.current.value);
-    setDurationError("")
-    setSlotsError("")
-    setNameError("")
-    setLocationError("")
-    setDateError("")
-    setTimeError("")
-    setInterestError("")
+    setDurationError("");
+    setSlotsError("");
+    setNameError("");
+    setLocationError("");
+    setDateError("");
+    setTimeError("");
+    setInterestError("");
 
-    if (!(interests.length)) {
-      setInterestError("Please select at least one workout type")
+    if (!interests.length) {
+      setInterestError("Please select at least one workout type");
     }
 
     if ("" === name) {
       setNameError("Please enter a session name");
     }
 
-    if ("" === duration) { 
+    if ("" === duration) {
       setDurationError("Please enter a duration");
     } else if (!isInteger(duration)) {
       setDurationError("Please enter a valid integer for duration");
     }
-    
-    if ("" === slots) { 
+
+    if ("" === slots) {
       setSlotsError("Please enter the number of slots");
     } else if (!isInteger(slots)) {
       setSlotsError("Please enter a valid integer for the number of slots");
     }
-    
-    if (searchInput.current.value ===  "") {
+
+    if (searchInput.current.value === "") {
       setLocationError("Please select a location");
     }
 
@@ -151,64 +158,72 @@ const EditSession = () => {
       setDateError("Please select a session date");
     }
 
-    if ("" === startHr || "" === startMin ) { 
+    if ("" === startHr || "" === startMin) {
       setTimeError("Please enter a start time");
-    } else if (!isInteger(startHr) || !isInteger(startMin) ) {
+    } else if (!isInteger(startHr) || !isInteger(startMin)) {
       setTimeError("Please enter a valid integer for the start time");
-    } else if ((startHr>23) || (startMin>59)) {
+    } else if (startHr > 23 || startMin > 59) {
       setTimeError("Please enter a valid time");
-    } 
-    
-    
+    }
+
     if (
-        !dateError === "" &&
-        !interestError === "" &&
-        !locationError === "" &&
-        !timeError === "" &&
-        !durationError === "" &&
-        !slotsError === "" &&
-        !nameError === ""
-      )
-        return;
+      !dateError === "" &&
+      !interestError === "" &&
+      !locationError === "" &&
+      !timeError === "" &&
+      !durationError === "" &&
+      !slotsError === "" &&
+      !nameError === ""
+    )
+      return;
     updateSes();
-  }
+  };
 
   const updateSes = async () => {
     try {
       const formData = new FormData();
-      if(!sessionPicture){
-        let blob = await fetch(DefaultAvatar).then(r => r.blob());
-        const defaultFile = new File([blob], "DefaultAvatar.png", {
+      console.log(pictureName);
+      if (sessionPicture.type == "application/octet-stream") {
+        const defaultFile = new File([sessionPicture], pictureName, {
           type: "image/png",
         });
         formData.append("photo", defaultFile);
-      }else{
+      } else {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", ( formatDate(selectedDate) + "T" + startHr.padStart(2, '0') + ":" + startMin.padStart(2, '0') + ":00Z"));
+      formData.append(
+        "date",
+        formatDate(selectedDate) +
+          "T" +
+          startHr.padStart(2, "0") +
+          ":" +
+          startMin.padStart(2, "0") +
+          ":00Z"
+      );
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
       formData.append("interest", interests);
       formData.append("type", "workoutPicture");
-      for (let entry of formData.entries()) {
-        console.log(entry);
-      }
-      const res = await axios.put(("http://localhost:3000/workoutSession/" + id), formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }); 
+      const res = await axios.put(
+        "http://localhost:3000/workoutSession/" + id,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log(res);
-      navigate((-1), { replace: true });
+      navigate(-1, { replace: true });
     } catch (error) {
-      console.log(error.stack)
+      console.log(error.stack);
     }
   };
-  
+
   function isInteger(value) {
-    return typeof value === 'string' && /^\d+$/.test(value);
+    return typeof value === "string" && /^\d+$/.test(value);
   }
 
   const formatDate = (date) => {
@@ -255,142 +270,143 @@ const EditSession = () => {
     width: "100vw",
     height: "100vh",
     backgroundImage: `url(${BackgroundImage})`,
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
-    backgroundSize: 'cover',
-    position: 'fixed',
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover",
+    position: "fixed",
     top: 0,
     left: 0,
-    zIndex: -1
+    zIndex: -1,
   };
 
   const imageContainerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center'
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
   };
 
   return (
     <div>
       <Navbar />
       {/* {session !== undefined && <div>Loading...</div>} */}
-      <div style={fullScreenBackgroundStyle} /> 
+      <div style={fullScreenBackgroundStyle} />
       <div style={containerStyle}>
-      <div className={"mainContainer"}>
-      <div className={"headerContainer"}>
-        <h2>Edit Your Workout Session</h2>
+        <div className={"mainContainer"}>
+          <div className={"headerContainer"}>
+            <h2>Edit Your Workout Session</h2>
           </div>
-        <form onSubmit={handleSubmit}>
-      <div style={imageContainerStyle}>
-        <input
-          accept="image/*"
-          //className={classes.input}
-          id="contained-button-file"
-          multiple
-          type="file"
-          onChange={(e) =>
-            handleSessionPictureChange(e.target.files[0])
-          }
-          style={{
-            display: "none",
-          }}
-          ref={(input) => {
-            // Store a reference to the input element
-            if (input) {
-              input.value = ""; // Reset the input value
-              input.defaultValue = DefaultAvatar; // Set the default file
-            }
-          }}
-        />
-        <label htmlFor="contained-button-file">
-          <IconButton component="span">
-            <Avatar
-              src={
-                sessionPicture
-                  ? URL.createObjectURL(sessionPicture)
-                  : DefaultAvatar  //can change to something else, idk change to wat to show loading.
-              }
-              style={{
-                margin: "10px",
-                width: "150px",
-                height: "150px",
-                borderRadius: "50%",
-                border: "8px solid #ccc",
-              }}
-            />
-          </IconButton>
-        </label></div><br/>
-          <div className={"titleContainer"}>
-            <label>Session Name:</label>
-          </div>
-          <div className={"detailsInputContainer"}>
-            <input
-              defaultValue={name}
-              placeholder="Zenitsu's Workout Session"
-              onChange={(e) => setName(e.target.value)}
-              className={"inputBox"}
-            />
-            <label className="errorLabel">{nameError}</label>
-          </div>
-          <br />
-          
-          <div className={"titleContainer"}>
-            <label>Session Date:</label>
-          </div>
-          <div className={"detailsInputContainer"}>
-            <DatePicker selected={selectedDate} 
-            defaultValue={selectedDate}
-            onChange={handleSelectedDate}
-            dateFormat="yyyy-MM-dd"
-            placeholderText="yyyy-mm-dd"
-            className={"inputBox"}
-            />
-            <label className="errorLabel">{dateError}</label>
-          </div>
-          <br />
-          
-          <div className={"titleContainer"}>
-            <label>Session Start Time (24hr):</label>
-          </div>
-          <div className={"detailsInputContainer"}>
-          <div style={{ display: 'flex'}}>
-          <input
-              defaultValue={startHr}
-              placeholder="01"
-              onChange={(e) => setStartHr(e.target.value)}
-              className={"timeInputBox"}
-              maxLength={2} 
-              style={{ marginRight: '10px' }} // Adjust the spacing between input boxes
-            />
-            <h3>:</h3> 
-            <input
-            defaultValue={startMin}
-            placeholder="23"
-            onChange={(e) => setStartMin(e.target.value)}
-            className={"timeInputBox"}
-            maxLength={2} 
-            style={{ marginLeft: '10px' }} 
-            />
-          </div>
-            <label className="errorLabel">{timeError}</label>
+          <form onSubmit={handleSubmit}>
+            <div style={imageContainerStyle}>
+              <input
+                accept="image/*"
+                //className={classes.input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={(e) => handleSessionPictureChange(e.target.files[0])}
+                style={{
+                  display: "none",
+                }}
+                ref={(input) => {
+                  // Store a reference to the input element
+                  if (input) {
+                    input.value = ""; // Reset the input value
+                    input.defaultValue = DefaultAvatar; // Set the default file
+                  }
+                }}
+              />
+              <label htmlFor="contained-button-file">
+                <IconButton component="span">
+                  <Avatar
+                    src={
+                      sessionPicture
+                        ? URL.createObjectURL(sessionPicture)
+                        : DefaultAvatar //can change to something else, idk change to wat to show loading.
+                    }
+                    style={{
+                      margin: "10px",
+                      width: "150px",
+                      height: "150px",
+                      borderRadius: "50%",
+                      border: "8px solid #ccc",
+                    }}
+                  />
+                </IconButton>
+              </label>
             </div>
-        
-          <br />
-          <div className={"titleContainer"}>
-            <label>Session Duration (hrs):</label>
-          </div>
-          <div className={"detailsInputContainer"}>
-            <input
-              defaultValue={duration}
-              placeholder="3"
-              onChange={(e) => setDuration(e.target.value)}
-              className={"inputBox"}
-            />
-            <label className="errorLabel">{durationError}</label>
-          </div>
-          <br />
-          <div className={"titleContainer"}>
+            <br />
+            <div className={"titleContainer"}>
+              <label>Session Name:</label>
+            </div>
+            <div className={"detailsInputContainer"}>
+              <input
+                defaultValue={name}
+                placeholder="Zenitsu's Workout Session"
+                onChange={(e) => setName(e.target.value)}
+                className={"inputBox"}
+              />
+              <label className="errorLabel">{nameError}</label>
+            </div>
+            <br />
+
+            <div className={"titleContainer"}>
+              <label>Session Date:</label>
+            </div>
+            <div className={"detailsInputContainer"}>
+              <DatePicker
+                selected={selectedDate}
+                defaultValue={selectedDate}
+                onChange={handleSelectedDate}
+                dateFormat="yyyy-MM-dd"
+                placeholderText="yyyy-mm-dd"
+                className={"inputBox"}
+              />
+              <label className="errorLabel">{dateError}</label>
+            </div>
+            <br />
+
+            <div className={"titleContainer"}>
+              <label>Session Start Time (24hr):</label>
+            </div>
+            <div className={"detailsInputContainer"}>
+              <div style={{ display: "flex" }}>
+                <input
+                  defaultValue={startHr}
+                  placeholder="01"
+                  onChange={(e) => setStartHr(e.target.value)}
+                  className={"timeInputBox"}
+                  maxLength={2}
+                  style={{ marginRight: "10px" }} // Adjust the spacing between input boxes
+                />
+                <h3>:</h3>
+                <input
+                  defaultValue={startMin}
+                  placeholder="23"
+                  onChange={(e) => setStartMin(e.target.value)}
+                  className={"timeInputBox"}
+                  maxLength={2}
+                  style={{ marginLeft: "10px" }}
+                />
+              </div>
+              <label className="errorLabel">{timeError}</label>
+            </div>
+
+            <br />
+            <div className={"titleContainer"}>
+              <label>Session Duration (hrs):</label>
+            </div>
+            <div className={"detailsInputContainer"}>
+              <input
+                defaultValue={duration}
+                placeholder="3"
+                onChange={(e) => setDuration(e.target.value)}
+                className={"inputBox"}
+              />
+              <label className="errorLabel">{durationError}</label>
+            </div>
+            <br />
+            <div className={"titleContainer"}>
               <label htmlFor="location-input">Session Location:</label>
             </div>
             <div className={"detailsInputContainer"}>
@@ -408,49 +424,51 @@ const EditSession = () => {
                 />
               </Autocomplete>
               <label className="errorLabel">{locationError}</label>
-            </div> 
-          <br />
-          <div className={"titleContainer"}>
-            <label>Max Number of Participants:</label>
-          </div>
-          <div className={"detailsInputContainer"}>
-            <input
-              defaultValue={slots}
-              placeholder="30"
-              onChange={(e) => setSlots(e.target.value)}
-              className={"inputBox"}
-            />
-            <label className="errorLabel">{slotsError}</label>
-          </div> 
-          <br />
-          <div className={"titleContainer"}>
-            <label>Type of Session:</label>
-          </div>
-          <div className={"interestsContainer"} >
-            {workoutInterestExamples.map((interest, index) => (
-              <div
-                key={index}
-                className={`interestItem ${
-                  interests.includes(interest) ? "selectedWorkout" : ""
-                }`}
-                onClick={() => handleInterestChange(interest)}
-              >
-                {interest}
-              </div>
-            ))}
-          </div>
-              <label style={{fontSize: 15, color: 'red' }} >{interestError}</label>
-          <br />
-          <div className={"inputContainer"}>
-            <input
-              className={"inputButton"}
-              type="submit"
-              value={"Edit Session"}
-            />
-          </div> 
-        </form>
+            </div>
+            <br />
+            <div className={"titleContainer"}>
+              <label>Max Number of Participants:</label>
+            </div>
+            <div className={"detailsInputContainer"}>
+              <input
+                defaultValue={slots}
+                placeholder="30"
+                onChange={(e) => setSlots(e.target.value)}
+                className={"inputBox"}
+              />
+              <label className="errorLabel">{slotsError}</label>
+            </div>
+            <br />
+            <div className={"titleContainer"}>
+              <label>Type of Session:</label>
+            </div>
+            <div className={"interestsContainer"}>
+              {workoutInterestExamples.map((interest, index) => (
+                <div
+                  key={index}
+                  className={`interestItem ${
+                    interests.includes(interest) ? "selectedWorkout" : ""
+                  }`}
+                  onClick={() => handleInterestChange(interest)}
+                >
+                  {interest}
+                </div>
+              ))}
+            </div>
+            <label style={{ fontSize: 15, color: "red" }}>
+              {interestError}
+            </label>
+            <br />
+            <div className={"inputContainer"}>
+              <input
+                className={"inputButton"}
+                type="submit"
+                value={"Edit Session"}
+              />
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
     </div>
   );
 };
