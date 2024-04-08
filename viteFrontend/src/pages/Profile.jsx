@@ -101,7 +101,10 @@ const Profile = (props) => {
         setInterests(resp.data.interest);
         console.log(interests);
       } catch (error) {
-        if (error.response) {
+        if (error.response && error.response.status === 409) {
+          console.error("Error 409:", error.response.data);
+          setErrors({ email: error.response.data.message });
+        } else if (error.response) {
           // The request was made and the server responded with a status code
           console.error("Server responded with status:", error.response.status);
           console.error("Response data:", error.response.data);
