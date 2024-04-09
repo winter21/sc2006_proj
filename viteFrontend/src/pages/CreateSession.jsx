@@ -40,7 +40,7 @@ const CreateSession = () => {
 
   const handleSelectedDate = (date) => {
     setSelectedDate(date);
-    errors.selectedDate=""
+    errors.selectedDate = "";
   };
 
   const handleSessionPictureChange = (file) => {
@@ -84,44 +84,44 @@ const CreateSession = () => {
   const validateValues = () => {
     let errors = {};
 
-    if (!(interests.length)) {
-      errors.interest =("Please select at least one workout type")
+    if (!interests.length) {
+      errors.interest = "Please select at least one workout type";
     }
 
     if ("" === name) {
-      errors.name = ("Please enter a session name");
+      errors.name = "Please enter a session name";
     }
 
     if ("" === duration) {
-      errors.duration = ("Please enter a duration");
+      errors.duration = "Please enter a duration";
     } else if (!isInteger(duration)) {
-      errors.duration =("Please enter a valid integer for duration");
+      errors.duration = "Please enter a valid integer for duration";
     }
 
     if ("" === slots) {
-      errors.slots =("Please enter the number of slots");
+      errors.slots = "Please enter the number of slots";
     } else if (!isInteger(slots)) {
-      errors.slots =("Please enter a valid integer for the number of slots");
+      errors.slots = "Please enter a valid integer for the number of slots";
     }
 
     if (searchInput.current.value === "") {
-      errors.location =("Please select a location");
+      errors.location = "Please select a location";
     }
 
     if (selectedDate === null) {
-      errors.selectedDate =("Please select a session date");
+      errors.selectedDate = "Please select a session date";
     } else if (selectedDate <= currentDateTime) {
-      errors.selectedDate =("Please select a valid date");
+      errors.selectedDate = "Please select a valid date";
     }
 
     if ("" === startHr || "" === startMin) {
-      errors.time =("Please enter a start time");
+      errors.time = "Please enter a start time";
     } else if (!isInteger(startHr) || !isInteger(startMin)) {
-      errors.time =("Please enter a valid number for the start time");
+      errors.time = "Please enter a valid number for the start time";
     } else if (startHr > 23 || startMin > 59) {
-      errors.time =("Please enter a valid time");
-    } 
-    
+      errors.time = "Please enter a valid time";
+    }
+
     return errors;
   };
 
@@ -138,7 +138,6 @@ const CreateSession = () => {
     // setTimeError("");
     // setInterestError("")
   };
-
 
   const createSes = async () => {
     try {
@@ -161,7 +160,15 @@ const CreateSession = () => {
         formData.append("photo", sessionPicture);
       }
       formData.append("name", name);
-      formData.append("date", formatDate(selectedDate) + "T" + startHr.padStart(2, '0') + ":" + startMin.padStart(2, '0') + ":00Z");
+      formData.append(
+        "date",
+        formatDate(selectedDate) +
+          "T" +
+          startHr.padStart(2, "0") +
+          ":" +
+          startMin.padStart(2, "0") +
+          ":00Z"
+      );
       formData.append("address", address);
       formData.append("duration", duration);
       formData.append("slots", slots);
@@ -185,7 +192,6 @@ const CreateSession = () => {
       console.log(error.stack);
     }
   };
-  
 
   function isInteger(value) {
     // Use parseInt to parse the value and check if it's a valid integer
@@ -308,8 +314,11 @@ const CreateSession = () => {
             <div className={"detailsInputContainer"}>
               <input
                 value={name}
-                placeholder="Zenitsu's Workout Session" 
-                onChange={(e) => {setName(e.target.value); errors.name=""}}
+                placeholder="Zenitsu's Workout Session"
+                onChange={(e) => {
+                  setName(e.target.value);
+                  errors.name = "";
+                }}
                 className={"inputBox"}
                 style={{ border: errors.name ? "1px solid red" : null }}
               />
@@ -325,10 +334,16 @@ const CreateSession = () => {
               <DatePicker
                 selected={selectedDate}
                 onChange={handleSelectedDate}
+                customInput={
+                  <input
+                    style={{
+                      border: errors.selectedDate ? "1px solid red" : null,
+                    }}
+                  />
+                }
                 dateFormat="yyyy-MM-dd"
                 placeholderText="yyyy-mm-dd"
                 className={"inputBox"}
-                style={{ border: errors.selectedDate ? "1px solid red" : null }} // Apply red border if there is an error
               />
               {errors.selectedDate ? (
                 <label className="errorLabel">{errors.selectedDate}</label>
@@ -343,24 +358,36 @@ const CreateSession = () => {
                 <input
                   value={startHr}
                   placeholder="01"
-                  onChange={(e) => {setStartHr(e.target.value); errors.time=""}}
+                  onChange={(e) => {
+                    setStartHr(e.target.value);
+                    errors.time = "";
+                  }}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginRight: "10px", border: errors.time ? "1px solid red" : null }} // Adjust the spacing between input boxes
+                  style={{
+                    marginRight: "10px",
+                    border: errors.time ? "1px solid red" : null,
+                  }} // Adjust the spacing between input boxes
                 />
                 <h3>:</h3>
                 <input
                   value={startMin}
                   placeholder="23"
-                  onChange={(e) => {setStartMin(e.target.value); errors.time=""}}
+                  onChange={(e) => {
+                    setStartMin(e.target.value);
+                    errors.time = "";
+                  }}
                   className={"timeInputBox"}
                   maxLength={2}
-                  style={{ marginLeft: "10px", border: errors.time ? "1px solid red" : null }}
+                  style={{
+                    marginLeft: "10px",
+                    border: errors.time ? "1px solid red" : null,
+                  }}
                 />
-                </div>
-                {errors.time ? (
-                  <label className="errorLabel">{errors.time}</label>
-                ) : null}
+              </div>
+              {errors.time ? (
+                <label className="errorLabel">{errors.time}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -370,7 +397,10 @@ const CreateSession = () => {
               <input
                 value={duration}
                 placeholder="3"
-                onChange={(e) => {setDuration(e.target.value); errors.duration=""}}
+                onChange={(e) => {
+                  setDuration(e.target.value);
+                  errors.duration = "";
+                }}
                 className={"inputBox"}
                 style={{ border: errors.duration ? "1px solid red" : null }}
               />
@@ -384,7 +414,10 @@ const CreateSession = () => {
             </div>
             <div className={"detailsInputContainer"}>
               <Autocomplete
-                onPlaceChanged={(place) => {onPlaceChanged(place); errors.location=""}}
+                onPlaceChanged={(place) => {
+                  onPlaceChanged(place);
+                  errors.location = "";
+                }}
                 onLoad={onLoad}
               >
                 <input
@@ -393,12 +426,12 @@ const CreateSession = () => {
                   size="auto"
                   ref={searchInput}
                   className={"inputBox"}
-                  style = {{border: errors.location ? "1px solid red" : null}}
+                  style={{ border: errors.location ? "1px solid red" : null }}
                 />
-              </Autocomplete> 
-                {errors.location ? (
-                  <label className="errorLabel">{errors.location}</label>
-                ) : null}
+              </Autocomplete>
+              {errors.location ? (
+                <label className="errorLabel">{errors.location}</label>
+              ) : null}
             </div>
             <br />
             <div className={"titleContainer"}>
@@ -433,9 +466,14 @@ const CreateSession = () => {
                 </div>
               ))}
             </div>
-              {errors.interest ? (
-                <label style={{fontSize: 15, color: 'red' }} className="errorLabel">{errors.interest}</label>
-              ) : null}
+            {errors.interest ? (
+              <label
+                style={{ fontSize: 15, color: "red" }}
+                className="errorLabel"
+              >
+                {errors.interest}
+              </label>
+            ) : null}
             <br />
             <div className={"inputContainer"}>
               <input
