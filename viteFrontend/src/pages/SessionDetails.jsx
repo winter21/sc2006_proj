@@ -104,15 +104,22 @@ const SessionDetails = () => {
   };
 
   const handleCancelButtonClick = async () => {
-    try {
-      const res = await axios.put(
-        "http://localhost:3000/workoutSession/cancel/" + id
-      );
-      console.log(res);
-      alert("You have successfully cancelled the workout session");
-      navigate(-1);
-    } catch (error) {
-      console.log(error.stack);
+    const confirmed = window.confirm(
+      "Cancelling the workout session is irreversible! Proceed anyways?"
+    );
+    if (confirmed) {
+      try {
+        const res = await axios.put(
+          "http://localhost:3000/workoutSession/cancel/" + id
+        );
+        console.log(res);
+        alert("You have successfully cancelled the workout session");
+        navigate(-1);
+      } catch (error) {
+        console.log(error.stack);
+      }
+    } else {
+      console.log("User is not cancelling the workout session.");
     }
   };
 
@@ -311,19 +318,21 @@ const SessionDetails = () => {
           <p>List of Participants: </p>
           <div
             style={{
-              display: 'flex', 
-              flexWrap: 'wrap', // Allow flex items to wrap to the next line
-              gap: '10px' // Adjust the gap between items as needed
-            }}>
-              {participantList.map((participant) => (
-                <div className="interestItem"
-                  key={participant.id}
-                  style={{ 
-                    backgroundColor: '#f2839f',
-                    borderRadius: '30px',
-                    fontSize: 15,
-                    pointerEvents: "none"
-                  }} 
+              display: "flex",
+              flexWrap: "wrap", // Allow flex items to wrap to the next line
+              gap: "10px", // Adjust the gap between items as needed
+            }}
+          >
+            {participantList.map((participant) => (
+              <div
+                className="interestItem"
+                key={participant.id}
+                style={{
+                  backgroundColor: "#f2839f",
+                  borderRadius: "30px",
+                  fontSize: 15,
+                  pointerEvents: "none",
+                }}
               >
                 {participant.name}
               </div>
