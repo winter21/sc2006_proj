@@ -60,7 +60,11 @@ useEffect(() => {
         token: user.token,
       });
       const hostedSessionsRes = await axios.get(`http://localhost:3000/workoutSession/host/${verifyRes.data.userId}`);
-      const hostedSessionsFiltered = hostedSessionsRes.data.filter(session => !session.cancelled && session.on);
+      const hostedSessionsFiltered = hostedSessionsFiltered.data.filter(session => 
+        !session.cancelled && 
+        session.on && 
+        new Date(session.date) > new Date()
+      );
       setHostedSessions(hostedSessionsFiltered);
     } catch (error) {
       console.error("Failed to fetch hosted sessions:", error.response ? error.response.data : error);
@@ -84,7 +88,11 @@ useEffect(() => {
         token: user.token,
       });
       const joinedSessionsRes = await axios.get(`http://localhost:3000/workoutSession/user/${verifyRes.data.userId}`);
-      const joinedSessionsFiltered = joinedSessionsRes.data.filter(session => !session.cancelled && session.on);
+      const joinedSessionsFiltered = joinedSessionsRes.data.filter(session => 
+        !session.cancelled && 
+        session.on && 
+        new Date(session.date) > new Date()
+      );
       setJoinedSessions(joinedSessionsFiltered);
     } catch (error) {
       console.error("Failed to fetch joined sessions:", error.response ? error.response.data : error);
@@ -159,58 +167,6 @@ useEffect(() => {
   //   </>
   // );
 
-
-  // const renderSessionsList = (sessions) => (
-  //   <>
-  //     {sessions.length > 0 ? (
-  //       <Grid container spacing={3} justifyContent="center">
-  //         {sessions.map((session) => (
-  //           <Grid item xs={12} sm={6} md={4} lg={3} key={session._id} onClick={() => handleCardClick(session._id)} style={{ cursor: 'pointer' }}>
-  //             <Card
-  //               elevation={6}
-  //               sx={{
-  //                 width: '100%', // Ensure the card takes up the full width of its container
-  //                 borderRadius: "20px",
-  //                 boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
-  //                 transition: "transform 0.3s",
-  //                 "&:hover": {
-  //                   transform: "scale(1.05)",
-  //                 },
-  //               }}
-  //             >
-  //               <CardContent>
-  //                 <img
-  //                   src={`http://localhost:3000/${session.workoutPicture}`}
-  //                   alt={session.name}
-  //                   style={{
-  //                     width: "100%",
-  //                     height: "auto",
-  //                     marginBottom: "10px",
-  //                     borderRadius: "8%",
-  //                   }}
-  //                 />
-  //                 <Typography variant="h5" component="h2" style={{ fontWeight: "bold" }}>
-  //                   {session.name}
-  //                 </Typography>
-  //                 <Typography variant="body1">
-  //                   Date: {session.date.slice(0, 10)}
-  //                 </Typography>
-  //                 <Typography variant="body1">
-  //                   Start Time: {session.date.slice(11, 16)}
-  //                 </Typography>
-  //                 <Typography variant="body1">
-  //                   Slots: {session.slots - session.participants.length}/{session.slots} slot(s) available
-  //                 </Typography>
-  //               </CardContent>
-  //             </Card>
-  //           </Grid>
-  //         ))}
-  //       </Grid>
-  //     ) : (
-  //       <p>No sessions found.</p>
-  //     )}
-  //   </>
-  // );
 
   const renderSessionsList = (sessions) => (
     <>
