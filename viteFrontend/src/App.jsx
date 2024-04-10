@@ -6,7 +6,7 @@ import CreateUserInfo from "./pages/createUserInfo";
 import RequireAuth from "./components/RequireAuth";
 import Home from "./pages/home";
 import Explore from "./pages/explore";
-import CreateSession from "./pages/CreateSession";
+import CreateSession from "./pages/createSession";
 import SessionDetails from "./pages/sessionDetails";
 import EditSession from "./pages/EditSession";
 import Onboarding1 from "./pages/onboardingPg1";
