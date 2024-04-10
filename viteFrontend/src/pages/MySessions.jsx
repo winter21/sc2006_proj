@@ -60,7 +60,11 @@ useEffect(() => {
         token: user.token,
       });
       const hostedSessionsRes = await axios.get(`http://localhost:3000/workoutSession/host/${verifyRes.data.userId}`);
-      const hostedSessionsFiltered = hostedSessionsRes.data.filter(session => !session.cancelled && session.on);
+      const hostedSessionsFiltered = hostedSessionsFiltered.data.filter(session => 
+        !session.cancelled && 
+        session.on && 
+        new Date(session.date) > new Date()
+      );
       setHostedSessions(hostedSessionsFiltered);
     } catch (error) {
       console.error("Failed to fetch hosted sessions:", error.response ? error.response.data : error);
@@ -84,7 +88,11 @@ useEffect(() => {
         token: user.token,
       });
       const joinedSessionsRes = await axios.get(`http://localhost:3000/workoutSession/user/${verifyRes.data.userId}`);
-      const joinedSessionsFiltered = joinedSessionsRes.data.filter(session => !session.cancelled && session.on);
+      const joinedSessionsFiltered = joinedSessionsRes.data.filter(session => 
+        !session.cancelled && 
+        session.on && 
+        new Date(session.date) > new Date()
+      );
       setJoinedSessions(joinedSessionsFiltered);
     } catch (error) {
       console.error("Failed to fetch joined sessions:", error.response ? error.response.data : error);
