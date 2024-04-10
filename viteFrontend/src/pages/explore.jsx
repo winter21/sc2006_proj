@@ -41,6 +41,7 @@ function Explore() {
   const [isTravelOptionsVisible, setIsTravelOptionsVisible] = useState(false);
   const [estimatedTravelTime, setEstimatedTravelTime] = useState("");
   const [showTraffic, setShowTraffic] = useState(false);
+  const [showSessions, setShowSessions] = useState(false);
   const [currentTravelMode, setCurrentTravelMode] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [places, setPlaces] = useState({
@@ -170,10 +171,18 @@ function Explore() {
           // Get the distance value from the response
           const distance = response.rows[0].elements[0].distance.text;
 
-          console.log(place);
+          console.log(place, distance);
+          setPlaces({
+            name: place.name,
+            business_status: "",
+            opening_hours: "",
+            vicinity: place.address,
+            distance: distance,
+            contact: "",
+            //photos: place.workoutPictures.map((photo) => `http://localhost:3000/${photo}`),
+            //reviews: [],
+          });
           setIsDetailsVisible(true);
-
-          //get details
         } else {
           console.error("Error getting distance: ", status);
         }
@@ -621,7 +630,8 @@ function Explore() {
               }}
             />
           ))}
-          {sessions &&
+          {showSessions &&
+            sessions &&
             sessions.map((place) => (
               //add name, picture, directions and find out more
               <MarkerF
@@ -793,6 +803,28 @@ function Explore() {
             onClick={() => setShowTraffic(!showTraffic)} // Toggle the traffic layer visibility
           >
             {showTraffic ? "Hide Traffic" : "Show Traffic"}
+          </button>
+          <button
+            style={{
+              position: "absolute",
+              top: 50,
+              right: 10,
+              zIndex: 5,
+              borderRadius: "10px",
+              marginLeft: "40%",
+              backgroundColor: "red",
+              color: "white",
+              padding: "10px",
+              border: "none",
+              cursor: "pointer",
+              width: "auto",
+              maxWidth: "100px",
+              marginBottom: "10px",
+              fontWeight: "bold",
+            }}
+            onClick={() => setShowSessions(!showSessions)} // Toggle the traffic layer visibility
+          >
+            {showSessions ? "Hide Sessions" : "Show Sessions"}
           </button>
         </GoogleMap>
       </div>
