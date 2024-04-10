@@ -636,7 +636,7 @@ function Explore() {
                   scaledSize: new window.google.maps.Size(50, 50),
                 }}
                 onClick={() => {
-                  //DisplaySession(place);
+                  DisplaySession(place);
                 }}
               />
             ))}
