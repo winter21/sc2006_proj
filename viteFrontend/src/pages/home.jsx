@@ -55,6 +55,7 @@ const Home = (props) => {
   const filteredSessions = sessions.filter(
     (session) =>
       session.on &&
+      new Date(session.date) > new Date() && // Check if session date is in the future
       session.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
       (selectedInterests.length === 0 ||
         selectedInterests.every((interest) =>
