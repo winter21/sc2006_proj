@@ -57,10 +57,6 @@ const Signup = (props) => {
       return;
     }
 
-    if (password !== confirmPassword) {
-      setConfirmPasswordError("Passwords do not match!");
-      return;
-    }
 
     // Checking for at least one uppercase letter
     if (!/[A-Z]/.test(password)) {
@@ -77,6 +73,11 @@ const Signup = (props) => {
     // Checking for at least one special character
     if (!/[@#$%^&+=!]/.test(password)) {
       setPasswordError("The password must contain at least one special character (@#$%^&+=!)");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match!");
       return;
     }
 
