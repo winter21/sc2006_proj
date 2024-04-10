@@ -9,6 +9,7 @@ import {
   Autocomplete,
   DirectionsRenderer,
   TrafficLayer,
+  MarkerF,
 } from "@react-google-maps/api";
 import { Box, Typography, CardContent, Card, Slider } from "@mui/material";
 import Spinner from "../components/Spinner";
@@ -275,10 +276,10 @@ function Explore() {
     overflowX: "auto",
     // Hiding the scrollbar
     scrollbarWidth: "none", // For Firefox
-    "&::-webkit-scrollbar": {
+    "&::WebkitScrollbar": {
       display: "none", // For Chrome, Safari, and Opera
     },
-    "-ms-overflow-style": "none", // For Internet Explorer and Edge
+    msOverflowStyle: "none", // For Internet Explorer and Edge
   };
 
   const handleDirectionsButtonClick = (vicinity) => {
@@ -431,11 +432,11 @@ function Explore() {
                   maxWidth: "100%",
                   borderRadius: "10px",
                   overflowY: "auto",
-                  "&::-webkit-scrollbar": {
+                  "&::WebkitScrollbar": {
                     display: "none",
                   },
-                  "-ms-overflow-style": "none" /* IE and Edge */,
-                  "scrollbar-width": "none" /* Firefox */,
+                  msOverflowStyle: "none" /* IE and Edge */,
+                  scrollbarWidth: "none" /* Firefox */,
                 }}
               >
                 <div
@@ -461,7 +462,7 @@ function Explore() {
                       scrollbarWidth: "none" /* For Firefox */,
                       msOverflowStyle:
                         "none" /* For Internet Explorer and Edge */,
-                      "::-webkit-scrollbar": {
+                      "::WebkitScrollbar": {
                         display: "none" /* For WebKit browsers */,
                       },
                     }}
@@ -601,7 +602,7 @@ function Explore() {
         >
           {/* {currentPosition && <Marker position={currentPosition} />} */}
           {currentPosition && (
-            <Marker
+            <MarkerF
               key={`${currentPosition.lat}-${currentPosition.lng}`}
               position={currentPosition}
             />
@@ -623,7 +624,7 @@ function Explore() {
           {sessions &&
             sessions.map((place) => (
               //add name, picture, directions and find out more
-              <Marker
+              <MarkerF
                 key={place._id}
                 position={{
                   lat: place.coordinates.latitude,
@@ -1013,7 +1014,7 @@ export default Explore;
 //     '&::-webkit-scrollbar': {
 //       display: 'none', // For Chrome, Safari, and Opera
 //     },
-//     '-ms-overflow-style': 'none', // For Internet Explorer and Edge
+//     'msOverflowStyle': 'none', // For Internet Explorer and Edge
 //   };
 
 //   return (
@@ -1121,8 +1122,8 @@ export default Explore;
 //                 '&::-webkit-scrollbar': {
 //                   display: 'none'
 //                 },
-//                 '-ms-overflow-style': 'none',  /* IE and Edge */
-//                 'scrollbar-width': 'none',  /* Firefox */
+//                 'msOverflowStyle': 'none',  /* IE and Edge */
+//                 'scrollbarWidth': 'none',  /* Firefox */
 //               }}>
 //                 <div style={{
 //                   borderRadius: '10px', // Rounded edges
