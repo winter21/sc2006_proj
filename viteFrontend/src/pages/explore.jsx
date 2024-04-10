@@ -10,20 +10,15 @@ import {
   DirectionsRenderer,
   TrafficLayer,
 } from "@react-google-maps/api";
-import {
-  Box,
-  Typography,
-  CardContent,
-  Card,
-  Slider,
-} from "@mui/material";
+import { Box, Typography, CardContent, Card, Slider } from "@mui/material";
 import Spinner from "../components/Spinner";
 import GymIcon from "../assets/gym-icon.png";
 import RedBg from "../assets/RedBg.jpg";
-import DriveIcon from "../assets/drive-icon.png"; 
-import WalkIcon from "../assets/walk-icon.png"; 
-import BikeIcon from "../assets/bike-icon.png"; 
-import PublicTransportIcon from "../assets/public-transport-icon.png"; 
+import DriveIcon from "../assets/drive-icon.png";
+import WalkIcon from "../assets/walk-icon.png";
+import BikeIcon from "../assets/bike-icon.png";
+import PublicTransportIcon from "../assets/public-transport-icon.png";
+import axios from "axios";
 
 const libraries = ["places"];
 function Explore() {
@@ -46,6 +41,7 @@ function Explore() {
   const [estimatedTravelTime, setEstimatedTravelTime] = useState("");
   const [showTraffic, setShowTraffic] = useState(false);
   const [currentTravelMode, setCurrentTravelMode] = useState(null);
+  const [sessions, setSessions] = useState([]);
   const [places, setPlaces] = useState({
     name: "",
     business_status: "",
@@ -77,6 +73,28 @@ function Explore() {
     }
   }, []);
 
+  useEffect(() => {
+    const fetchSessions = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:3000/workoutSession/"
+        );
+        setSessions(response.data);
+      } catch (error) {
+        console.error("Error fetching sessions:", error);
+      }
+    };
+    fetchSessions();
+  }, []);
+
+  //debugging purposes
+  useEffect(() => {
+    if (sessions && nearbyPlaces) {
+      console.log("sessions:", sessions);
+      console.log("nearbyPlaces:", nearbyPlaces);
+    }
+  }, [sessions, nearbyPlaces]);
+
   const handleLocationSearch = (e) => {
     e.preventDefault();
     const geocoder = new window.google.maps.Geocoder();
@@ -102,7 +120,9 @@ function Explore() {
 
   useEffect(() => {
     if (isLoaded && currentPosition && searchRadius > 0) {
-      const service = new window.google.maps.places.PlacesService(document.createElement("div"));
+      const service = new window.google.maps.places.PlacesService(
+        document.createElement("div")
+      );
 
       const request = {
         location: currentPosition,
@@ -122,12 +142,43 @@ function Explore() {
   useEffect(() => {
     console.log("Current Position Updated:", currentPosition);
   }, [currentPosition]);
-  
 
   const handleChange = (event, value) => {
     setSearchRadius(value * 1000); // Convert km to meters
   };
 
+  const DisplaySession = (place) => {
+    console.log("debug DisplaySession");
+    // Create a DistanceMatrixService object
+    const distanceService = new window.google.maps.DistanceMatrixService();
+    // Call the distance matrix service to get the distance between the user's location and the place
+    distanceService.getDistanceMatrix(
+      {
+        origins: [currentPosition],
+        destinations: [
+          {
+            lat: place.coordinates.latitude,
+            lng: place.coordinates.longitude,
+          },
+        ],
+        travelMode: window.google.maps.TravelMode.DRIVING,
+        unitSystem: window.google.maps.UnitSystem.METRIC, // Use metric units (km)
+      },
+      (response, status) => {
+        if (status === "OK") {
+          // Get the distance value from the response
+          const distance = response.rows[0].elements[0].distance.text;
+
+          console.log(place);
+          setIsDetailsVisible(true);
+
+          //get details
+        } else {
+          console.error("Error getting distance: ", status);
+        }
+      }
+    );
+  };
   const DisplayMarker = (place) => {
     console.log("debug DisplayMarker");
     let openingHours = "Not Available";
@@ -160,10 +211,10 @@ function Explore() {
                 : "Not Available";
               console.log(openingHours);
 
-               // Process photos
-               const photos = place.photos
-               ? place.photos.map((photo) => photo.getUrl())
-               : [];
+              // Process photos
+              const photos = place.photos
+                ? place.photos.map((photo) => photo.getUrl())
+                : [];
 
               // Process reviews
               const reviews = place.reviews ? place.reviews : [];
@@ -190,11 +241,14 @@ function Explore() {
     );
   };
 
-  const calculateAndDisplayRoute = (destination, travelMode = window.google.maps.TravelMode.DRIVING) => {
+  const calculateAndDisplayRoute = (
+    destination,
+    travelMode = window.google.maps.TravelMode.DRIVING
+  ) => {
     if (!isLoaded) return;
-    setCurrentTravelMode(travelMode); 
+    setCurrentTravelMode(travelMode);
     const directionsService = new window.google.maps.DirectionsService();
-    
+
     if (currentPosition) {
       directionsService.route(
         {
@@ -211,27 +265,26 @@ function Explore() {
           } else {
             window.alert("Directions request failed due to " + status);
           }
-          
         }
       );
     }
   };
 
   const scrollContainerStyle = {
-    display: 'flex',
-    overflowX: 'auto',
+    display: "flex",
+    overflowX: "auto",
     // Hiding the scrollbar
-    scrollbarWidth: 'none', // For Firefox
-    '&::-webkit-scrollbar': {
-      display: 'none', // For Chrome, Safari, and Opera
+    scrollbarWidth: "none", // For Firefox
+    "&::-webkit-scrollbar": {
+      display: "none", // For Chrome, Safari, and Opera
     },
-    '-ms-overflow-style': 'none', // For Internet Explorer and Edge
+    "-ms-overflow-style": "none", // For Internet Explorer and Edge
   };
 
   const handleDirectionsButtonClick = (vicinity) => {
     if (!isTravelOptionsVisible) {
       calculateAndDisplayRoute(vicinity);
-      setIsTravelOptionsVisible(true); 
+      setIsTravelOptionsVisible(true);
     }
   };
 
@@ -242,12 +295,29 @@ function Explore() {
   return (
     <div>
       <Navbar />
-      <div className="explore-page" style={{ backgroundImage: `url(${RedBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      <div className="enter-details">
+      <div
+        className="explore-page"
+        style={{
+          backgroundImage: `url(${RedBg})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="enter-details">
           <form id="enter-details-form">
-            <div className="locationInputBox" style={{ borderRadius: '10px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', padding: '10px', backgroundColor: 'white' }}> 
+            <div
+              className="locationInputBox"
+              style={{
+                borderRadius: "10px",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                padding: "10px",
+                backgroundColor: "white",
+              }}
+            >
               <div className="locationInput">
-                <label htmlFor="location-input"><strong>Change Your Location:</strong></label>
+                <label htmlFor="location-input">
+                  <strong>Change Your Location:</strong>
+                </label>
                 <Autocomplete>
                   <input
                     type="text"
@@ -256,27 +326,38 @@ function Explore() {
                     size="auto"
                     ref={searchInput}
                     style={{
-                      borderRadius: '20px', 
-                      boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
-                      border: 'none',
-                      padding: '10px', 
-                      width: '115%',
+                      borderRadius: "20px",
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                      border: "none",
+                      padding: "10px",
+                      width: "115%",
                     }}
                   />
                 </Autocomplete>
-                <button 
+                <button
                   className="submit-button"
                   onClick={handleLocationSearch}
                 >
                   <strong>Enter</strong>
                 </button>
-
               </div>
             </div>
 
-            <div className="searchRadius" style={{ borderRadius: '10px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', padding: '10px', backgroundColor: 'white', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <Typography gutterBottom style={{fontWeight: 'bold'}}>
-              Show <span style={{color: 'red'}}>nearby gyms</span> within radius (km):
+            <div
+              className="searchRadius"
+              style={{
+                borderRadius: "10px",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+                padding: "10px",
+                backgroundColor: "white",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <Typography gutterBottom style={{ fontWeight: "bold" }}>
+                Show <span style={{ color: "red" }}>nearby gyms</span> within
+                radius (km):
               </Typography>
               <Slider
                 aria-label="Search Radius"
@@ -287,153 +368,191 @@ function Explore() {
                 min={1}
                 max={10}
                 marks={[
-                  { value: 2, label: '2 km' },
-                  { value: 4, label: '4 km' },
-                  { value: 6, label: '6 km' },
-                  { value: 8, label: '8 km' },
-                  { value: 10, label: '10 km' },
+                  { value: 2, label: "2 km" },
+                  { value: 4, label: "4 km" },
+                  { value: 6, label: "6 km" },
+                  { value: 8, label: "8 km" },
+                  { value: 10, label: "10 km" },
                 ]}
                 sx={{
-                  width: '90%',
-                  '& .MuiSlider-thumb': {
-                    color: 'red', // Changes the thumb color to red
+                  width: "90%",
+                  "& .MuiSlider-thumb": {
+                    color: "red", // Changes the thumb color to red
                   },
-                  '& .MuiSlider-track': {
-                    color: 'red', // Changes the track color to red
+                  "& .MuiSlider-track": {
+                    color: "red", // Changes the track color to red
                   },
-                  '& .MuiSlider-rail': {
-                    color: '#e0e0e0', // Optional: change the rail color if needed
+                  "& .MuiSlider-rail": {
+                    color: "#e0e0e0", // Optional: change the rail color if needed
                   },
-                  '& .MuiSlider-markLabel': {
-                    color: 'black', // Optional: change the mark label color if needed
+                  "& .MuiSlider-markLabel": {
+                    color: "black", // Optional: change the mark label color if needed
                   },
                 }}
               />
             </div>
           </form>
 
-          <Box 
-            sx={{ 
-              minWidth: 100, 
-              mt: '10px', 
-              borderRadius: '10px',
-              position: 'relative', 
-            }} 
+          <Box
+            sx={{
+              minWidth: 100,
+              mt: "10px",
+              borderRadius: "10px",
+              position: "relative",
+            }}
             style={{
-              display: isDetailsVisible ? 'block' : 'none',
-              zIndex: 1050 
+              display: isDetailsVisible ? "block" : "none",
+              zIndex: 1050,
             }}
           >
             <button
               className="close-button"
               onClick={() => {
-                setIsDetailsVisible(false); 
+                setIsDetailsVisible(false);
                 setIsTravelOptionsVisible(false);
-                setDirectionsResult(null); 
+                setDirectionsResult(null);
                 setEstimatedTravelTime(null);
               }}
             >
               Close
             </button>
-            <Card variant="outlined" sx={{ width: '100%', border: 'none', boxShadow: 'none', borderRadius: '10px'}}>
-              <CardContent sx={{ 
-                maxHeight: '53vh', 
-                maxWidth:'100%',
-                borderRadius: '10px',
-                overflowY: "auto",
-                '&::-webkit-scrollbar': { 
-                  display: 'none' 
-                },
-                '-ms-overflow-style': 'none',  /* IE and Edge */
-                'scrollbar-width': 'none',  /* Firefox */
-              }}>
-                <div style={{
-                  borderRadius: '10px', 
-                  boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2)',
-                  padding: '20px', 
-                  margin: '0px', 
-                }}>
-                  <div style={{
-                    maxWidth:'400px', 
-                    maxheight: '220 px', 
-                    overflowX: 'scroll', 
-                    overflowY: 'hidden',
-                    display: 'flex', 
-                    flexDirection: 'row',  
-                    alignItems: 'center', 
-                    borderRadius: '10px',
-                  
+            <Card
+              variant="outlined"
+              sx={{
+                width: "100%",
+                border: "none",
+                boxShadow: "none",
+                borderRadius: "10px",
+              }}
+            >
+              <CardContent
+                sx={{
+                  maxHeight: "53vh",
+                  maxWidth: "100%",
+                  borderRadius: "10px",
+                  overflowY: "auto",
+                  "&::-webkit-scrollbar": {
+                    display: "none",
+                  },
+                  "-ms-overflow-style": "none" /* IE and Edge */,
+                  "scrollbar-width": "none" /* Firefox */,
+                }}
+              >
+                <div
+                  style={{
+                    borderRadius: "10px",
+                    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.2)",
+                    padding: "20px",
+                    margin: "0px",
+                  }}
+                >
+                  <div
+                    style={{
+                      maxWidth: "400px",
+                      maxheight: "220 px",
+                      overflowX: "scroll",
+                      overflowY: "hidden",
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      borderRadius: "10px",
 
-                    // Making the scrollbar invisible
-                    scrollbarWidth: 'none', /* For Firefox */
-                    msOverflowStyle: 'none',  /* For Internet Explorer and Edge */
-                    '::-webkit-scrollbar': {
-                      display: 'none' /* For WebKit browsers */
-                    }
-                  }}>
+                      // Making the scrollbar invisible
+                      scrollbarWidth: "none" /* For Firefox */,
+                      msOverflowStyle:
+                        "none" /* For Internet Explorer and Edge */,
+                      "::-webkit-scrollbar": {
+                        display: "none" /* For WebKit browsers */,
+                      },
+                    }}
+                  >
                     {places.photos.map((photoUrl, index) => (
                       <img
                         key={index}
                         src={photoUrl}
                         alt="Place"
                         style={{
-                          width: 'auto',
+                          width: "auto",
                           height: "200px",
                           marginRight: "5px",
-                          borderRadius: '10px', 
+                          borderRadius: "10px",
                           flexShrink: 0,
                         }}
                       />
                     ))}
                   </div>
-                  <Typography variant="h5" gutterBottom style={{fontWeight: 'bold'}}>
+                  <Typography
+                    variant="h5"
+                    gutterBottom
+                    style={{ fontWeight: "bold" }}
+                  >
                     {places.name}
                     <br></br>
                     <button
-                      onClick={() => handleDirectionsButtonClick(places.vicinity)}
+                      onClick={() =>
+                        handleDirectionsButtonClick(places.vicinity)
+                      }
                       className="direction-button"
                     >
                       Directions
                     </button>
                   </Typography>
                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    <span style={{ fontWeight: 'bold', color: 'red' }}>Opening Hours:</span> <br />
-                    {places.opening_hours && places.opening_hours
-                      .split(/(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/)
-                      .filter(Boolean) // Remove any empty strings that might be caused by the split
-                      .reduce((acc, line, index, arr) => {
-                        // Combine the day and its hours into single entries in a new array
-                        if (index % 2 === 0) { // Even indexes are days of the week
-                          acc.push(`${arr[index]} ${arr[index + 1]}`);
-                        }
-                        return acc;
-                      }, [])
-                      .map((entry, index, arr) => {
-                        // Split each entry into the day and the hours
-                        const [day, ...hours] = entry.split(': ');
-                        return (
-                          <React.Fragment key={index}>
-                            {/* Apply bold styling only to the day */}
-                            <span style={{ fontWeight: 'bold' }}>{day}:</span> {hours.join(': ')}
-                            {index < arr.length - 1 && <br />}
-                          </React.Fragment>
-                        );
-                      })
-                    }
+                    <span style={{ fontWeight: "bold", color: "red" }}>
+                      Opening Hours:
+                    </span>{" "}
+                    <br />
+                    {places.opening_hours &&
+                      places.opening_hours
+                        .split(
+                          /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/
+                        )
+                        .filter(Boolean) // Remove any empty strings that might be caused by the split
+                        .reduce((acc, line, index, arr) => {
+                          // Combine the day and its hours into single entries in a new array
+                          if (index % 2 === 0) {
+                            // Even indexes are days of the week
+                            acc.push(`${arr[index]} ${arr[index + 1]}`);
+                          }
+                          return acc;
+                        }, [])
+                        .map((entry, index, arr) => {
+                          // Split each entry into the day and the hours
+                          const [day, ...hours] = entry.split(": ");
+                          return (
+                            <React.Fragment key={index}>
+                              {/* Apply bold styling only to the day */}
+                              <span style={{ fontWeight: "bold" }}>
+                                {day}:
+                              </span>{" "}
+                              {hours.join(": ")}
+                              {index < arr.length - 1 && <br />}
+                            </React.Fragment>
+                          );
+                        })}
                   </Typography>
 
-                  {places.business_status !== 'OPERATIONAL' && (
+                  {places.business_status !== "OPERATIONAL" && (
                     <Typography sx={{ fontSize: 14 }} component="div">
                       Opening Status: {places.business_status}
                     </Typography>
                   )}
 
                   <Typography variant="body1">
-                    <span style={{fontWeight: 'bold', color: 'red' }}>Distance:</span>  {places.distance}
+                    <span style={{ fontWeight: "bold", color: "red" }}>
+                      Distance:
+                    </span>{" "}
+                    {places.distance}
                     <br />
-                    <span style={{fontWeight: 'bold', color: 'red' }}>Address:</span> {places.vicinity}
+                    <span style={{ fontWeight: "bold", color: "red" }}>
+                      Address:
+                    </span>{" "}
+                    {places.vicinity}
                     <br />
-                    <span style={{fontWeight: 'bold', color: 'red' }}>Contact:</span> {places.contact}
+                    <span style={{ fontWeight: "bold", color: "red" }}>
+                      Contact:
+                    </span>{" "}
+                    {places.contact}
                   </Typography>
                 </div>
 
@@ -461,7 +580,7 @@ function Explore() {
                       </div>
                       <p className="review-text">{review.text}</p>
                     </div>
-                  ))}          
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -470,7 +589,11 @@ function Explore() {
         <GoogleMap
           center={currentPosition}
           zoom={15}
-          mapContainerStyle={{ width: "auto", height: "auto", borderRadius: '10px'}}
+          mapContainerStyle={{
+            width: "auto",
+            height: "auto",
+            borderRadius: "10px",
+          }}
           options={{
             fullscreenControl: false,
           }}
@@ -497,93 +620,179 @@ function Explore() {
               }}
             />
           ))}
-          {directionsResult && (
-              <DirectionsRenderer
-                  options={{
-                      directions: directionsResult,
-                      polylineOptions: currentTravelMode === window.google.maps.TravelMode.WALKING
-                          ? {
-                              strokeColor: '#4AC7FC', // Or any color you prefer
-                              strokeOpacity: 0,
-                              strokeWeight: 6,
-                              icons: [{
-                                  icon: {
-                                      path: window.google.maps.SymbolPath.CIRCLE,
-                                      fillOpacity: 1,
-                                      scale: 3
-                                  },
-                                  offset: '0',
-                                  repeat: '10px'
-                              }],
-                          }
-                          : {
-                              strokeColor: '#4AC7FC', // Use a different color or styling for non-walking modes
-                              strokeOpacity: 0.8,
-                              strokeWeight: 6,
-                          },
-                  }}
+          {sessions &&
+            sessions.map((place) => (
+              //add name, picture, directions and find out more
+              <Marker
+                key={place._id}
+                position={{
+                  lat: place.coordinates.latitude,
+                  lng: place.coordinates.longitude,
+                }}
+                title={console.log("test")} //place.name}
+                icon={{
+                  url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                  size: new window.google.maps.Size(50, 50),
+                  scaledSize: new window.google.maps.Size(50, 50),
+                }}
+                onClick={() => {
+                  //DisplaySession(place);
+                }}
               />
+            ))}
+          {directionsResult && (
+            <DirectionsRenderer
+              options={{
+                directions: directionsResult,
+                polylineOptions:
+                  currentTravelMode === window.google.maps.TravelMode.WALKING
+                    ? {
+                        strokeColor: "#4AC7FC", // Or any color you prefer
+                        strokeOpacity: 0,
+                        strokeWeight: 6,
+                        icons: [
+                          {
+                            icon: {
+                              path: window.google.maps.SymbolPath.CIRCLE,
+                              fillOpacity: 1,
+                              scale: 3,
+                            },
+                            offset: "0",
+                            repeat: "10px",
+                          },
+                        ],
+                      }
+                    : {
+                        strokeColor: "#4AC7FC", // Use a different color or styling for non-walking modes
+                        strokeOpacity: 0.8,
+                        strokeWeight: 6,
+                      },
+              }}
+            />
           )}
 
-            {isDetailsVisible && isTravelOptionsVisible && (
+          {isDetailsVisible && isTravelOptionsVisible && (
             <div>
-              <div style={{position: 'absolute', top: '60px', left: '10px', width:'400px', zIndex: '5', backgroundColor: 'red', padding: '10px', borderRadius: '10px' }}>
+              <div
+                style={{
+                  position: "absolute",
+                  top: "60px",
+                  left: "10px",
+                  width: "400px",
+                  zIndex: "5",
+                  backgroundColor: "red",
+                  padding: "10px",
+                  borderRadius: "10px",
+                }}
+              >
                 {estimatedTravelTime && (
-                  <div style={{ position: 'absolute', top: '10px', left: '10px', width: '93%', textAlign: 'center', zIndex: '5', backgroundColor: 'white', padding: '5px', borderRadius: '5px' }}>
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "10px",
+                      left: "10px",
+                      width: "93%",
+                      textAlign: "center",
+                      zIndex: "5",
+                      backgroundColor: "white",
+                      padding: "5px",
+                      borderRadius: "5px",
+                    }}
+                  >
                     Estimated travel time: {estimatedTravelTime}
                   </div>
                 )}
-                  <div className="travel-mode-buttons" 
-                    style={{
-                    
-                      display: 'flex', // Enable flexbox
-                      //flexWrap: 'wrap' // Optional: Allows items to wrap to the next line if needed
-                    }}>
-                    <button className="travel-mode-option" onClick={() => calculateAndDisplayRoute(places.vicinity, window.google.maps.TravelMode.DRIVING)}>
-                      <img src={DriveIcon} alt="Drive" style={{ marginRight: 8 }} />
-                      Drive
-                    </button>
-                    <button className="travel-mode-option" onClick={() => calculateAndDisplayRoute(places.vicinity, window.google.maps.TravelMode.WALKING)}>
-                      <img src={WalkIcon} alt="Walk" style={{ marginRight: 8 }} />
-                      Walk
-                    </button>
-                    <button className="travel-mode-option" onClick={() => calculateAndDisplayRoute(places.vicinity, window.google.maps.TravelMode.BICYCLING)}>
-                      <img src={BikeIcon} alt="Bike" style={{ marginRight: 8 }} />
-                      Bike
-                    </button>
-                    <button className="travel-mode-option" onClick={() => calculateAndDisplayRoute(places.vicinity, window.google.maps.TravelMode.TRANSIT)}>
-                      <img src={PublicTransportIcon} alt="Public Transport" style={{ marginRight: 8 }} />
-                      Public Transport
-                    </button>
-                  </div>
+                <div
+                  className="travel-mode-buttons"
+                  style={{
+                    display: "flex", // Enable flexbox
+                    //flexWrap: 'wrap' // Optional: Allows items to wrap to the next line if needed
+                  }}
+                >
+                  <button
+                    className="travel-mode-option"
+                    onClick={() =>
+                      calculateAndDisplayRoute(
+                        places.vicinity,
+                        window.google.maps.TravelMode.DRIVING
+                      )
+                    }
+                  >
+                    <img
+                      src={DriveIcon}
+                      alt="Drive"
+                      style={{ marginRight: 8 }}
+                    />
+                    Drive
+                  </button>
+                  <button
+                    className="travel-mode-option"
+                    onClick={() =>
+                      calculateAndDisplayRoute(
+                        places.vicinity,
+                        window.google.maps.TravelMode.WALKING
+                      )
+                    }
+                  >
+                    <img src={WalkIcon} alt="Walk" style={{ marginRight: 8 }} />
+                    Walk
+                  </button>
+                  <button
+                    className="travel-mode-option"
+                    onClick={() =>
+                      calculateAndDisplayRoute(
+                        places.vicinity,
+                        window.google.maps.TravelMode.BICYCLING
+                      )
+                    }
+                  >
+                    <img src={BikeIcon} alt="Bike" style={{ marginRight: 8 }} />
+                    Bike
+                  </button>
+                  <button
+                    className="travel-mode-option"
+                    onClick={() =>
+                      calculateAndDisplayRoute(
+                        places.vicinity,
+                        window.google.maps.TravelMode.TRANSIT
+                      )
+                    }
+                  >
+                    <img
+                      src={PublicTransportIcon}
+                      alt="Public Transport"
+                      style={{ marginRight: 8 }}
+                    />
+                    Public Transport
+                  </button>
+                </div>
               </div>
             </div>
-            )}
-          
+          )}
 
-         {showTraffic && <TrafficLayer autoUpdate />}
-         <button
-          style={{
-          position: 'absolute',
-          top: 10,
-          right: 10,
-          zIndex: 5,
-          borderRadius: '10px',
-          marginLeft: '40%',
-          backgroundColor: 'red',
-          color: 'white',
-          padding: '10px',
-          border: 'none',
-          cursor: 'pointer',
-          width: 'auto',
-          maxWidth: '100px',
-          marginBottom: '10px',
-          fontWeight: 'bold',
-          }}
-          onClick={() => setShowTraffic(!showTraffic)} // Toggle the traffic layer visibility
-        >
-          {showTraffic ? "Hide Traffic" : "Show Traffic"}
-        </button>
+          {showTraffic && <TrafficLayer autoUpdate />}
+          <button
+            style={{
+              position: "absolute",
+              top: 10,
+              right: 10,
+              zIndex: 5,
+              borderRadius: "10px",
+              marginLeft: "40%",
+              backgroundColor: "red",
+              color: "white",
+              padding: "10px",
+              border: "none",
+              cursor: "pointer",
+              width: "auto",
+              maxWidth: "100px",
+              marginBottom: "10px",
+              fontWeight: "bold",
+            }}
+            onClick={() => setShowTraffic(!showTraffic)} // Toggle the traffic layer visibility
+          >
+            {showTraffic ? "Hide Traffic" : "Show Traffic"}
+          </button>
         </GoogleMap>
       </div>
     </div>
@@ -591,12 +800,6 @@ function Explore() {
 }
 
 export default Explore;
-
-
-
-
-
-
 
 // // original before travel mode options
 // import React, { useRef, useState, useEffect } from "react";
@@ -614,7 +817,6 @@ export default Explore;
 // import Spinner from "../components/Spinner";
 // import GymIcon from "../assets/gym-icon.png";
 // import RedBg from "../assets/RedBg.jpg";
-
 
 // const libraries = ["places"];
 // function Explore() {
@@ -714,7 +916,7 @@ export default Explore;
 //   const handleChange = (event, value) => {
 //     console.log("debug handleChange");
 //     setSearchRadius(value * 1000); // Convert km back to meters for the searchRadius state
-//   };  
+//   };
 
 //   if (!isLoaded) {
 //     return <Spinner></Spinner>;
@@ -784,7 +986,7 @@ export default Explore;
 
 //   const calculateAndDisplayRoute = (destination) => {
 //     const directionsService = new window.google.maps.DirectionsService();
-  
+
 //     if (currentPosition) {
 //       directionsService.route(
 //         {
@@ -813,7 +1015,6 @@ export default Explore;
 //     },
 //     '-ms-overflow-style': 'none', // For Internet Explorer and Edge
 //   };
-  
 
 //   return (
 //     <div>
@@ -821,7 +1022,7 @@ export default Explore;
 //       <div className="explore-page" style={{ backgroundImage: `url(${RedBg})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
 //         <div className="enter-details">
 //           <form id="enter-details-form">
-//             <div className="locationInputBox" style={{ borderRadius: '10px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', padding: '10px', backgroundColor: 'white' }}> 
+//             <div className="locationInputBox" style={{ borderRadius: '10px', boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.1)', padding: '10px', backgroundColor: 'white' }}>
 //               <div className="locationInput">
 //                 <label htmlFor="location-input"><strong>Change Your Location:</strong></label>
 //                 <Autocomplete>
@@ -832,15 +1033,15 @@ export default Explore;
 //                     size="auto"
 //                     ref={searchInput}
 //                     style={{
-//                       borderRadius: '20px', 
+//                       borderRadius: '20px',
 //                       boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
 //                       border: 'none',
-//                       padding: '10px', 
+//                       padding: '10px',
 //                       width: '115%',
 //                     }}
 //                   />
 //                 </Autocomplete>
-//                 <button 
+//                 <button
 //                   className="submit-button"
 //                   onClick={handleLocationSearch}
 //                 >
@@ -888,13 +1089,13 @@ export default Explore;
 //             </div>
 //           </form>
 //           {/* <div id = 'details-panel'></div> */}
-//           <Box 
-//             sx={{ 
-//               minWidth: 100, 
-//               mt: '10px', 
+//           <Box
+//             sx={{
+//               minWidth: 100,
+//               mt: '10px',
 //               borderRadius: '10px',
 //               position: 'relative', // This makes it the positioning context
-//             }} 
+//             }}
 //             style={{
 //               display: isDetailsVisible ? 'block' : 'none',
 //               zIndex: 1050 // Higher than the button to ensure it's in the correct stacking context
@@ -911,14 +1112,14 @@ export default Explore;
 //               Close
 //             </button>
 //             <Card variant="outlined" sx={{ width: '100%', border: 'none', boxShadow: 'none', borderRadius: '10px'}}>
-//               <CardContent sx={{ 
-//                 maxHeight: '53vh', 
+//               <CardContent sx={{
+//                 maxHeight: '53vh',
 //                 maxWidth:'100%',
 //                 borderRadius: '10px',
 //                 // backgroundColor: 'red',
 //                 overflowY: "auto",
-//                 '&::-webkit-scrollbar': { 
-//                   display: 'none' 
+//                 '&::-webkit-scrollbar': {
+//                   display: 'none'
 //                 },
 //                 '-ms-overflow-style': 'none',  /* IE and Edge */
 //                 'scrollbar-width': 'none',  /* Firefox */
@@ -929,17 +1130,16 @@ export default Explore;
 //                   padding: '20px', // Padding inside the div for some spacing around the content
 //                   margin: '0px', // Margin outside the div to separate it from other elements or the edge of its container
 //                 }}>
-                      
+
 //                   <div style={{
-//                     maxWidth:'400px', 
-//                     maxheight: '220 px', 
-//                     overflowX: 'scroll', 
+//                     maxWidth:'400px',
+//                     maxheight: '220 px',
+//                     overflowX: 'scroll',
 //                     overflowY: 'hidden',
-//                     display: 'flex', 
-//                     flexDirection: 'row',  
-//                     alignItems: 'center', 
+//                     display: 'flex',
+//                     flexDirection: 'row',
+//                     alignItems: 'center',
 //                     borderRadius: '10px',
-                  
 
 //                     // Making the scrollbar invisible
 //                     scrollbarWidth: 'none', /* For Firefox */
@@ -957,7 +1157,7 @@ export default Explore;
 //                           width: 'auto',
 //                           height: "200px",
 //                           marginRight: "5px",
-//                           borderRadius: '10px', 
+//                           borderRadius: '10px',
 //                           flexShrink: 0,
 //                         }}
 //                       />
@@ -973,7 +1173,7 @@ export default Explore;
 //                       Directions
 //                     </button>
 //                   </Typography>
-    
+
 //                   <Typography sx={{ mb: 1.5 }} color="text.secondary">
 //                     <span style={{ fontWeight: 'bold', color: 'red' }}>Opening Hours:</span> <br />
 //                     {places.opening_hours && places.opening_hours
@@ -1088,9 +1288,6 @@ export default Explore;
 // }
 
 // export default Explore;
-
-
-
 
 // // Kai xuan's code
 // import React, { useRef, useState, useEffect } from "react";
