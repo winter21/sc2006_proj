@@ -138,8 +138,8 @@ exports.forgetPassword = async (req, res) => {
 exports.updatePassword = async (req, res) => {
     const token = req.body.token;
     try{
-        const authorised  = await verifyToken(token)
-        const account = await Account.findOne({user:authorised._id})
+        const authorised  = await auth.verifyToken(token)
+        const account = await Account.findOne({user:authorised.userId})
 
         account.password = req.body.password
         await account.save()
