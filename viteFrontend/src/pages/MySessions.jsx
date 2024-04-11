@@ -94,71 +94,6 @@ useEffect(() => {
   fetchJoinedSessions();
 }, []); 
 
-  // //masonry
-  // const renderSessionsList = (sessions) => (
-  //   <>
-  //     {sessions.length > 0 ? (
-  //       <div style={{ display: 'flex', justifyContent: 'left' }}> 
-  //         <Masonry
-  //           breakpointCols={breakpointColumnsObj}
-  //           className="my-masonry-grid"
-  //           columnClassName="my-masonry-grid_column"
-  //           style={myMasonryGridStyle}
-  //         >
-  //           {sessions.map((session) => (
-  //             <div
-  //               key={session._id}
-  //               onClick={() => handleCardClick(session._id)}
-  //               style={{ ...masonryGridItemStyle, cursor: 'pointer'}} 
-  //             >
-  //               <Card
-  //                 elevation={6}
-  //                 sx={{
-  //                   minWidth: 275,
-  //                   maxWidth: 345,
-  //                   borderRadius: "20px",
-  //                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
-  //                   transition: "transform 0.3s",
-  //                   "&:hover": {
-  //                     transform: "scale(1.05)",
-  //                   },
-  //                 }}
-  //               >
-  //                 <CardContent>
-  //                   <img
-  //                     src={`http://localhost:3000/${session.workoutPicture}`}
-  //                     alt={session.name}
-  //                     style={{
-  //                       width: "100%",
-  //                       height: "auto",
-  //                       marginBottom: "10px",
-  //                       borderRadius: "8%",
-  //                     }}
-  //                   />
-  //                   <Typography variant="h5" component="h2" style={{ fontWeight: "bold" }}>
-  //                     {session.name}
-  //                   </Typography>
-  //                   <Typography variant="body1">
-  //                     Date: {session.date.slice(0, 10)}
-  //                   </Typography>
-  //                   <Typography variant="body1">
-  //                     Start Time: {session.date.slice(11, 16)}
-  //                   </Typography>
-  //                   <Typography variant="body1">
-  //                     Slots: {session.slots - session.participants.length}/{session.slots} slot(s) available
-  //                   </Typography>
-  //                 </CardContent>
-  //               </Card>
-  //             </div>
-  //           ))}
-  //         </Masonry>
-  //         </div>
-  //     ) : (
-  //       <p>No sessions found.</p>
-  //     )}
-  //   </>
-  // );
-
 
   const renderSessionsList = (sessions) => (
     <>
@@ -364,6 +299,69 @@ useEffect(() => {
 export default MySessions;
 
 
-
+  // //masonry
+  // const renderSessionsList = (sessions) => (
+  //   <>
+  //     {sessions.length > 0 ? (
+  //       <div style={{ display: 'flex', justifyContent: 'left' }}> 
+  //         <Masonry
+  //           breakpointCols={breakpointColumnsObj}
+  //           className="my-masonry-grid"
+  //           columnClassName="my-masonry-grid_column"
+  //           style={myMasonryGridStyle}
+  //         >
+  //           {sessions.map((session) => (
+  //             <div
+  //               key={session._id}
+  //               onClick={() => handleCardClick(session._id)}
+  //               style={{ ...masonryGridItemStyle, cursor: 'pointer'}} 
+  //             >
+  //               <Card
+  //                 elevation={6}
+  //                 sx={{
+  //                   minWidth: 275,
+  //                   maxWidth: 345,
+  //                   borderRadius: "20px",
+  //                   boxShadow: "0px 4px 20px rgba(0, 0, 0, 0.5)",
+  //                   transition: "transform 0.3s",
+  //                   "&:hover": {
+  //                     transform: "scale(1.05)",
+  //                   },
+  //                 }}
+  //               >
+  //                 <CardContent>
+  //                   <img
+  //                     src={`http://localhost:3000/${session.workoutPicture}`}
+  //                     alt={session.name}
+  //                     style={{
+  //                       width: "100%",
+  //                       height: "auto",
+  //                       marginBottom: "10px",
+  //                       borderRadius: "8%",
+  //                     }}
+  //                   />
+  //                   <Typography variant="h5" component="h2" style={{ fontWeight: "bold" }}>
+  //                     {session.name}
+  //                   </Typography>
+  //                   <Typography variant="body1">
+  //                     Date: {session.date.slice(0, 10)}
+  //                   </Typography>
+  //                   <Typography variant="body1">
+  //                     Start Time: {session.date.slice(11, 16)}
+  //                   </Typography>
+  //                   <Typography variant="body1">
+  //                     Slots: {session.slots - session.participants.length}/{session.slots} slot(s) available
+  //                   </Typography>
+  //                 </CardContent>
+  //               </Card>
+  //             </div>
+  //           ))}
+  //         </Masonry>
+  //         </div>
+  //     ) : (
+  //       <p>No sessions found.</p>
+  //     )}
+  //   </>
+  // );
 
 
