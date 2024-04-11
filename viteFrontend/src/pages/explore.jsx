@@ -14,12 +14,14 @@ import {
 import { Box, Typography, CardContent, Card, Slider } from "@mui/material";
 import Spinner from "../components/Spinner";
 import GymIcon from "../assets/gym-icon.png";
+import SessIcon from "../assets/WorkoutSession-icon.png";
 import RedBg from "../assets/RedBg.jpg";
 import DriveIcon from "../assets/drive-icon.png";
 import WalkIcon from "../assets/walk-icon.png";
 import BikeIcon from "../assets/bike-icon.png";
 import PublicTransportIcon from "../assets/public-transport-icon.png";
 import axios from "axios";
+import SessionDetails from "./sessionDetails";
 
 const libraries = ["places"];
 function Explore() {
@@ -30,6 +32,7 @@ function Explore() {
 
   const searchInput = useRef();
   const mapRef = useRef();
+  const navigate = useNavigate();
 
   const [currentPosition, setCurrentPosition] = useState(null);
   const [nearbyPlaces, setNearbyPlaces] = useState([]);
@@ -45,6 +48,12 @@ function Explore() {
   const [isSession, setIsSession] = useState(false);
   const [currentTravelMode, setCurrentTravelMode] = useState(null);
   const [sessions, setSessions] = useState([]);
+  const [sessionDetails, setSessionDetails] = useState({
+    id: "",
+    date: "",
+    time: "",
+    duration: "",
+  });
   const [places, setPlaces] = useState({
     name: "",
     business_status: "",
@@ -184,7 +193,16 @@ function Explore() {
             photos: [`http://localhost:3000/${place.workoutPicture}`],
             //reviews: [],
           });
-          console.log(`http://localhost:3000/${place.workoutPicture}`);
+          const dateTime = new Date(place.date);
+          const hours = String(dateTime.getUTCHours()).padStart(2, "0");
+          const minutes = String(dateTime.getUTCMinutes()).padStart(2, "0");
+          setSessionDetails({
+            id: place._id,
+            date: String(place.date).split("T")[0],
+            time: `${hours}:${minutes}`,
+            duration: `${place.duration} hour(s)`,
+          });
+          //console.log(`http://localhost:3000/${place.workoutPicture}`);
           setIsDetailsVisible(true);
         } else {
           console.error("Error getting distance: ", status);
@@ -301,11 +319,14 @@ function Explore() {
       setIsTravelOptionsVisible(true);
     }
   };
-  const handleDetailsButtonClick = (vicinity) => {
-    if (!isTravelOptionsVisible) {
-      calculateAndDisplayRoute(vicinity);
-      setIsTravelOptionsVisible(true);
+  const handleDetailsButtonClick = (id) => {
+    console.log(sessionDetails);
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user || !user.token) {
+      navigate("/login");
+      return;
     }
+    navigate("/SessionDetails/" + id);
   };
 
   if (!isLoaded) {
@@ -506,7 +527,9 @@ function Explore() {
                     gutterBottom
                     style={{ fontWeight: "bold" }}
                   >
-                    {isSession && <h4>Workout Session</h4>}
+                    {isSession && (
+                      <h4 style={{ color: "red" }}>Workout Session</h4>
+                    )}
                     {places.name}
                     <br></br>
                     <button
@@ -517,12 +540,16 @@ function Explore() {
                     >
                       Directions
                     </button>
-                    <button
-                      onClick={() => handleDetailsButtonClick(places)}
-                      className="direction-button"
-                    >
-                      More Details
-                    </button>
+                    {isSession && (
+                      <button
+                        onClick={() =>
+                          handleDetailsButtonClick(sessionDetails.id)
+                        }
+                        className="direction-button"
+                      >
+                        More Details
+                      </button>
+                    )}
                   </Typography>
                   {places.opening_hours && (
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
@@ -583,8 +610,33 @@ function Explore() {
                       <span style={{ fontWeight: "bold", color: "red" }}>
                         Contact:
                       </span>
-                    )}{" "}
+                    )}
+                    {places.contact && " "}
                     {places.contact}
+                    <br />
+                    {isSession && (
+                      <span style={{ fontWeight: "bold", color: "red" }}>
+                        Date:
+                      </span>
+                    )}
+                    {isSession && " "}
+                    {isSession && sessionDetails.date}
+                    <br />
+                    {isSession && (
+                      <span style={{ fontWeight: "bold", color: "red" }}>
+                        Time:
+                      </span>
+                    )}
+                    {isSession && " "}
+                    {isSession && sessionDetails.time}
+                    <br />
+                    {isSession && (
+                      <span style={{ fontWeight: "bold", color: "red" }}>
+                        Duration:
+                      </span>
+                    )}
+                    {isSession && " "}
+                    {isSession && sessionDetails.duration}
                   </Typography>
                 </div>
 
@@ -667,9 +719,9 @@ function Explore() {
                 }}
                 title={console.log("test")} //place.name}
                 icon={{
-                  url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+                  url: SessIcon, //"http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                   size: new window.google.maps.Size(50, 50),
-                  scaledSize: new window.google.maps.Size(50, 50),
+                  scaledSize: new window.google.maps.Size(30, 30),
                 }}
                 onClick={() => {
                   DisplaySession(place);
