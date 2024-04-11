@@ -250,7 +250,7 @@ function Explore() {
 
               // Process reviews
               const reviews = place.reviews ? place.reviews : [];
-              console.log(photos);
+              //console.log(photos);
               setPlaces({
                 name: place.name,
                 business_status: place.business_status,
@@ -290,6 +290,8 @@ function Explore() {
         },
         (result, status) => {
           if (status === window.google.maps.DirectionsStatus.OK) {
+            console.log("result", result);
+            //console.log(destination);
             setDirectionsResult(result);
             // Update the estimated travel time
             const duration = result.routes[0].legs[0].duration.text; // Assuming single route and leg
@@ -522,16 +524,18 @@ function Explore() {
                       />
                     ))}
                   </div>
+
                   <Typography
                     variant="h5"
                     gutterBottom
                     style={{ fontWeight: "bold" }}
                   >
                     {isSession && (
-                      <h4 style={{ color: "red" }}>Workout Session</h4>
+                      <div style={{ color: "red" }}>Workout Session</div>
                     )}
                     {places.name}
                     <br></br>
+
                     <button
                       onClick={() =>
                         handleDirectionsButtonClick(places.vicinity)
@@ -717,7 +721,7 @@ function Explore() {
                   lat: place.coordinates.latitude,
                   lng: place.coordinates.longitude,
                 }}
-                title={console.log("test")} //place.name}
+                title={place.name}
                 icon={{
                   url: SessIcon, //"http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
                   size: new window.google.maps.Size(50, 50),
