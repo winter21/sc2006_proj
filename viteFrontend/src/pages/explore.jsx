@@ -42,6 +42,7 @@ function Explore() {
   const [estimatedTravelTime, setEstimatedTravelTime] = useState("");
   const [showTraffic, setShowTraffic] = useState(false);
   const [showSessions, setShowSessions] = useState(false);
+  const [isSession, setIsSession] = useState(false);
   const [currentTravelMode, setCurrentTravelMode] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [places, setPlaces] = useState({
@@ -151,6 +152,7 @@ function Explore() {
 
   const DisplaySession = (place) => {
     console.log("debug DisplaySession");
+    setIsSession(true);
     // Create a DistanceMatrixService object
     const distanceService = new window.google.maps.DistanceMatrixService();
     // Call the distance matrix service to get the distance between the user's location and the place
@@ -179,9 +181,10 @@ function Explore() {
             vicinity: place.address,
             distance: distance,
             contact: "",
-            //photos: place.workoutPictures.map((photo) => `http://localhost:3000/${photo}`),
+            photos: [`http://localhost:3000/${place.workoutPicture}`],
             //reviews: [],
           });
+          console.log(`http://localhost:3000/${place.workoutPicture}`);
           setIsDetailsVisible(true);
         } else {
           console.error("Error getting distance: ", status);
@@ -191,6 +194,7 @@ function Explore() {
   };
   const DisplayMarker = (place) => {
     console.log("debug DisplayMarker");
+    setIsSession(false);
     let openingHours = "Not Available";
     // Create a DistanceMatrixService object
     const distanceService = new window.google.maps.DistanceMatrixService();
@@ -228,7 +232,7 @@ function Explore() {
 
               // Process reviews
               const reviews = place.reviews ? place.reviews : [];
-
+              console.log(photos);
               setPlaces({
                 name: place.name,
                 business_status: place.business_status,
@@ -292,6 +296,12 @@ function Explore() {
   };
 
   const handleDirectionsButtonClick = (vicinity) => {
+    if (!isTravelOptionsVisible) {
+      calculateAndDisplayRoute(vicinity);
+      setIsTravelOptionsVisible(true);
+    }
+  };
+  const handleDetailsButtonClick = (vicinity) => {
     if (!isTravelOptionsVisible) {
       calculateAndDisplayRoute(vicinity);
       setIsTravelOptionsVisible(true);
@@ -496,6 +506,7 @@ function Explore() {
                     gutterBottom
                     style={{ fontWeight: "bold" }}
                   >
+                    {isSession && <h4>Workout Session</h4>}
                     {places.name}
                     <br></br>
                     <button
@@ -506,47 +517,56 @@ function Explore() {
                     >
                       Directions
                     </button>
+                    <button
+                      onClick={() => handleDetailsButtonClick(places)}
+                      className="direction-button"
+                    >
+                      More Details
+                    </button>
                   </Typography>
-                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                    <span style={{ fontWeight: "bold", color: "red" }}>
-                      Opening Hours:
-                    </span>{" "}
-                    <br />
-                    {places.opening_hours &&
-                      places.opening_hours
-                        .split(
-                          /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/
-                        )
-                        .filter(Boolean) // Remove any empty strings that might be caused by the split
-                        .reduce((acc, line, index, arr) => {
-                          // Combine the day and its hours into single entries in a new array
-                          if (index % 2 === 0) {
-                            // Even indexes are days of the week
-                            acc.push(`${arr[index]} ${arr[index + 1]}`);
-                          }
-                          return acc;
-                        }, [])
-                        .map((entry, index, arr) => {
-                          // Split each entry into the day and the hours
-                          const [day, ...hours] = entry.split(": ");
-                          return (
-                            <React.Fragment key={index}>
-                              {/* Apply bold styling only to the day */}
-                              <span style={{ fontWeight: "bold" }}>
-                                {day}:
-                              </span>{" "}
-                              {hours.join(": ")}
-                              {index < arr.length - 1 && <br />}
-                            </React.Fragment>
-                          );
-                        })}
-                  </Typography>
-
-                  {places.business_status !== "OPERATIONAL" && (
-                    <Typography sx={{ fontSize: 14 }} component="div">
-                      Opening Status: {places.business_status}
+                  {places.opening_hours && (
+                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                      <span style={{ fontWeight: "bold", color: "red" }}>
+                        Opening Hours:
+                      </span>{" "}
+                      <br />
+                      {places.opening_hours &&
+                        places.opening_hours
+                          .split(
+                            /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/
+                          )
+                          .filter(Boolean) // Remove any empty strings that might be caused by the split
+                          .reduce((acc, line, index, arr) => {
+                            // Combine the day and its hours into single entries in a new array
+                            if (index % 2 === 0) {
+                              // Even indexes are days of the week
+                              acc.push(`${arr[index]} ${arr[index + 1]}`);
+                            }
+                            return acc;
+                          }, [])
+                          .map((entry, index, arr) => {
+                            // Split each entry into the day and the hours
+                            const [day, ...hours] = entry.split(": ");
+                            return (
+                              <React.Fragment key={index}>
+                                {/* Apply bold styling only to the day */}
+                                <span style={{ fontWeight: "bold" }}>
+                                  {day}:
+                                </span>{" "}
+                                {hours.join(": ")}
+                                {index < arr.length - 1 && <br />}
+                              </React.Fragment>
+                            );
+                          })}
                     </Typography>
                   )}
+
+                  {places.business_status &&
+                    places.business_status !== "OPERATIONAL" && (
+                      <Typography sx={{ fontSize: 14 }} component="div">
+                        Opening Status: {places.business_status}
+                      </Typography>
+                    )}
 
                   <Typography variant="body1">
                     <span style={{ fontWeight: "bold", color: "red" }}>
@@ -559,38 +579,43 @@ function Explore() {
                     </span>{" "}
                     {places.vicinity}
                     <br />
-                    <span style={{ fontWeight: "bold", color: "red" }}>
-                      Contact:
-                    </span>{" "}
+                    {places.contact && (
+                      <span style={{ fontWeight: "bold", color: "red" }}>
+                        Contact:
+                      </span>
+                    )}{" "}
                     {places.contact}
                   </Typography>
                 </div>
 
                 <div>
-                  <h5 className="customer-reviews-heading">
-                    Some Customer Reviews:{" "}
-                  </h5>
-                  {places.reviews.map((review, index) => (
-                    <div key={index} className="review-card">
-                      <div className="profile-section">
-                        {review.profile_photo_url && (
-                          <img
-                            src={review.profile_photo_url}
-                            alt={review.author_name}
-                            className="profile-picture"
-                          />
-                        )}
-                        <p className="reviewer-name">{review.author_name}</p>
+                  {places.reviews && (
+                    <h5 className="customer-reviews-heading">
+                      Some Customer Reviews:{" "}
+                    </h5>
+                  )}
+                  {places.reviews &&
+                    places.reviews.map((review, index) => (
+                      <div key={index} className="review-card">
+                        <div className="profile-section">
+                          {review.profile_photo_url && (
+                            <img
+                              src={review.profile_photo_url}
+                              alt={review.author_name}
+                              className="profile-picture"
+                            />
+                          )}
+                          <p className="reviewer-name">{review.author_name}</p>
+                        </div>
+                        <div className="star-rating">
+                          {/* Generate stars based on the review rating */}
+                          {Array.from({ length: review.rating }, (_, i) => (
+                            <span key={i}>⭐</span> // No need for 'gray-star' class as we're not displaying empty stars
+                          ))}
+                        </div>
+                        <p className="review-text">{review.text}</p>
                       </div>
-                      <div className="star-rating">
-                        {/* Generate stars based on the review rating */}
-                        {Array.from({ length: review.rating }, (_, i) => (
-                          <span key={i}>⭐</span> // No need for 'gray-star' class as we're not displaying empty stars
-                        ))}
-                      </div>
-                      <p className="review-text">{review.text}</p>
-                    </div>
-                  ))}
+                    ))}
                 </div>
               </CardContent>
             </Card>
