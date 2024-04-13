@@ -21,7 +21,7 @@ import WalkIcon from "../assets/walk-icon.png";
 import BikeIcon from "../assets/bike-icon.png";
 import PublicTransportIcon from "../assets/public-transport-icon.png";
 import axios from "axios";
-import SessionDetails from "./sessionDetails";
+import SessionDetails from "./SessionDetails";
 
 const libraries = ["places"];
 function Explore() {

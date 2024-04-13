@@ -100,7 +100,7 @@ const SessionDetails = () => {
   }, [hostLoaded]);
 
   const handleEditButtonClick = () => {
-    navigate("/editsession/" + id);
+    navigate("/SessionDetails/" + id);
   };
 
   const handleCancelButtonClick = async () => {
